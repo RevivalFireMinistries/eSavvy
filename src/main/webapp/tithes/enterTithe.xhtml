@@ -1,0 +1,138 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="form">
+
+            <p:panel header="Enter New Tithes" toggleable="true" id="panel">
+
+                <p:messages id="msgs"/>
+        <h:panelGrid columns="2" cellpadding="5">
+
+        <h:outputLabel value="Enter Member's Name :" for="acForce" />
+        <p:autoComplete id="acForce" forceSelection="true"
+                        value="#{enterTitheBean.selectedMember}"
+                        completeMethod="#{enterTitheBean.completeMember}" var="m" itemLabel="#{m.fullName}" itemValue="#{m}" converter="memberConverter" size="40" required="true">
+            <p:ajax event="itemSelect" listener="#{enterTitheBean.onNameChange}" update="phoneNumber" />
+
+        </p:autoComplete>
+            <p:watermark for="acForce"
+                         value=" Type in member name or surname"  oncomplete="PrimeFaces.showWatermarks();"/>
+            <p:spacer></p:spacer>
+            <h:outputLabel for="phoneNumber" value="Phone Number:" />
+            <p:inputText id="phoneNumber"
+                         value="#{enterTitheBean.selectedMember.phone}" readonly="true" rendered="true"/>
+            <h:outputText value="Event  Date: " />
+            <p:calendar maxdate="#{enterTitheBean.maxDate}" required="true" value="#{enterTitheBean.date}" id="popupButtonCal" showOn="button" />
+            <h:outputLabel for="amount" value="Amount:" />
+            <p:inputText id="amount"
+                         value="#{enterTitheBean.amount}" required="true" >
+                <f:validateDoubleRange minimum="0.1" />
+                    </p:inputText>
+
+        </h:panelGrid>
+                <p:commandButton value="Save" update="panelbottom,panel"
+                                 actionListener="#{enterTitheBean.addTithe}"
+                                 id="btnGlobal" />
+                <p:commandButton value="Clear" update="panel" process="@this" actionListener="#{enterTitheBean.clear}" />
+
+            </p:panel>
+            <p:panel header="Tithes queued for processing" toggleable="true" id="panelbottom">
+                <h:form id="form">
+                    <c:if test="#{enterTitheBean.flag}">
+                      <p:panel >
+                          <h:commandButton value="Submit ALL Tithes"
+                                           styleClass="btn btn-primary"
+                                           action="#{enterTitheBean.submitAll}" onclick="return confirm('Are you sure you want to submit ALL?')" >
+                              <f:ajax  render=":form:panelbottom :form:panel"  />
+
+                          </h:commandButton>
+                          <h:commandButton value="Delete ALL Tithes"
+                                           styleClass="btn btn-primary"
+                                           action="#{enterTitheBean.deleteAll}" onclick="return confirm('Are you sure you want to delete All?')">
+                              <f:ajax  render=":form:panelbottom :form:panel"  />
+
+                          </h:commandButton>
+                      </p:panel>
+                    </c:if>
+                   <!-- <p:messages id="messagesbottom"/>-->
+
+                    <p:dataTable var="tithe" value="#{enterTitheBean.titheList}" id="titheList" editable="true"    paginator="true" rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <f:facet name="header">
+                            Pending Submission
+                        </f:facet>
+
+                        <p:ajax event="rowEdit" listener="#{enterTitheBean.onEdit}" update=":form:msgs" />
+                        <p:ajax event="rowEditCancel" listener="#{enterTitheBean.onCancel}" update=":form:msgs" />
+
+                        <p:column headerText="Member's Name" style="width:30%">
+
+                                    <h:outputText value="#{tithe.fullName}" />
+
+
+                        </p:column>
+
+                        <p:column headerText="Phone Number" style="width:20%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tithe.phoneNumber}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{tithe.phoneNumber}" style="width:100%" label="Phone Number"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Date Received" style="width:24%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tithe.formattedDate}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar maxdate="#{enterTitheBean.maxDate}" required="true" value="#{tithe.txnDate}" id="popupButtonCal" showOn="button" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Amount" style="width:20%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tithe.formattedAmount}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{tithe.amount}" style="width:100%" label="Amount"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:6%" headerText="Edit">
+                            <p:rowEditor />
+
+                        </p:column>
+                        <p:column style="width:4%">
+
+                            <h:commandButton value="remove"
+                                             styleClass="btn btn-primary"
+                                             action="#{enterTitheBean.deleteAction(tithe)}" onclick="return confirm('Are you sure you want to remove this entry?')" >
+                                <f:ajax  render=":form:panelbottom :form:panel"  />
+
+                            </h:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+
+
+            </p:panel>
+        </h:form>
+        </ui:define>
+    </ui:composition>

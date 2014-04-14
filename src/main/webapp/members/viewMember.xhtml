@@ -1,0 +1,150 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+    <h:form prependId="false">
+        <p:tabView id="tabView" dynamic="true" cache="true">
+        <p:growl id="growl" sticky="true" showDetail="true" autoUpdate="true"/>
+        <h:messages errorClass="error"/>
+            <p:tab id="tba1" title="Member Details">
+        <p:panel header="#{viewMemberBean.fullName}" style="width:500px;" id="member">
+            <h:panelGrid columns="2" columnClasses="column" cellpadding="5" style="width:400px;">
+                <h:outputText value="First Name: " />
+                <p:inplace id="basic" editor="true">
+                    <p:ajax event="save" listener="#{viewMemberBean.saveMember}" update="member" />
+                    <p:inputText value="#{viewMemberBean.member.firstName}" label="First Name" />
+                </p:inplace>
+
+                <h:outputText value="Last Name: " />
+                <p:inplace id="ajaxInplace" editor="true">
+                    <p:ajax event="save" listener="#{viewMemberBean.saveMember}" update="member" />
+                    <p:inputText value="#{viewMemberBean.member.lastName}"
+                                 required="true" label="text"/>
+                </p:inplace>
+                <h:outputText value="Phone : " />
+                <p:inplace id="ajaxInplace1" editor="true">
+                    <p:ajax event="save" listener="#{viewMemberBean.saveMember}" update="member" />
+                    <p:inputText value="#{viewMemberBean.member.phone}"
+                                 required="true" label="text"/>
+                </p:inplace>
+                <h:outputText value="Home address: " />
+                <p:inplace id="ajaxInplace2" editor="true">
+                    <p:ajax event="save" listener="#{viewMemberBean.saveMember}" update="member" />
+                    <p:inputText value="#{viewMemberBean.member.homeAddress}"
+                                 required="true" label="text"/>
+                </p:inplace>
+                <h:outputText value="Email: " />
+                <p:inplace id="ajaxInplace3" editor="true">
+                    <p:ajax event="save" listener="#{viewMemberBean.saveMember}" update="member" />
+                    <p:inputText value="#{viewMemberBean.member.email}"
+                                 required="true" label="text"/>
+                </p:inplace>
+                <h:outputText value="Member Type: " />
+                <p:inplace id="selectableInplace"  effectSpeed="fast" event="dblclick" label="#{viewMemberBean.member.type}">
+                    <h:selectOneMenu value="#{viewMemberBean.member.type}" required="true">
+                        <p:ajax listener="#{viewMemberBean.saveMember}" update="member" event="change" process="@this"/>
+                        <f:selectItems value="#{viewMemberBean.memberTypes}" />
+                    </h:selectOneMenu>
+                </p:inplace>
+                <h:outputText value="Status: " />
+                <p:inplace id="selectableInplace3535"  effectSpeed="fast" event="dblclick" label="#{viewMemberBean.member.status}">
+                    <h:selectOneMenu value="#{viewMemberBean.member.status}" required="true">
+                        <p:ajax listener="#{viewMemberBean.saveMember}" update="member" event="change" process="@this"/>
+                        <f:selectItems value="#{viewMemberBean.memberStates}" />
+                    </h:selectOneMenu>
+                </p:inplace>
+
+                <p:toolbar>
+                <p:toolbarGroup align="center" style="width: 350px" >
+                    <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                    <p:separator />
+                    <p:commandButton id="showDialogButton" type="button" value="Send SMS" onclick="PF('sms').show()" oncomplete="PF('sms').hide();"/>
+
+                    <p:separator />
+                    <p:commandButton type="button" value="Enter Tithe" icon="ui-icon-folder-open"/>
+                    <p:separator />
+
+                    <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
+                    <p:commandButton type="button" title="Print" icon="ui-icon-print"/>
+                </p:toolbarGroup>
+                 </p:toolbar>
+            </h:panelGrid>
+
+        </p:panel>
+
+
+        <p:dialog header="Send SMS" widgetVar="sms" resizable="false">
+            <h:form id="smsform4646" prependId="true">
+
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <h:outputLabel for="sms" value="SMS message:" />
+                    <p:inputTextarea id="sms" rows="10" cols="30" counter="counter" maxlength="160"
+                                     counterTemplate="{0} characters remaining." autoResize="false" value="#{viewMemberBean.sms}"/>
+
+                    <h:outputText id="counter" />
+                </h:panelGrid>
+
+                <p:commandButton id="submitButton" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('dlg').hide();"/>
+                <p:outputPanel id="display" style="display:block;margin-top:10px;">
+                    <h:outputText id="name" value="Hello #{viewMemberBean.sms}" rendered="#{not empty viewMemberBean.sms}"/>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+                <p:dialog header="Enter Tithe" widgetVar="dlg" resizable="false">
+                    <h:form id="smsform" prependId="false">
+
+                        <h:panelGrid columns="2" style="margin-bottom:10px">
+                            <h:outputLabel for="sms" value="SMS message:" />
+                            <p:inputTextarea id="sms" rows="10" cols="30" counter="counter" maxlength="160"
+                                             counterTemplate="{0} characters remaining." autoResize="false" value="#{viewMemberBean.sms}"/>
+
+                            <h:outputText id="counter" />
+                        </h:panelGrid>
+
+                        <p:commandButton id="submitButton" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('dlg').hide();"/>
+                        <p:outputPanel id="display" style="display:block;margin-top:10px;">
+                            <h:outputText id="name" value="Hello #{viewMemberBean.sms}" rendered="#{not empty viewMemberBean.sms}"/>
+                        </p:outputPanel>
+                    </h:form>
+                </p:dialog>
+            </p:tab>
+            <p:tab id="tab3" title="Tithe History">
+                <p:dataTable  style="width:850px;" var="tithe" value="#{viewMemberBean.titheList}" rowKey="#{tithe.id}" paginator="true" rows="20"
+                              widgetVar="membersTable"      id="titheTable100">
+
+                    <p:ajax event="rowSelect"  listener="#{viewMembersBean.onRowSelect}" />
+
+                    <f:facet name="header">
+                        List of Tithe Transaction
+                    </f:facet>
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="membersTable.filter()" style="width:150px" />
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Date" sortBy="txnDate" filterBy="txnDate" id="firstname">
+                        #{tithe.formattedDate}
+                    </p:column>
+
+                    <p:column headerText="Amount" sortBy="amount" filterBy="amount" id="lastname">
+                        #{tithe.formattedAmount}
+                    </p:column>
+
+
+                </p:dataTable>
+
+
+                    </p:tab>
+            <p:tab id="tab4" title="Attendance History">
+                    </p:tab>
+            <p:tab id="tab5" title="Ministry Involvement">
+                    </p:tab>
+        </p:tabView>
+    </h:form>
+
+</ui:define>
+    </ui:composition>

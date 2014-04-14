@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="eventsform">
+                <h3>Event Reports</h3>
+            <p:growl id="growl" showDetail="true"/>
+
+            <p:dataTable  var="event" value="#{tableBean.lazyModel}" rowKey="#{event.id}" paginator="true" rows="10"
+                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                          rowsPerPageTemplate="5,10,15"
+                          widgetVar="eventsTable"     selection="#{tableBean.selectedEvent}" selectionMode="single" filteredValue="#{tableBean.filteredEvents}" id="membersTable100" lazy="true">
+                <p:ajax event="rowSelect"
+                        update=":eventsform:display :eventsform:growl" oncomplete="PF('eventDialog').show()" />
+                <p:column headerText="Event Type" sortBy="eventType" filterBy="#{event.eventType}">
+                <h:outputText value="#{event.eventType}" />
+            </p:column>
+            <p:column headerText="Date" sortBy="eventDate" filterBy="#{event.eventDate}">
+                <h:outputText value="#{event.eventDateFormatted}" />
+            </p:column>
+            <p:column headerText="Attendance" sortBy="attendance" filterBy="#{event.attendance}">
+                <h:outputText value="#{event.attendance}"  />
+                </p:column>
+                <p:column headerText="Attendance Register" >
+                    <p:commandLink id="ajax55553"  rendered="#{event.register}" actionListener="#{pprBean.savePerson}" style="margin-right:20px;">
+                        <h:outputText value="[View Register]" />
+                    </p:commandLink>
+                    <p:commandLink id="ajax555"  rendered="#{!event.register}" actionListener="#{tableBean.addRegister(event)}" style="margin-right:20px;">
+                        <h:outputText value="[Add Register]" />
+                    </p:commandLink>
+
+            </p:column>
+            </p:dataTable>
+                <p:dialog id="dialog" header="Event Detail" widgetVar="eventDialog" resizable="false"
+                          showEffect="fade" hideEffect="explode">
+
+                    <h:panelGrid id="display" columns="2" cellpadding="4">
+
+
+                        <h:outputText value="Date:" />
+                        <h:outputText value="#{tableBean.selectedEvent.eventDateFormatted}" />
+
+                        <h:outputText value="Type:" />
+                        <h:outputText value="#{tableBean.selectedEvent.eventType}" />
+
+                        <h:outputText value="Attendance:" />
+                        <h:outputText value="#{tableBean.selectedEvent.attendance}" />
+
+                        <h:outputText value="Tithes:" />
+                        <h:outputText value="#{tableBean.selectedEvent.titheFormatted}" />
+
+                        <h:outputText value="Offering:" />
+                        <h:outputText value="#{tableBean.selectedEvent.offeringFormatted}" />
+
+                        <h:outputText value="Comments:" />
+                        <h:outputText value="#{tableBean.selectedEvent.comment}" />
+                    </h:panelGrid>
+                </p:dialog>
+
+            <p:lineChart id="category" value="#{tableBean.categoryModel}" legendPosition="e"
+                         title="Last 4 Weeks trends" minY="0" maxY="200" style="height:300px;margin-top:20px"/>
+
+        </h:form>
+    </ui:define>
+    <ui:define name="sidebar">
+
+        <p:outputPanel id="eventViewer">
+            <h:outputText value="#{tableBean.selectedEvent.eventType}" rendered="#{not empty tableBean.selectedEvent}" />
+            <h:outputText value="#{tableBean.selectedEvent.eventDate}" rendered="#{not empty tableBean.selectedEvent}" />
+            <h:outputText value="#{tableBean.selectedEvent.attendance}" rendered="#{not empty tableBean.selectedEvent}" />
+            <h:outputText value="#{tableBean.selectedEvent.comment}" rendered="#{not empty tableBean.selectedEvent}" />
+        </p:outputPanel>
+
+    </ui:define>
+</ui:composition>

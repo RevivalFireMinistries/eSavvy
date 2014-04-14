@@ -10,6 +10,7 @@ import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -117,6 +118,6 @@ public class NewReportBean {
         Assembly assembly =  assemblyService.getAssemblyById(WebUtil.getUserAssemblyId());
         getEvent().setAssembly(assembly);
        eventService.saveEvent(getEvent());
-        Utils.addFacesMessage("Event captured successfully");
+        Utils.addFacesMessage("Event captured successfully", FacesMessage.SEVERITY_INFO);
     }
 }

@@ -11,6 +11,7 @@ import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -105,7 +106,7 @@ public class MemberBean implements Serializable{
         account.setMember(getMember());
         getMember().setAccount(account);
         getMemberService().saveMember(getMember());
-        Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved");
+        Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved", FacesMessage.SEVERITY_INFO);
     }
     public boolean isSkip() {
         return skip;

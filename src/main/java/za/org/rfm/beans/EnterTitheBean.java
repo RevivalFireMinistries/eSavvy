@@ -155,10 +155,10 @@ public class EnterTitheBean {
     }
 
     public void onEdit(RowEditEvent rowEditEvent){
-        Utils.addFacesMessage("Row edited!");
+        Utils.addFacesMessage("Row edited!",FacesMessage.SEVERITY_INFO);
     }
     public void onCancel(RowEditEvent rowEditEvent){
-        Utils.addFacesMessage("Editing cancelled");
+        Utils.addFacesMessage("Editing cancelled",FacesMessage.SEVERITY_INFO);
     }
     public String deleteAction(Tithe tithe) {
         int size = titheList.size();
@@ -167,7 +167,7 @@ public class EnterTitheBean {
                 titheList.remove(i);
             }
         }
-        Utils.addFacesMessage("Tithe entry deleted successfully");
+        Utils.addFacesMessage("Tithe entry deleted successfully",FacesMessage.SEVERITY_INFO);
         return null;
     }
     public void submitAll(){
@@ -183,14 +183,14 @@ public class EnterTitheBean {
             txnService.saveTxn(txn);
         }
         titheList.clear();
-        Utils.addFacesMessage(size+" Tithe transactions have been processed successfully");
+        Utils.addFacesMessage(size+" Tithe transactions have been processed successfully",FacesMessage.SEVERITY_INFO);
     }
 
     public void deleteAll(){
         int size = titheList.size();
         titheList.clear();
         clear();
-        Utils.addFacesMessage(size+" Tithe transactions have been removed");
+        Utils.addFacesMessage(size+" Tithe transactions have been removed",FacesMessage.SEVERITY_INFO);
     }
     public boolean getFlag(){
         return !titheList.isEmpty();

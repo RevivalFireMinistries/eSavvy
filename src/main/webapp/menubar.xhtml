@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xml:lang="en" lang="en"  xmlns:p="http://primefaces.org/ui">
+<head>
+    <title></title>
+
+</head>
+<body>
+<ui:composition>
+    <style type="text/css">
+        .ui-widget,.ui-widget .ui-widget {
+            font-size: 90% !important;
+        }
+        .ui-growl {
+            position:absolute;
+            top:20%;
+            left:50%;
+            z-index:9999;
+        }
+    </style>
+<h:form>
+
+    <p:growl id="messages"/>
+
+    <h1>eSavvy </h1>
+    <p:menubar>
+        <p:submenu label="Members" icon="ui-icon-menuItem">
+            <p:menuitem value="Add New" url="#{request.contextPath}/members/newMember.faces" />
+            <p:separator />
+            <p:menuitem value="View Members" url="#{request.contextPath}/members/viewMembers.faces" />
+            <p:separator />
+        </p:submenu>
+
+        <p:submenu label="Tithes" icon="ui-icon-pencil">
+            <p:menuitem value="Mailbox" url="#{request.contextPath}/layout.faces" icon="ui-icon-arrowreturnthick-1-w" />
+            <p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" />
+        </p:submenu>
+
+        <p:submenu label="SMS" icon="ui-icon-help">
+            <p:menuitem value="Contents" url="#" />
+            <p:submenu label="Search" icon="ui-icon-search">
+                <p:submenu label="Text">
+                    <p:menuitem value="Workspace" url="#" />
+                </p:submenu>
+                <p:menuitem value="File" url="#" />
+            </p:submenu>
+        </p:submenu>
+
+        <p:submenu label="Reports" icon="ui-icon-gear">
+            <p:submenu label="Ajax" icon="ui-icon-refresh">
+                <p:menuitem value="Save" actionListener="#{menuBean.save}" icon="ui-icon-disk" update="messages"/>
+                <p:menuitem value="Update" actionListener="#{menuBean.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>
+            </p:submenu>
+            <p:submenu label="Non-Ajax" icon="ui-icon-newwin">
+                <p:menuitem value="Delete" actionListener="#{menuBean.delete}" icon="ui-icon-close" update="messages" ajax="false"/>
+            </p:submenu>
+        </p:submenu>
+
+        <p:menuitem value="My Profile" url="http://www.primefaces.org" icon="ui-icon-close" />
+
+        <f:facet name="options">
+            <p:inputText style="margin-right:10px"/>
+            <p:commandButton action="#{menuBean.logout}" value="Logout"  ajax="false"></p:commandButton>
+        </f:facet>
+    </p:menubar>
+     <br></br>
+
+
+</h:form>
+</ui:composition>
+</body>
+</html>

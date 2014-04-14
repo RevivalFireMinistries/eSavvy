@@ -1,0 +1,126 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+
+    <h:form>
+
+        <p:growl id="growl" sticky="true" showDetail="true"/>
+
+        <p:wizard flowListener="#{memberBean.onFlowProcess}"  style="width:600px;" >
+
+            <p:tab id="personal" title="Personal">
+
+                <p:panel header="Personal Details">
+
+                    <h:messages errorClass="error"/>
+
+                    <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+                        <h:outputText value="Firstname: *" />
+                        <p:inputText required="true" label="Firstname"
+                                     value="#{memberBean.member.firstName}"  size="40"/>
+
+                        <h:outputText value="Lastname: *" />
+                        <p:inputText required="true" label="Lastname"
+                                     value="#{memberBean.member.lastName}" size="40" />
+
+                        <h:outputText value="Gender: " />
+                        <p:selectOneMenu value="#{memberBean.member.gender}" required="true">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItem itemLabel="Male" itemValue="Male" />
+                            <f:selectItem itemLabel="Female" itemValue="Female" />
+                        </p:selectOneMenu>
+
+                        <h:outputText value="Skip to last: " />
+                        <h:selectBooleanCheckbox value="#{memberBean.skip}" />
+                    </h:panelGrid>
+                </p:panel>
+            </p:tab>
+
+            <p:tab id="contact" title="Contact">
+            <p:panel header="Contact Details">
+
+                <h:messages errorClass="error"/>
+
+                <h:panelGrid columns="2" columnClasses="label, value">
+                    <h:outputText value="Home Address: " />
+                    <p:inputTextarea rows="6" cols="33" value="#{memberBean.member.homeAddress}"/>
+                    <h:outputText value="Email Address " />
+                    <p:inputText value="#{memberBean.member.email}" size="40"/>
+
+                    <h:outputText value="Phone Number: " />
+                    <p:inputText value="#{memberBean.member.phone}" required="true"  size="40"/>
+
+                    <h:outputText value="Skip to last: " />
+                    <h:selectBooleanCheckbox value="#{memberBean.skip}" />
+                </h:panelGrid>
+            </p:panel>
+        </p:tab>
+            <p:tab id="ministry" title="Ministry">
+                <p:panel header="Ministry Info">
+                   <h:messages errorClass="error"/>
+                    <h:panelGrid columns="2" columnClasses="label,value">
+                        <h:outputText value="Member Type: " />
+                        <p:selectOneMenu value="#{memberBean.member.type}" required="true">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{memberBean.memberTypes}" />
+                        </p:selectOneMenu>
+                        <h:outputText value="Skip to last: " />
+                        <h:selectBooleanCheckbox value="#{memberBean.skip}" />
+                    </h:panelGrid>
+                </p:panel>
+            </p:tab>
+
+            <p:tab id="confirm" title="Confirm">
+                <p:panel header="Confirmation">
+
+                    <h:panelGrid id="confirmation" columns="2">
+                        <h:outputText value="Firstname: " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.firstName}" />
+
+                        <h:outputText value="Lastname: " />
+                        <h:outputText  styleClass="outputLabel"
+                                       value="#{memberBean.member.lastName}"/>
+
+                        <h:outputText value="Gender: " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.gender}" />
+
+                        <h:outputText value="Home Address: " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.homeAddress}" />
+
+                        <h:outputText value="Email: " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.email}" />
+
+                        <h:outputText value="Phone " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.phone}"/>
+
+                        <h:outputText value="Member Type: " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.member.type}" />
+
+                        <!--<h:outputText value="Assembly " />
+                        <h:outputText styleClass="outputLabel"
+                                      value="#{memberBean.assembly.name}"/>
+                        <h:outputText />-->
+                        <h:outputText />
+                    </h:panelGrid>
+
+                    <p:commandButton value="Submit" update="growl"
+                                     actionListener="#{memberBean.save}" oncomplete="wiz.loadStep(wiz.cfg.steps[0], true)"/>
+
+                </p:panel>
+            </p:tab>
+
+        </p:wizard>
+
+    </h:form>
+</ui:define>
+    </ui:composition>

@@ -6,9 +6,11 @@ import za.org.rfm.model.Member;
 import za.org.rfm.model.MemberDataModel;
 import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -98,6 +100,9 @@ public class AttendanceBean {
             eventLog = new EventLog(member,event);
             eventService.saveEventLog(eventLog);
         }
-
+        event.setAttendance(selectedMembers.size());
+        event.setRegister(true);
+        eventService.saveEvent(event);
+        Utils.addFacesMessage("Event attendance captured successfully", FacesMessage.SEVERITY_INFO);
     }
 }

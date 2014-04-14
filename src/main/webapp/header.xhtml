@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xml:lang="en" lang="en"  xmlns:p="http://primefaces.org/ui">
+<head>
+    <title></title>
+
+</head>
+<body>
+<ui:composition>
+<!-- HEADER -->
+<div id="header">
+    <!-- wrapper-header -->
+    <div class="wrapper">
+        <a href="index.html"><img id="logo" src="img/logo.png" alt="Nova" /></a>
+        <!-- search -->
+        <div class="top-search">
+            <form  method="get" id="searchform" action="#">
+                <div>
+                    <input type="text" value="Search..." name="s" id="s" onfocus="defaultInput(this)" onblur="clearInput(this)" />
+                    <input type="submit" id="searchsubmit" value=" " />
+                </div>
+            </form>
+        </div>
+        <!-- ENDS search -->
+    </div>
+    <!-- ENDS wrapper-header -->
+</div>
+<!-- ENDS HEADER -->
+</ui:composition>
+</body>
+</html>

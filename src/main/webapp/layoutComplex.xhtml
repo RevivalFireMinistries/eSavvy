@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <title>eSavvy</title>
+        </f:facet>
+
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/default.css" />
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/syntaxhighlighter/syntaxhighlighter.css" />
+
+        <style type="text/css">
+
+            .ui-growl {
+                position:absolute;
+                top:10%;
+                left:50%;
+                z-index:9999;
+            }
+            .ui-layout-north {
+                z-index:20 !important;
+                overflow:visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow:visible !important;
+            }
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 87% !important;
+            }
+        </style>
+    </h:head>
+
+
+    <h:body>
+
+        <p:layout fullPage="true" >
+
+            <p:layoutUnit id="top" position="north" size="50">
+
+              <h:form>
+
+                <p:menubar>
+                    <p:submenu label="New" icon="ui-icon-document">
+
+                            <p:menuitem value="Member" url="/members/newMember.faces" />
+                        <p:menuitem value="Tithe" url="/tithes/enterTithe.faces" />
+                            <p:menuitem value="SMS" url="/sms/sendSMS.faces" />
+                            <p:menuitem value="Service Report" url="/services/newReport.faces" />
+
+
+                    </p:submenu>
+
+                    <p:submenu label="View" icon="ui-icon-pencil">
+                        <p:menuitem value="Members" url="/members/viewMembers.faces" icon="ui-icon-arrowreturnthick-1-w"></p:menuitem>
+                        <p:menuitem value="Reports" url="/services/viewReports.faces" icon="ui-icon-arrowreturnthick-1-e"></p:menuitem>
+                    </p:submenu>
+
+                    <p:submenu label="#{loginBean.user.fullname}" icon="ui-icon-user">
+
+                        <p:menuitem value="Logout"  icon="ui-icon-arrowreturnthick-1-w" action="#{loginBean.logout}"/>
+
+                    </p:submenu>
+                </p:menubar>
+              </h:form>
+            </p:layoutUnit>
+
+            <p:layoutUnit id="bottom" position="south" size="60">
+
+            </p:layoutUnit>
+
+            <p:layoutUnit id="left" position="west" size="150" resizable="true" closable="true" collapsible="true" header="Options" minSize="200">
+               <h:form>
+                   <p:growl id="messages"/>
+                   <h2>eSavvy</h2>
+                <p:menu model="#{menuBean.model}"/>
+               </h:form>
+            </p:layoutUnit>
+
+            <p:layoutUnit id="right" position="east" size="250" header="SideBar" resizable="true" closable="true" collapsible="true"
+                          style="text-align:center">
+
+                <ui:insert name="sidebar" />
+            </p:layoutUnit>
+
+            <p:layoutUnit id="center" position="center">
+
+
+                    <ui:insert name="content" />
+
+
+            </p:layoutUnit>
+
+        </p:layout>
+
+
+
+    </h:body>
+
+</f:view>
+</html>

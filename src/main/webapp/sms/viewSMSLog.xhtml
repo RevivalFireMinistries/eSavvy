@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="myform" prependId="false">
+
+            <p:dataTable  style="width:850px;" var="sms" value="#{smsLogBean.smsLogs}" rowKey="#{sms.id}" paginator="true" rows="20"
+                          widgetVar="smsTable"     selection="#{viewMembersBean.selectedMember}" selectionMode="single" filteredValue="#{viewMembersBean.filteredMembers}" id="membersTable100">
+
+                <p:ajax event="rowSelect"  listener="#{viewMembersBean.onRowSelect}" />
+
+                <f:facet name="header">
+                    SMS Log
+                </f:facet>
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="membersTable.filter()" style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column headerText="First Name" sortBy="firstName" filterBy="firstName" id="firstname">
+                    #{member.firstName}
+                </p:column>
+
+                <p:column headerText="Last Name" sortBy="lastname" filterBy="lastName" id="lastname">
+                    #{member.lastName}
+                </p:column>
+
+                <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
+                    #{member.phone}
+                </p:column>
+
+                <p:column headerText="Email"  id="email">
+                    #{member.email}
+                </p:column>
+                <p:column headerText="Gender"  id="gender">
+                    #{member.gender}
+                </p:column>
+                <p:column headerText="Status"  id="status">
+                    #{member.status}
+                </p:column>
+                <p:column headerText="Membership Type"  id="type">
+                    #{member.type}
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="Member Detail" widgetVar="memberDialog" resizable="false"
+                      width="200" showEffect="explode" hideEffect="explode">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4"  >
+
+                    <!--<f:facet name="header">
+                        <p:graphicImage value="/images/cars/#{tableBean.selectedEvent.manufacturer}.jpg"/>
+                    </f:facet>-->
+
+                    <h:outputText value="First Name:" />
+                    <h:outputText value="#{viewMembersBean.selectedMember.firstName}" id="firstName"/>
+
+                    <h:outputText value="Last Name:" />
+                    <h:outputText value="#{viewMembersBean.selectedMember.lastName}" id="lastName"/>
+
+                    <h:outputText value="Phone:" />
+                    <h:outputText value="#{viewMembersBean.selectedMember.phone}" id="phone"/>
+
+                    <h:outputText value="Email:" />
+                    <h:outputText value="#{viewMembersBean.selectedMember.email}" id="email"/>
+                </h:panelGrid>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+
+        <h:form>
+
+            <p:growl id="growl" sticky="true" showDetail="true"/>
+
+            <p:wizard flowListener="#{newReportBean.onFlowProcess}"  style="width:600px;" >
+
+                <p:tab id="personal" title="Report">
+
+                    <p:panel header="Report Details">
+
+                        <h:messages errorClass="error"/>
+
+                        <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+                            <h:outputText value="Event  Type: " />
+                            <p:selectOneMenu value="#{newReportBean.event.eventType}" required="true">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{newReportBean.serviceTypes}" />
+                            </p:selectOneMenu>
+                            <h:outputText value="Event  Date: " />
+                            <p:calendar maxdate="#{newReportBean.maxDate}" required="true" value="#{newReportBean.eventDate}" id="popupButtonCal" showOn="button" />
+                            <h:outputText value="Skip to last: " />
+                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="contact" title="Financials">
+                    <p:panel header="Event Financial Info">
+
+                        <h:messages errorClass="error"/>
+
+                        <h:panelGrid columns="2" columnClasses="label, value">
+                            <h:outputText value="Total Tithes: " />
+                            <p:inputText value="#{newReportBean.event.tithes}" />
+
+                            <h:outputText value="Total Offerings: " />
+                            <p:inputText value="#{newReportBean.event.offerings}" />
+
+                            <h:outputText value="Skip to last: " />
+                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+                <p:tab id="other" title="Other">
+                    <p:panel header="Event Other Info">
+
+                        <h:messages errorClass="error"/>
+
+                        <h:panelGrid columns="2" columnClasses="label, value">
+                            <h:outputText value="Attendance: " />
+                            <p:inputText value="#{newReportBean.event.attendance}" />
+
+                            <h:outputText value="Leader's comment: " />
+                            <p:inputTextarea rows="6" cols="33" value="#{newReportBean.event.comment}"/>
+                            <h:outputText value="Skip to last: " />
+                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+                <p:tab id="confirm" title="Confirm">
+                    <p:panel header="Confirmation">
+
+                        <h:panelGrid id="confirmation" columns="6">
+                            <h:outputText value="Event Type: " />
+                            <h:outputText styleClass="outputLabel"
+                                          value="#{newReportBean.event.eventType}" />
+
+                            <h:outputText value="Date: " />
+                            <h:outputText  styleClass="outputLabel"
+                                           value="#{newReportBean.eventDate}"/>
+
+                            <h:outputText value="Total tithes: " />
+                            <h:outputText styleClass="outputLabel"
+                                          value="#{newReportBean.event.tithes}" />>
+
+                            <h:outputText value="Total offerings: " />
+                            <h:outputText styleClass="outputLabel"
+                                          value="#{newReportBean.event.offerings}" />
+
+                            <h:outputText value="Attendance: " />
+                            <h:outputText styleClass="outputLabel"
+                                          value="#{newReportBean.event.attendance}" />
+
+                            <h:outputText value="Leader's Comment " />
+                            <h:outputText styleClass="outputLabel"
+                                          value="#{newReportBean.event.comment}"/>
+
+
+                            <h:outputText />
+                        </h:panelGrid>
+
+                        <p:commandButton value="Submit" update="growl"
+                                         actionListener="#{newReportBean.save}"/>
+
+                    </p:panel>
+                </p:tab>
+
+
+            </p:wizard>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

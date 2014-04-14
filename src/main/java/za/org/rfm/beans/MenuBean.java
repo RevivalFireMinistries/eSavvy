@@ -40,10 +40,10 @@ public class MenuBean {
         item2.setIcon("ui-icon-home");
         firstSubmenu.addElement(item2);
 
-        DefaultMenuItem item3 = new DefaultMenuItem("Add Attendance Info");
+        /*DefaultMenuItem item3 = new DefaultMenuItem("Add Attendance Info");
         item3.setUrl("/members/addAttendance.faces");
         item3.setIcon("ui-icon-home");
-        firstSubmenu.addElement(item3);
+        firstSubmenu.addElement(item3);*/
 
         model.addElement(firstSubmenu);
 
@@ -60,14 +60,14 @@ public class MenuBean {
         model.addElement(services);
         // submenu
         DefaultSubMenu smsSubmenu = new DefaultSubMenu("SMS");
-         item3 = new DefaultMenuItem("Send New");
+        DefaultMenuItem  item3 = new DefaultMenuItem("Send New");
         item3.setUrl("/sms/sendSMS.faces");
         item3.setIcon("ui-icon-home");
         smsSubmenu.addElement(item3);
-        DefaultMenuItem item4 = new DefaultMenuItem("View Sent");
+       /* DefaultMenuItem item4 = new DefaultMenuItem("View Sent");
         item4.setUrl("/members/viewMembers.faces");
         item4.setIcon("ui-icon-home");
-        smsSubmenu.addElement(item4);
+        smsSubmenu.addElement(item4);*/
         model.addElement(smsSubmenu);
         //Second submenu
         DefaultSubMenu secondSubmenu = new DefaultSubMenu("Tithes");

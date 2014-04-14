@@ -1,5 +1,6 @@
 package za.org.rfm.beans;
 
+import za.org.rfm.model.Assembly;
 import za.org.rfm.model.User;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.UserService;
@@ -10,7 +11,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 
@@ -25,6 +25,24 @@ public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String password;
     private String message, uname;
+    private User user;
+    private Assembly assembly;
+
+    public Assembly getAssembly() {
+        return assembly;
+    }
+
+    public void setAssembly(Assembly assembly) {
+        this.assembly = assembly;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @ManagedProperty(value="#{UserService}")
     UserService userService;
@@ -83,25 +101,17 @@ public class LoginBean implements Serializable {
                 HttpSession session = WebUtil.getSession();
                 session.setAttribute("username", uname);
                 User user = getUserService().getUser(uname);
-                System.out.println("---User assembly---"+user.getAssembly());
+                setUser(user);
+                setAssembly(user.getMember().getAssembly());
                 session.setAttribute("assembyid",user.getAssembly());
                 return "home";
             } else {
-
-                FacesContext.getCurrentInstance().addMessage(
-                        null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Invalid Login!",
-                                "Please Try Again!"));
-
-                // invalidate session, and redirect to other pages
-
-                //message = "Invalid Login. Please Try Again!";
+                Utils.addFacesMessage("Invalid login details!",FacesMessage.SEVERITY_ERROR);
                 return "login";
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Utils.addFacesMessage("System currently unavailable, Please try again later");
+            Utils.addFacesMessage("System currently unavailable, Please try again later",FacesMessage.SEVERITY_ERROR);
         }
         return "login";
     }
@@ -109,6 +119,7 @@ public class LoginBean implements Serializable {
     public String logout() {
         HttpSession session = WebUtil.getSession();
         session.invalidate();
+        Utils.addFacesMessage("Logout successful ",FacesMessage.SEVERITY_INFO);
         return "login";
     }
 }

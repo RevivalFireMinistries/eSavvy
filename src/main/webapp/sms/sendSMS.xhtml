@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/layoutComplex.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form prependId="false">
+            <p:growl id="growl" showDetail="true"/>
+
+            <h3>Send SMS</h3>
+            <p:panel header="Send SMS" footer="Visca el Barca!">
+               <h:form>
+                   <p:growl id="growl" sticky="true" showDetail="true"/>
+
+                   <p:wizard flowListener="#{smsBean.onFlowProcess}"  style="width:600px;" >
+
+                   <!--<p:tab id="personal" title="Recepients">
+
+                       <p:panel header="Select Receipients">
+
+                           <h:messages errorClass="error"/>
+
+                           <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+                               <h:outputText value="Assembly: " />
+                               <p:selectOneMenu value="#{smsBean.selectedAssembly}" effect="fade" converter="assemblyConverter">
+                                   <f:selectItem itemLabel="Select One" itemValue="" />
+                                   <f:selectItems value="#{smsBean.assemblyList}" var="assembly" itemLabel="#{assembly.name}" itemValue="#{assembly}"/>
+                               </p:selectOneMenu>
+
+                               <h:outputText value="Skip to last: " />
+                               <h:selectBooleanCheckbox value="#{smsBean.skip}" />
+                           </h:panelGrid>
+                       </p:panel>
+                   </p:tab>-->
+                       <p:tab id="sms" title="SMS">
+                           <p:panel header="SMS Details">
+
+                               <h:messages errorClass="error"/>
+
+                               <h:panelGrid columns="2" columnClasses="label, value">
+                                   <h3>Remaining Chars</h3>
+                                   <p:inputTextarea rows="8" cols="50" counter="counter" maxlength="150"
+                                                    counterTemplate="{0} characters remaining." autoResize="false" value="#{smsBean.sms}"/>
+                                   <h:outputText id="counter" />
+                                   <h:outputText value="Skip to last: " />
+                                   <h:selectBooleanCheckbox value="#{smsBean.skip}" />
+                               </h:panelGrid>
+                           </p:panel>
+                       </p:tab>
+                       <p:tab id="confirm" title="Confirm">
+                           <p:panel header="Confirmation">
+                               <h:outputText value="Assembly: " />
+                               <h:outputText styleClass="outputLabel"
+                                             value="#{smsBean.assembly.name}" />
+                               <h:panelGrid id="confirmation" columns="6">
+                                   <h:outputText value="SMS: " />
+                                   <h:outputText styleClass="outputLabel"
+                                                 value="#{smsBean.sms}" />
+
+
+
+
+
+                                   <h:outputText />
+                               </h:panelGrid>
+
+                               <p:commandButton value="Submit" update="growl"
+                                                action="#{smsBean.send}"  oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);"/>
+
+                           </p:panel>
+                       </p:tab>
+                   </p:wizard>
+               </h:form>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

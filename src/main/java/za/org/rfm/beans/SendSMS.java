@@ -11,6 +11,7 @@ import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -136,6 +137,6 @@ public class SendSMS {
         for(Member member: memberList){
           smsService.saveSMSLog(member.sendSMS(getSms(),true));
         }
-        Utils.addFacesMessage(memberList.size()+" smses were sent!");
+        Utils.addFacesMessage(memberList.size()+" smses were sent!", FacesMessage.SEVERITY_INFO);
     }
 }

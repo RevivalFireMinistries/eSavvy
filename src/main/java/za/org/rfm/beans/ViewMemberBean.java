@@ -2,15 +2,19 @@ package za.org.rfm.beans;
 
 import za.org.rfm.model.Member;
 import za.org.rfm.model.SMSLog;
+import za.org.rfm.model.Transaction;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SMSService;
+import za.org.rfm.service.TxnService;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +29,29 @@ public class ViewMemberBean {
     MemberService memberService;
     @ManagedProperty(value="#{SMSService}")
     SMSService smsService;
+    @ManagedProperty(value = "#{TxnService}")
+    TxnService txnService;
+
+    public TxnService getTxnService() {
+        return txnService;
+    }
+
+    public void setTxnService(TxnService txnService) {
+        this.txnService = txnService;
+    }
+
     String fullName;
     Tithe tithe;
+    List<Tithe> titheList = new ArrayList<Tithe>();
+
+    public List<Tithe> getTitheList() {
+
+        return titheList;
+    }
+
+    public void setTitheList(List<Tithe> titheList) {
+        this.titheList = titheList;
+    }
 
     public String getFullName() {
         return getMember().getFullName();
@@ -85,7 +110,7 @@ public class ViewMemberBean {
 
     public void saveMember(){
        memberService.saveMember(this.member);
-        Utils.addFacesMessage("Changes have been saved");
+        Utils.addFacesMessage("Changes have been saved",FacesMessage.SEVERITY_INFO);
     }
 
     @PostConstruct
@@ -94,12 +119,16 @@ public class ViewMemberBean {
         String memberid = facesContext.getExternalContext().getRequestParameterMap().get("memberid");
         setMember(memberService.getMemberById(Long.parseLong(memberid)));
         System.out.println("---the loaded member ----"+memberid);
+        List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(this.member,null,null);
+        for(Transaction txn: transactions){
+            titheList.add(new Tithe(this.member,txn.getAmount(),txn.getTxndate()));
+        }
     }
 
     public void sendSMS(){
         SMSLog smsLog = getMember().sendSMS(getSms(), false);
         smsService.saveSMSLog(smsLog);
         System.out.println("---sms has been sent");
-        Utils.addFacesMessage("SMS Status "+smsLog.getStatus());
+        Utils.addFacesMessage("SMS Status "+smsLog.getStatus(), FacesMessage.SEVERITY_INFO);
     }
 }

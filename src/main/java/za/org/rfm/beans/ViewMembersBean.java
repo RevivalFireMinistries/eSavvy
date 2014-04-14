@@ -9,6 +9,7 @@ import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -116,7 +117,7 @@ public class ViewMembersBean implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
         } catch (IOException e) {
             e.printStackTrace();
-            Utils.addFacesMessage("Error opening member view :"+e.getMessage());
+            Utils.addFacesMessage("Error opening member view :"+e.getMessage(), FacesMessage.SEVERITY_ERROR);
         }
     }
 }

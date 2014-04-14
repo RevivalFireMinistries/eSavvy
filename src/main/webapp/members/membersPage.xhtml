@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+    <title>eSavvy - ChurchManager</title>
+</h:head>
+<h:body>
+    <ui:include src="../menubar.xhtml" />
+    <h:form>
+        <p:dataTable var="member" value="#{membersBean.members}" rowKey="#{member.name}" paginator="true" rows="10"
+                     selection="#{membersBean.selectedMember}" selectionMode="single" filteredValue="#{membersBean.filteredMembers}" id="membersTable">
+
+            <p:ajax event="rowSelect" update=":form:display" oncomplete="memberDialog.show()" />
+
+            <f:facet name="header">
+                List of Members
+            </f:facet>
+
+            <p:column headerText="First Name" sortBy="firstName" filterBy="firstName" id="firstname">
+                #{member.firstName}
+            </p:column>
+
+            <p:column headerText="Last Name" sortBy="lastname" filterBy="lastname" id="lastname">
+                #{member.lastName}
+            </p:column>
+
+            <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
+                #{member.phone}
+            </p:column>
+
+            <p:column headerText="Email" sortBy="email" filterBy="email" id="email">
+                #{member.email}"
+            </p:column>
+
+        </p:dataTable>
+
+        <p:dialog header="Member Detail" widgetVar="memberDialog" resizable="false"
+                  width="200" showEffect="explode" hideEffect="explode">
+
+            <h:panelGrid id="display" columns="2" cellpadding="4">
+
+                <f:facet name="header">
+                    <p:graphicImage value="/images/cars/#{tableBean.selectedEvent.manufacturer}.jpg"/>
+                </f:facet>
+
+                <h:outputText value="First Name:" />
+                <h:outputText value="#{membersBean.selectedMember.firstName}" id="firstName"/>
+
+                <h:outputText value="Last Name:" />
+                <h:outputText value="#{membersBean.selectedMember.lastName}" id="lastName"/>
+
+                <h:outputText value="Phone:" />
+                <h:outputText value="#{membersBean.selectedMember.phone}" id="phone"/>
+
+                <h:outputText value="Email:" />
+                <h:outputText value="#{membersBean.selectedMember.email}" id="email"/>
+            </h:panelGrid>
+        </p:dialog>
+
+    </h:form>
+</h:body>
+</html>
