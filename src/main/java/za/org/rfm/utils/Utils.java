@@ -1,6 +1,8 @@
 package za.org.rfm.utils;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
 import za.org.rfm.beans.Tithe;
 
 import javax.faces.application.FacesMessage;
@@ -68,6 +70,15 @@ public class Utils {
     }
     public static String getCountryFriendlyName(String code){
         return getCountriesMap().get(code);
+    }
+    private static LocalDate  calcNextDay(LocalDate d, int weekday) {
+        return (d.getDayOfWeek() > weekday)?d.withDayOfWeek(weekday):d.minusWeeks(1).withDayOfWeek(weekday);
+    }
+
+
+    public static Date calcLastSunday(Date date) {
+        LocalDate lastSunday = calcNextDay(LocalDate.fromDateFields(date), DateTimeConstants.SUNDAY);
+        return lastSunday.toDate();
     }
     public static boolean sendSMS(String phone, String message,boolean test){
         if(test)
@@ -162,4 +173,5 @@ public class Utils {
        }
         return false;
     }
+
 }

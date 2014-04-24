@@ -17,6 +17,8 @@ public class Constants {
     public static final String STATUS_FAILED = "Failed";
     public static final String STATUS_ALL = "ALL";
 
+    public static final double APOSTOLIC_CONTRIBUTION_PERCENTAGE = 0.35;
+
     //severity of message
     public static final String FACES_MSG_SEVERITY_ERROR = "ERROR";
     public static final String FACES_MSG_SEVERITY_INFO = "INFO";

@@ -25,6 +25,49 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
     <context:component-scan base-package="za.org.rfm"/>
     <context:annotation-config/>
     <context:spring-configured/>
+    <!-- THYMELEAF: Template Resolver for email templates -->
+    <bean id="emailTemplateResolver" class="org.thymeleaf.spring3.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/" />
+        <property name="suffix" value=".html" />
+        <property name="characterEncoding" value="UTF-8" />
+        <property name="order" value="1" />
+    </bean>
+    <!-- THYMELEAF: Template Engine (Spring3-specific version) -->
+    <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+        <property name="templateResolvers">
+            <set>
+                <ref bean="emailTemplateResolver" />
+            </set>
+        </property>
+    </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="25"/>
+        <property name="username" value="russzw@gmail.com"/>
+        <property name="password" value="password85"/>
+        <property name="javaMailProperties">
+            <props>
+                <!-- Use SMTP transport protocol -->
+                <prop key="mail.transport.protocol">smtp</prop>
+                <!-- Use SMTP-AUTH to authenticate to SMTP server -->
+                <prop key="mail.smtp.auth">true</prop>
+                <!-- Use TLS to encrypt communication with SMTP server -->
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.debug">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="alertMailMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value>russzw@gmail.com</value>
+        </property>
+        <property name="to">
+            <value>rmupfumira@gmail.com</value>
+        </property>
+        <property name="subject" value="Alert - Exception occurred. Please investigate"/>
+    </bean>
     <!-- Data Source Declaration -->
     <bean id="DataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -33,6 +76,7 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
         <property name="password" value="password85" />
 
     </bean>
+
 
     <!-- Session Factory Declaration -->
     <bean id="SessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

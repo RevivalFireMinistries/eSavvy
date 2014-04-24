@@ -7,6 +7,7 @@ import za.org.rfm.dao.EventDAO;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,9 @@ public class EventService {
     }
     public List<Event> getEventsByAssemblyAndType(long assemblyid,String type) {
         return eventDAO.getEventsByAssemblyAndType(assemblyid,type);
+    }
+    public List<Event> getEventsByDateAndType(String type, Date date){
+        return  eventDAO.getEventsByDateAndType(type,date);
     }
     public Event getEventById(long eventid) {
         return eventDAO.getEventById(eventid);

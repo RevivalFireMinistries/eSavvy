@@ -1,7 +1,10 @@
 package za.org.rfm.beans;
 
+import org.apache.log4j.Logger;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Member;
 import za.org.rfm.model.User;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Utils;
@@ -13,6 +16,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -22,6 +26,7 @@ import java.io.Serializable;
 @ManagedBean(name = "loginBean")
 @SessionScoped
 public class LoginBean implements Serializable {
+    static Logger logger = Logger.getLogger(LoginBean.class);
     private static final long serialVersionUID = 1L;
     private String password;
     private String message, uname;
@@ -48,6 +53,8 @@ public class LoginBean implements Serializable {
     UserService userService;
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;
+    @ManagedProperty(value="#{mailService}")
+    EmailService emailService;
 
     public MemberService getMemberService() {
         return memberService;
@@ -91,6 +98,14 @@ public class LoginBean implements Serializable {
         this.uname = uname;
     }
 
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     public String loginProject() {
 
         try {
@@ -99,17 +114,23 @@ public class LoginBean implements Serializable {
             if (result) {
                 // get Http Session and store username
                 HttpSession session = WebUtil.getSession();
+
                 session.setAttribute("username", uname);
                 User user = getUserService().getUser(uname);
                 setUser(user);
                 setAssembly(user.getMember().getAssembly());
                 session.setAttribute("assembyid",user.getAssembly());
+                List<Member> members = memberService.getMembersByAssembly(WebUtil.getUserAssemblyId());
+                //sendEmail(members);
+                logger.info("Login successful for user : "+user.getFullname());
                 return "home";
             } else {
                 Utils.addFacesMessage("Invalid login details!",FacesMessage.SEVERITY_ERROR);
+                logger.error("Failed login attempt : "+uname);
                 return "login";
             }
         } catch (Exception e) {
+            logger.error("Login error : "+e.getMessage());
             e.printStackTrace();
             Utils.addFacesMessage("System currently unavailable, Please try again later",FacesMessage.SEVERITY_ERROR);
         }
@@ -118,8 +139,17 @@ public class LoginBean implements Serializable {
 
     public String logout() {
         HttpSession session = WebUtil.getSession();
+        String user = WebUtil.getUserName();
         session.invalidate();
         Utils.addFacesMessage("Logout successful ",FacesMessage.SEVERITY_INFO);
-        return "login";
+        logger.info("Logout user : "+user);
+        return "/login.xhtml?faces-redirect=true";
+    }
+    public void sendEmail(List<Member> members){
+        System.out.println("Now sending an email....");
+        emailService.sendMail("russzw@gmail.com", "russel@rfm.org.za", "Testing123", "Testing only \n\n Hello Spring Email Sender",members);
+
+        emailService.sendAlertMail("Exception occurred");
+        System.out.println("Email sent!");
     }
 }

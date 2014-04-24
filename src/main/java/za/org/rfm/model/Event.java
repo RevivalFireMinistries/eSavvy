@@ -3,6 +3,7 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
@@ -60,6 +61,15 @@ public class Event extends ChurchManagerEntity {
 
     public double getTotalIncome(){
         return this.tithes + this.offerings;
+    }
+    public double getApostolic(){
+        return getTotalIncome()* Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
+    }
+    public String getTotalIncomeFormatted(){
+        return Utils.moneyFormatter(this.getTotalIncome());
+    }
+    public String getApostolicFormatted(){
+        return Utils.moneyFormatter(this.getApostolic());
     }
 
     public double getPercentageAbsent(){

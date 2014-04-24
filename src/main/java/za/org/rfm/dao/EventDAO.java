@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +32,13 @@ public class EventDAO {
         sessionFactory.getCurrentSession().saveOrUpdate(event);
     }
 
-
+    public List<Event> getEventsByDateAndType(String type,Date date){
+        Query query = sessionFactory.getCurrentSession().createQuery("from Event where eventdate =:eventdate and eventtype =:eventtype");
+        query.setDate("eventdate",date);
+        query.setString("eventtype",type);
+        List<Event> eventList = (List<Event>)query.list();
+        return eventList;
+    }
 
 
     public List<Event> getEventsByAssembly(long assemblyid) {

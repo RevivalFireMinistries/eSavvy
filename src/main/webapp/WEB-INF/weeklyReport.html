@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">  </meta>
+    <title>
+        Modern
+    </title>
+    <style type="text/css">
+        a:hover { text-decoration: none !important; }
+        .header h1 {color: #47c8db !important; font: bold 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;}
+        .header p {color: #c6c6c6; font: normal 12px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 18px;}
+
+        .content h2 {color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;  }
+        .content p {color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif;}
+        .content a {color: #0eb6ce; text-decoration: none;}
+        .footer p {font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;}
+        .footer a {color: #0eb6ce; text-decoration: none;}
+
+        table
+        {
+            font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+            font-size: 12px;
+            margin: 45px;
+            width: 480px;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        th
+        {
+            font-size: 13px;
+            font-weight: normal;
+            padding: 8px;
+            background: #b9c9fe;
+            border-top: 4px solid #aabcfe;
+            border-bottom: 1px solid #fff;
+            color: #039;
+        }
+        td
+        {
+            padding: 8px;
+            background: #e8edff;
+            border-bottom: 1px solid #fff;
+            color: #669;
+            border-top: 1px solid transparent;
+        }
+        tr:hover td
+        {
+            background: #d0dafd;
+            color: #339;
+        }
+
+        .CSS_Table_Example {
+            margin:0px;padding:0px;
+            width:100%;
+            box-shadow: 10px 10px 5px #888888;
+            border:1px solid #000000;
+            -moz-border-radius-bottomleft:9px;
+            -webkit-border-bottom-left-radius:9px;
+            border-bottom-left-radius:9px;
+            -moz-border-radius-bottomright:9px;
+            -webkit-border-bottom-right-radius:9px;
+            border-bottom-right-radius:9px;
+            -moz-border-radius-topright:9px;
+            -webkit-border-top-right-radius:9px;
+            border-top-right-radius:9px;
+            -moz-border-radius-topleft:9px;
+            -webkit-border-top-left-radius:9px;
+            border-top-left-radius:9px;
+        }.CSS_Table_Example table{
+             width:100%;
+             height:100%;
+             margin:0px;padding:0px;
+         }.CSS_Table_Example tr:last-child td:last-child {
+              -moz-border-radius-bottomright:9px;
+              -webkit-border-bottom-right-radius:9px;
+              border-bottom-right-radius:9px;
+          }.CSS_Table_Example table tr:first-child td:first-child {
+               -moz-border-radius-topleft:9px;
+               -webkit-border-top-left-radius:9px;
+               border-top-left-radius:9px;
+           }.CSS_Table_Example table tr:first-child td:last-child {
+                -moz-border-radius-topright:9px;
+                -webkit-border-top-right-radius:9px;
+                border-top-right-radius:9px;
+            }.CSS_Table_Example tr:last-child td:first-child{
+                 -moz-border-radius-bottomleft:9px;
+                 -webkit-border-bottom-left-radius:9px;
+                 border-bottom-left-radius:9px;
+             }.CSS_Table_Example tr:hover td{
+                  background-color:#82c0ff;
+                  background:-o-linear-gradient(bottom, #82c0ff 5%, #56aaff 100%);	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #82c0ff), color-stop(1, #56aaff) );
+                  background:-moz-linear-gradient( center top, #82c0ff 5%, #56aaff 100% );
+                  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#82c0ff", endColorstr="#56aaff");	background: -o-linear-gradient(top,#82c0ff,56aaff);
+              }.CSS_Table_Example tr:first-child td{
+                   background:-o-linear-gradient(bottom, #0069d3 5%, #007fff 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0069d3), color-stop(1, #007fff) );
+                   background:-moz-linear-gradient( center top, #0069d3 5%, #007fff 100% );
+                   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#0069d3", endColorstr="#007fff");	background: -o-linear-gradient(top,#0069d3,007fff);
+                   background-color:#0069d3;
+                   border:0px solid #000000;
+                   text-align:center;
+                   border-width:0px 0px 1px 1px;
+                   font-size:18px;
+                   font-family:Comic Sans MS;
+                   font-weight:bold;
+                   color:#ffffff;
+               }.CSSTableGenerator tr:first-child:hover td{
+                    background:-o-linear-gradient(bottom, #0069d3 5%, #007fff 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0069d3), color-stop(1, #007fff) );
+                    background:-moz-linear-gradient( center top, #0069d3 5%, #007fff 100% );
+                    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#0069d3", endColorstr="#007fff");	background: -o-linear-gradient(top,#0069d3,007fff);
+                    background-color:#0069d3;
+                }.CSS_Table_Example tr:first-child td:first-child{
+                     border-width:0px 0px 1px 0px;
+                 }.CSS_Table_Example tr:first-child td:last-child{
+                      border-width:0px 0px 1px 1px;
+                  }.CSS_Table_Example td{
+                       background:-o-linear-gradient(bottom, #56aaff 5%, #82c0ff 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #56aaff), color-stop(1, #82c0ff) );
+                       background:-moz-linear-gradient( center top, #56aaff 5%, #82c0ff 100% );
+                       filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#56aaff", endColorstr="#82c0ff");	background: -o-linear-gradient(top,#56aaff,82c0ff);
+                       background-color:#56aaff;
+                       border:1px solid #000000;
+                       border-width:0px 1px 1px 0px;
+                       text-align:left;
+                       padding:7px;
+                       font-size:12px;
+                       font-family:Comic Sans MS;
+                       font-weight:bold;
+                       color:#000000;
+                   }.CSS_Table_Example tr:last-child td{
+                        border-width:0px 1px 0px 0px;
+                    }.CSS_Table_Example tr td:last-child{
+                         border-width:0px 0px 1px 0px;
+                     }.CSS_Table_Example tr:last-child td:last-child{
+                          border-width:0px 0px 0px 0px;
+                      }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background: #4b4b4b;" bgcolor="#4b4b4b">
+<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="padding: 35px 0; background: #4b4b4b url('images/bg_email.png');">
+    <tr>
+        <td align="center" style="margin: 0; padding: 0;" >
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600" style="font-family: Helvetica, Arial, sans-serif; background:#2a2a2a;" class="header">
+                <tr>
+                    <td width="580" align="left" style="padding: 18px 0 10px;">
+                        <h1 style="color: #47c8db; font: bold 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;">eSavvy</h1>
+                        <p style="color: #c6c6c6; font: normal 12px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 18px;">excellent church management!</p>
+                    </td>
+                </tr>
+            </table><!-- header-->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600" style="font-family: Helvetica, Arial, sans-serif; background: #fff;" bgcolor="#fff">
+
+                <tr>
+                    <td width="600" valign="top" align="left" style="font-family: Helvetica, Arial, sans-serif; padding: 20px 0 0;" class="content">
+                        <table cellpadding="0" cellspacing="0" border="0"  style="color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;" width="600">
+                            <tr>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                                <td style="padding: 0;  font-family: Helvetica, Arial, sans-serif; background: url('images/bg_date_wide.png') no-repeat left top; height:20px; line-height: 20px;"  align="center" width="558" height="20">
+                                    <h3 style="color:#666; font-weight: bold; text-transform: uppercase; margin: 0; padding: 0; line-height: 10px; font-size: 10px;"></h3>
+                                </td>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                            </tr>
+                            <tr>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                                <td style="padding: 20px 0 0;" align="left">
+                                    <h2 style="color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; ">Welcome!</h2>
+                                </td>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                            </tr>
+                            <tr>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                                <td style="padding: 15px 0 15px;"  valign="top">
+
+                                    <table border="1" style="padding: 0;" cellpadding="0" cellspacing="0" >
+                                        <tr th:border="1">
+                                            <th>Assembly</th>
+                                            <th>Tithe</th>
+                                            <th>Offerings</th>
+                                            <th>Total Income</th>
+                                            <th>Apostolic Contribution</th>
+                                            <th>Attendance</th>
+                                            <th>Comments</th>
+                                        </tr>
+                                        <tr th:each="e : ${events}" th:border="1">
+                                            <td th:text="${e.assembly.name}">Assembly</td>
+                                            <td th:text="${e.tithes}">Tithes</td>
+                                            <td th:text="${e.offerings}">Offerings</td>
+                                            <td th:text="${e.totalIncomeFormatted}">Total Income</td>
+                                            <td th:text="${e.apostolicFormatted}">Apostolic Margin</td>
+                                            <td th:text="${e.attendance}">Attendance</td>
+                                            <td th:text="${e.comment}">Comment</td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                                <td width="21" style="font-size: 1px; line-height: 1px;"></td>
+                            </tr>
+                        </table>
+                    </td>
+
+                </tr>
+                     <tr>
+                         <td colspan="2"  style="padding: 15px 0 15px;"  valign="top">
+                             <table border="1" cellpadding="0" cellspacing="0"  style="color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;" width="600">
+                             <tr>
+                                 <th colspan="5">
+                                     Overall Statistics
+
+                                 </th>
+                             </tr>
+                             <tr>
+                                 <td >
+                                    Total Income
+                                 </td>
+                                 <td>
+                                     Total Offerings
+                                 </td>
+                                 <td >
+                                     Total Tithes
+                                 </td>
+                                 <td>
+                                     Total Apostolic Margin
+                                 </td>
+                                 <td>
+                                     Total Attendance
+                                 </td>
+                             </tr>
+                             <tr>
+                                 <td  th:text="${totalIncome}" >
+                                     Total Tithes
+                                 </td>
+                                 <td th:text="${totalOfferings}">
+                                     Total Offerings
+                                 </td>
+                                 <td th:text="${totalTithes}">
+                                     Total Tithes
+                                 </td>
+                                 <td th:text="${totalApostolic}">
+                                     Total Apostolic Margin
+                                 </td>
+                                 <td th:text="${totalAttendance}">
+                                     Total Attendance
+                                 </td>
+                             </tr>
+
+                         </table>
+                         </td>
+                     </tr>
+            </table><!-- body -->
+
+
+
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600" style="font-family: Helvetica, Arial, sans-serif; line-height: 10px;" class="footer">
+                <tr>
+                    <td align="center" style="padding: 5px 0 10px; font-size: 11px; color:#7d7a7a; margin: 0; line-height: 1.2;font-family: Helvetica, Arial, sans-serif;" valign="top">
+                        <br/><p style="font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;">Where everybody is somebody through Christ Jesus.</p>
+
+                    </td>
+                </tr>
+            </table><!-- footer-->
+        </td>
+
+    </tr>
+</table>
+</body>
+</html>
