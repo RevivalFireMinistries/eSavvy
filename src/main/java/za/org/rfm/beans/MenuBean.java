@@ -77,7 +77,7 @@ public class MenuBean {
         item.setIcon("ui-icon-home");
         secondSubmenu.addElement(item);
 
-        item = new DefaultMenuItem("Report");
+    /*    item = new DefaultMenuItem("Report");
         item.setIcon("ui-icon-close");
         item.setCommand("#{menuBean.delete}");
         item.setAjax(false);
@@ -86,7 +86,7 @@ public class MenuBean {
         item = new DefaultMenuItem("Redirect");
         item.setIcon("ui-icon-search");
         item.setCommand("#{menuBean.redirect}");
-        secondSubmenu.addElement(item);
+        secondSubmenu.addElement(item);*/
 
         model.addElement(secondSubmenu);
 
