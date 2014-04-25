@@ -2,7 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                template="#{request.contextPath}/layoutComplex.xhtml"
+                template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
         <h:form id="form">
@@ -66,10 +66,10 @@
             </h:panelGrid>
             </p:fieldset>
             <p:dialog id="multiDialog" header="Report Summary" widgetVar="reportSummary"
-                      height="500" width="500" showEffect="fade" hideEffect="explode">
+                      height="600" width="700" showEffect="fade" hideEffect="explode">
 
 
-                    <p:panelGrid columns="2">
+                    <p:panelGrid columns="2" >
                         <f:facet name="header">
                             <p:messages id="msgs"/>
                         </f:facet>
@@ -90,6 +90,28 @@
 
                         </f:facet>
                     </p:panelGrid>
+                        <h:form>
+
+                        <p:dataTable var="m" value="#{attendance.assemblyFollowUpList}" id="followup">
+
+                            <f:facet name="header">
+                                Absent Members
+                            </f:facet>
+                        <p:column headerText="Full Name">
+                            <h:outputText value="#{m.member.fullName}" />
+                        </p:column>
+                            <p:column headerText="Phone">
+                                <h:outputText value="#{m.member.phone}" />
+                            </p:column>
+                            <p:column headerText="Date Last @ Church">
+                                <h:outputText value="#{m.dateCreated}" />
+                            </p:column>
+                        </p:dataTable>
+                            <h:commandButton value="Print Report" type="button" icon="ui-icon-print">
+                                <p:printer target="followup" />
+                            </h:commandButton>
+                        </h:form>
+
 
 
             </p:dialog>

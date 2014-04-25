@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.EventDAO;
+import za.org.rfm.model.AssemblyFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 
@@ -42,4 +43,13 @@ public class EventService {
     public void saveEventLog(EventLog eventLog) {
          eventDAO.saveEventLog(eventLog);
     }
+    @Transactional(readOnly = false)
+    public void saveAssemblyFollowUp(AssemblyFollowUp assemblyFollowUp) {
+        eventDAO.saveAssemblyFollowUp(assemblyFollowUp);
+     }
+    public void generateFollowUpReport(Event event){
+      //first get each member's attribute
+    }
+
+
 }

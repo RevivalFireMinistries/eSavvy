@@ -1,11 +1,9 @@
 package za.org.rfm.beans.services;
 
-import za.org.rfm.model.Event;
-import za.org.rfm.model.EventLog;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.MemberDataModel;
+import za.org.rfm.model.*;
 import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -15,6 +13,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +30,15 @@ public class AttendanceBean {
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;
     Event event;
+    List<AssemblyFollowUp> assemblyFollowUpList;
+
+    public List<AssemblyFollowUp> getAssemblyFollowUpList() {
+        return assemblyFollowUpList;
+    }
+
+    public void setAssemblyFollowUpList(List<AssemblyFollowUp> assemblyFollowUpList) {
+        this.assemblyFollowUpList = assemblyFollowUpList;
+    }
 
     public Event getEvent() {
         return event;
@@ -103,6 +112,33 @@ public class AttendanceBean {
         event.setAttendance(selectedMembers.size());
         event.setRegister(true);
         eventService.saveEvent(event);
+        generateFollowUpReport(selectedMembers,event);
         Utils.addFacesMessage("Event attendance captured successfully", FacesMessage.SEVERITY_INFO);
+    }
+
+    private void generateFollowUpReport(List<Member> presentMembers,Event event){
+        //first lets get all members for this assembly
+        List<Member> members = memberService.getMembersByAssembly(event.getAssembly().getAssemblyid());
+        List<Member> absentList = new ArrayList<Member>();
+        if(!members.isEmpty()){
+            //now check who didn't come
+            for(Member member : members){
+                if(!presentMembers.contains(member)){
+                    absentList.add(member);
+                }
+            }
+        }
+        if(!absentList.isEmpty()){
+         List<AssemblyFollowUp> followUps = new ArrayList<AssemblyFollowUp>();
+        //now we know who didn't come - so lets create followup objects
+            AssemblyFollowUp assemblyFollowUp = null;
+        for(Member member: absentList){
+             assemblyFollowUp = new AssemblyFollowUp(member, Constants.STATUS_ACTIVE,new Date());
+            followUps.add(assemblyFollowUp);
+            eventService.saveAssemblyFollowUp(assemblyFollowUp);
+        }
+            setAssemblyFollowUpList(followUps);
+        }//else simply means everyone came...glory! :-)
+
     }
 }

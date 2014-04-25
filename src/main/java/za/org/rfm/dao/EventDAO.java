@@ -4,6 +4,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import za.org.rfm.model.AssemblyFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 
@@ -69,4 +70,8 @@ public class EventDAO {
     public void saveEventLog(EventLog eventLog) {
         getSessionFactory().getCurrentSession().saveOrUpdate(eventLog);
     }
+    public void saveAssemblyFollowUp(AssemblyFollowUp assemblyFollowUp) {
+          getSessionFactory().getCurrentSession().saveOrUpdate(assemblyFollowUp);
+    }
+
 }

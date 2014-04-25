@@ -96,6 +96,7 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
                 <value>za.org.rfm.model.Transaction</value>
                 <value>za.org.rfm.model.Event</value>
                 <value>za.org.rfm.model.EventLog</value>
+                <value>za.org.rfm.model.AssemblyFollowUp</value>
             </list>
         </property>
         <property name="hibernateProperties">
