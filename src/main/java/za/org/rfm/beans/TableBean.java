@@ -117,7 +117,7 @@ public class TableBean {
         }
         midweekServices.setLabel("Midweek Services");
         categoryModel.addSeries(sundayServices);
-        categoryModel.addSeries(midweekServices);
+        //categoryModel.addSeries(midweekServices);
     }
 
     public Event getSelectedEvent() {
