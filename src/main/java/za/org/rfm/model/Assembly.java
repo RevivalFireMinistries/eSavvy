@@ -29,7 +29,7 @@ public class Assembly extends ChurchManagerEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
     private List<Event> events;
     private int targetAttendance;
-
+    private int membersRegistered;
     @Override
     public boolean equals(Object o) {
         System.out.println("---now in equals----");
@@ -52,5 +52,7 @@ public class Assembly extends ChurchManagerEntity {
         return assemblyid.hashCode();
     }
 
-
+   public int getTotalRegistered(){
+       return  members.size();
+   }
 }

@@ -113,10 +113,9 @@ public class NewReportBean {
 
     public void save(){
         getEvent().setEventDate(new Timestamp(getEventDate().getTime()));
-
-        System.out.println("---the asbly id------"+WebUtil.getUserAssemblyId());
         Assembly assembly =  assemblyService.getAssemblyById(WebUtil.getUserAssemblyId());
         getEvent().setAssembly(assembly);
+        getEvent().setTotalRegistered(assembly.getTotalRegistered());
        eventService.saveEvent(getEvent());
         Utils.addFacesMessage("Event captured successfully", FacesMessage.SEVERITY_INFO);
     }

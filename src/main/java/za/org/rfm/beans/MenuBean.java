@@ -23,7 +23,7 @@ public class MenuBean {
     public MenuBean() {
         model = new DefaultMenuModel();
         DefaultSubMenu home = new DefaultSubMenu("Home");
-        DefaultMenuItem itemhome = new DefaultMenuItem("Savvy Dashboard");
+        DefaultMenuItem itemhome = new DefaultMenuItem("Dashboard");
         itemhome.setUrl("/home.faces");
         itemhome.setIcon("ui-icon-home");
         home.addElement(itemhome);

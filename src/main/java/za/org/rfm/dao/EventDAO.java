@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import za.org.rfm.model.AssemblyFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
+import za.org.rfm.utils.DateRange;
 
 import java.util.Date;
 import java.util.List;
@@ -49,10 +50,12 @@ public class EventDAO {
         return eventList;
     }
 
-    public List<Event> getEventsByAssemblyAndType(long assemblyid,String eventtype) {
-        Query query = sessionFactory.getCurrentSession().createQuery("from Event where assembly = :assemblyid and eventtype = :eventtype order by eventdate asc");
+    public List<Event> getEventsByAssemblyAndTypeAndDate(long assemblyid,String eventtype,DateRange dateRange) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Event where assembly = :assemblyid and eventtype = :eventtype and eventdate between :from and :to order by eventdate asc");
         query.setLong("assemblyid",assemblyid);
         query.setString("eventtype",eventtype);
+        query.setDate("from",dateRange.getStartDate());
+        query.setDate("to",dateRange.getEndDate());
         List<Event> eventList = (List<Event>)query.list();
         return eventList;
     }

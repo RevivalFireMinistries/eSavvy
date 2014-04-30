@@ -150,6 +150,13 @@ public class Utils {
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
     }
+    public static double mean(double[] m) {
+        double sum = 0;
+        for (int i = 0; i < m.length; i++) {
+            sum += m[i];
+        }
+        return sum / m.length;
+    }
     public static String[] getMemberTypes(){
         return new String[]{Constants.MEMBER_TYPE_GUEST,Constants.MEMBER_TYPE_FULL_TIME};
 

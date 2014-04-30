@@ -38,6 +38,7 @@ public class AssemblyDAO {
         query.setLong("id",l);
         Assembly assembly = (Assembly)query.list().get(0);
         System.out.println("----got an assembly ---"+assembly.name);
+        assembly.setMembersRegistered(assembly.getTotalRegistered());
         return assembly;
     }
 }
