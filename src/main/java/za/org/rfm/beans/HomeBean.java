@@ -39,6 +39,22 @@ public class HomeBean {
         private String currentMonth;
         private int lastAttendance;
         private double percentageOfAttendance;
+
+    public String getApostolic() {
+        return Utils.moneyFormatter(apostolic);
+    }
+
+    public void setApostolic(List<Event> events) {
+        double sum = 0.0;
+        for(Event event1: events){
+            sum += event1.getTotalIncome();
+            System.out.println("this event income "+event1.getTotalIncome());
+        }
+        System.out.println("sum  : "+sum);
+        this.apostolic = sum*Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
+    }
+
+    private double apostolic;
         private int icu;
         private double totalIncome;
         private Assembly assembly;
@@ -186,7 +202,7 @@ public class HomeBean {
             setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
             DateRange dateRange = initializeDateRange();
             System.out.println("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
-            events = eventService.getEventsByAssemblyAndType(Constants.SERVICE_TYPE_SUNDAY,WebUtil.getUserAssemblyId(),4);
+            events = eventService.getEventsByAssemblyAndType(Constants.SERVICE_TYPE_SUNDAY, WebUtil.getUserAssemblyId(), 4);
             System.out.println("---num of events retrieved---"+events.size());
             //setEvents(events);
             lazyModel = new LazyEventDataModel(events);
@@ -194,7 +210,7 @@ public class HomeBean {
             setCurrentMonth(new SimpleDateFormat("MMMM").format(new Date()));
             setAvgAttendance(getEvents());
             setTotalIncome(getEvents());
-
+            setApostolic(getEvents());
 
         }
 
