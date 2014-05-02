@@ -48,6 +48,9 @@ public class EventService {
     public void saveAssemblyFollowUp(AssemblyFollowUp assemblyFollowUp) {
         eventDAO.saveAssemblyFollowUp(assemblyFollowUp);
      }
+    public List<Event> getEventsByAssemblyAndType(String type,long assemblyid,int limit){
+        return  eventDAO.getEventsByAssemblyAndType(type,assemblyid,limit);
+    }
     public void generateFollowUpReport(Event event){
       //first get each member's attribute
     }

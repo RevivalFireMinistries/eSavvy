@@ -15,6 +15,14 @@ public class DateRange {
         this.endDate = enddate;
     }
 
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     @Override
     public String toString() {
         return "DateRange{" +

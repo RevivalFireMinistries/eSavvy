@@ -114,13 +114,11 @@ public class EnterTitheBean {
 
     public List<Member> completeMember(String query){
         List<Member> suggestions = new ArrayList<Member>();
-        System.out.println("---the members list size---"+memberList.size());
         for(Member member: memberList){
             if(member.getFirstName().toLowerCase().startsWith(query.toLowerCase())){
                 suggestions.add(member);
             }
         }
-        System.out.println("----the suggestions----"+suggestions.size());
         return suggestions;
     }
 

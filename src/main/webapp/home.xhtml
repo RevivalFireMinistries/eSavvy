@@ -10,8 +10,8 @@
             <p:growl id="growl" showDetail="true" />
             <p:panelGrid columns="1">
 
-                <p:row>
-                    <p:column><p:lineChart  id="category" value="#{tableBean.categoryModel}" legendPosition="e"
+               <p:row>
+                    <p:column><p:lineChart  id="category" value="#{homeBean.categoryModel}" legendPosition="e"
                                                        title="Last 4 Weeks Sunday Service Attendance Trends" minY="0" maxY="200" style="height:250px;width: 800px; margin-top:20px; font-weight: bolder"/>
                     </p:column>
                 </p:row>
@@ -20,63 +20,28 @@
 
                         <p:ajax event="reorder" listener="#{dashboardBean.handleReorder}" update="growl" />
 
-                        <p:panel id="sports" header="Average Attendance for #{tableBean.currentMonth}">
-                            <h:outputText value="#{tableBean.avgAttendance}" />
+                        <p:panel id="sports" header="Average Attendance for #{homeBean.currentMonth}">
+                            <h:outputText value="#{homeBean.avgAttendance}" />
                         </p:panel>
 
                         <p:panel id="finance" header="Members in ICU">
-                            <h:outputText value="#{tableBean.icu}" />
+                            <h:outputText value="#{homeBean.icu}" />
                         </p:panel>
 
-                        <p:panel id="lifestyle" header="Target for #{tableBean.currentMonth}">
-                            <h:outputText value="#{tableBean.assembly.targetAttendance}"  />
+                        <p:panel id="lifestyle" header="Target for #{homeBean.currentMonth}">
+                            <h:outputText value="#{homeBean.assembly.targetAttendance}"  />
                         </p:panel>
 
-                        <p:panel id="weather" header="Total income for #{tableBean.currentMonth}">
-                            <h:outputText value="#{tableBean.totalIncome}" />
+                        <p:panel id="weather" header="Total income for #{homeBean.currentMonth}">
+                            <h:outputText value="#{homeBean.totalIncome}" />
                         </p:panel>
 
                         <p:panel id="politics" header="Tithers (%)">
-                            <h:outputText value="#{tableBean.percentageOfTithers}" />
+                            <h:outputText value="#{homeBean.percentageOfTithers}" />
                         </p:panel>
                     </p:dashboard>  </p:column>
 
                 </p:row>
-                  <p:row>
-                      <p:column>
-                          <p:dataTable  style="width:850px;" var="member" value="#{viewMembersBean.members}" rowKey="#{member.id}" paginator="true" rows="10"
-                                        widgetVar="membersTable"     selection="#{viewMembersBean.selectedMember}" selectionMode="single" filteredValue="#{viewMembersBean.filteredMembers}" id="membersTable100">
-
-                              <p:ajax event="rowSelect"  listener="#{viewMembersBean.onRowSelect}" />
-
-                              <f:facet name="header">
-                                 Members in ICU
-                              </f:facet>
-
-                              <p:column headerText="First Name" sortBy="firstName" filterBy="firstName" id="firstname">
-                                  #{member.firstName}
-                              </p:column>
-
-                              <p:column headerText="Last Name" sortBy="lastName" filterBy="lastName" id="lastname">
-                                  #{member.lastName}
-                              </p:column>
-
-
-
-
-                              <p:column headerText="Gender"  id="gender">
-                                  #{member.gender}
-                              </p:column>
-                              <p:column headerText="Status"  id="status">
-                                  #{member.status}
-                              </p:column>
-                              <p:column headerText="Membership Type"  id="type">
-                                  #{member.type}
-                              </p:column>
-                          </p:dataTable>
-
-                      </p:column>
-                  </p:row>
 
                 <f:facet name="footer">
 

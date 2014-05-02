@@ -10,12 +10,11 @@ import org.joda.time.DateTime;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
-import za.org.rfm.beans.services.LazyEventDataModel;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Event;
+import za.org.rfm.pdf.EventPDF;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EventService;
-import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
@@ -27,12 +26,11 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 @ViewScoped
-@ManagedBean(name = "tableBean")
-public class TableBean {
+@ManagedBean(name = "viewReportsBean")
+public class ViewReportsBean {
     private CartesianChartModel categoryModel;
     private int avgAttendance;
     private String currentMonth;
@@ -41,7 +39,41 @@ public class TableBean {
     private int icu;
     private double totalIncome;
     private Assembly assembly;
+    private String eventtype;
+    private String[] eventtypes ;
 
+    public String[] getEventtypes() {
+        return eventtypes;
+    }
+
+    public void setEventtypes(String[] eventtypes) {
+        this.eventtypes = eventtypes;
+    }
+
+    private DateRange dateRange;
+
+    public DateRange getDateRange() {
+        return dateRange;
+    }
+
+    public void setDateRange(DateRange dateRange) {
+        this.dateRange = dateRange;
+    }
+
+    public String getEventtype() {
+        return eventtype;
+    }
+
+    public void setEventtype(String eventtype) {
+        this.eventtype = eventtype;
+    }
+    public void search() {
+         if(getEventtype() != null && !getEventtype().equalsIgnoreCase("")){
+             List<Event> eventsRes = eventService.getEventsByAssemblyAndTypeAndDate(WebUtil.getUserAssemblyId(), getEventtype(), dateRange);
+            setEvents(eventsRes);
+             Utils.addFacesMessage(eventsRes.size()+" results found ",FacesMessage.SEVERITY_INFO);
+         }
+    }
     public Assembly getAssembly() {
         return assembly;
     }
@@ -182,9 +214,10 @@ public class TableBean {
 
     @PostConstruct
     public void init(){
+        eventtypes = Utils.getServiceTypes();
          setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
-        DateRange dateRange = initializeDateRange();
-        System.out.println("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
+        dateRange = initializeDateRange();
+        /*System.out.println("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
         events = eventService.getEventsByAssemblyAndTypeAndDate(WebUtil.getUserAssemblyId(),Constants.SERVICE_TYPE_SUNDAY,dateRange);
         System.out.println("---num of events retrieved---"+events.size());
         //setEvents(events);
@@ -192,12 +225,16 @@ public class TableBean {
         createCategoryModel();
        setCurrentMonth(new SimpleDateFormat("MMMM").format(new Date()));
        setAvgAttendance(getEvents());
-        setTotalIncome(getEvents());
+        setTotalIncome(getEvents());*/
 
 
     }
 
-
+    public void createPDF(){
+        System.out.println("executing action----createpdf");
+        EventPDF.generatePDF(this.event);
+        Utils.addFacesMessage("PDF created successfully!",FacesMessage.SEVERITY_INFO);
+    }
 
     private void createCategoryModel() {
         categoryModel = new CartesianChartModel();

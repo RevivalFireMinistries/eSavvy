@@ -7,14 +7,30 @@
     <ui:define name="content">
         <h:form id="eventsform">
                 <h3>Event Reports</h3>
-            <p:growl id="growl" showDetail="true"/>
 
-            <p:dataTable  var="event" value="#{tableBean.lazyModel}" rowKey="#{event.id}" paginator="true" rows="10"
+            <p:messages id="msgs"/>
+            <h:panelGrid columns="2">
+
+                <h:outputLabel value="Search By Event Type: "/>
+
+                <p:selectOneMenu value="#{viewReportsBean.eventtype}">
+                    <f:selectItem itemLabel="All Event Types" itemValue="ALL" />
+                    <f:selectItems value="#{viewReportsBean.eventtypes}" />
+                </p:selectOneMenu>
+                <h:outputLabel value="Start of Date Range: "/>
+                <p:calendar value="#{viewReportsBean.dateRange.startDate}" id="popupButtonCal" showOn="button" />
+
+                <h:outputLabel value="End of Date Range: "/>
+                <p:calendar value="#{viewReportsBean.dateRange.endDate}" id="popupButtonCal54" showOn="button" />
+
+                <p:commandButton actionListener="#{viewReportsBean.search}" value="Search Reports" update=":eventsform:msgs :eventsform:eventsTable100" />
+            </h:panelGrid>
+            <p:dataTable  var="event" value="#{viewReportsBean.events}" rowKey="#{event.id}" paginator="true" rows="10"
                           paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                           rowsPerPageTemplate="5,10,15"
-                          widgetVar="eventsTable"     selection="#{tableBean.selectedEvent}" selectionMode="single" filteredValue="#{tableBean.filteredEvents}" id="membersTable100" lazy="true">
+                          widgetVar="eventsTable"     selection="#{viewReportsBean.selectedEvent}" selectionMode="single" filteredValue="#{viewReportsBean.filteredEvents}" id="eventsTable100" >
                 <p:ajax event="rowSelect"
-                        update=":eventsform:display :eventsform:growl" oncomplete="PF('eventDialog').show()" />
+                        update=":eventsform:display :eventsform:msgs" oncomplete="PF('eventDialog').show()" />
                 <p:column headerText="Event Type" sortBy="eventType" filterBy="#{event.eventType}">
                 <h:outputText value="#{event.eventType}" />
             </p:column>
@@ -28,50 +44,82 @@
                     <p:commandLink id="ajax55553"  rendered="#{event.register}" actionListener="#{pprBean.savePerson}" style="margin-right:20px;">
                         <h:outputText value="[View Register]" />
                     </p:commandLink>
-                    <p:commandLink id="ajax555"  rendered="#{!event.register}" actionListener="#{tableBean.addRegister(event)}" style="margin-right:20px;">
+                    <p:commandLink id="ajax555"  rendered="#{!event.register}" actionListener="#{viewReportsBean.addRegister(event)}" style="margin-right:20px;">
                         <h:outputText value="[Add Register]" />
                     </p:commandLink>
 
             </p:column>
             </p:dataTable>
                 <p:dialog id="dialog" header="Event Detail" widgetVar="eventDialog" resizable="false"
-                          showEffect="fade" hideEffect="explode">
+                          showEffect="fade" hideEffect="explode" minHeight="500" minWidth="400">
 
                     <h:panelGrid id="display" columns="2" cellpadding="4">
 
-
-                        <h:outputText value="Date:" />
-                        <h:outputText value="#{tableBean.selectedEvent.eventDateFormatted}" />
+                        <h:outputText value="Assembly:" />
+                        <h:outputText  id="out3t75" value="#{viewReportsBean.selectedEvent.assembly.name}" />
+                        <h:outputLabel for="out1" value="Event Date: " />
+                        <h:outputText id="out1" value="#{viewReportsBean.selectedEvent.eventDateFormatted}" />
 
                         <h:outputText value="Type:" />
-                        <h:outputText value="#{tableBean.selectedEvent.eventType}" />
+                        <h:outputText id="out2" value="#{viewReportsBean.selectedEvent.eventType}" />
 
                         <h:outputText value="Attendance:" />
-                        <h:outputText value="#{tableBean.selectedEvent.attendance}" />
+                        <h:outputText  id="out3" value="#{viewReportsBean.selectedEvent.attendance}" />
 
                         <h:outputText value="Tithes:" />
-                        <h:outputText value="#{tableBean.selectedEvent.titheFormatted}" />
-
+                        <h:outputText  id="out4" value="#{viewReportsBean.selectedEvent.titheFormatted}" />
                         <h:outputText value="Offering:" />
-                        <h:outputText value="#{tableBean.selectedEvent.offeringFormatted}" />
+                        <h:outputText  id="out7" value="#{viewReportsBean.selectedEvent.offeringFormatted}" />
 
+                        <h:outputText value="Total Income:" />
+                        <h:outputText id="out5"  value="#{viewReportsBean.selectedEvent.totalIncomeFormatted}" />
+                        <h:outputText value="Apostolic Contribution:" />
+                        <h:outputText  id="out6" value="#{viewReportsBean.selectedEvent.apostolicFormatted}" />
+
+                        <h:outputText value="Guests:" />
+                        <h:outputText  id="out8" value="#{viewReportsBean.selectedEvent.guests}" />
+
+                        <h:outputText value="Converts:" />
+                        <h:outputText  id="out9" value="#{viewReportsBean.selectedEvent.converts}" />
+
+                        <h:outputText value="Total Absent(%):" />
+                        <h:outputText value="#{viewReportsBean.selectedEvent.percentageOfAbsent}" />
+
+                        <h:outputText value="Total Present(%):" />
+                        <h:outputText value="#{viewReportsBean.selectedEvent.percentageOfAttendance}" />
                         <h:outputText value="Comments:" />
-                        <h:outputText value="#{tableBean.selectedEvent.comment}" />
+                        <h:outputText value="#{viewReportsBean.selectedEvent.comment}" />
+
+
                     </h:panelGrid>
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton value="Print Report" type="button" icon="ui-icon-print">
+                                <p:printer target="display" />
+                            </p:commandButton>
+                            <p:commandButton type="button" value="Export as PDF" action="#{viewReportsBean.createPDF}" icon="ui-icon-document" />
+
+                            <p:commandButton type="button" value="Open" icon="ui-icon-folder-open"/>
+
+                            <p:commandButton type="button" title="Save" icon="ui-icon-disk"/>
+                            <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
+
+                        </p:toolbarGroup>
+                    </p:toolbar>
                 </p:dialog>
 
-            <p:lineChart id="category" value="#{tableBean.categoryModel}" legendPosition="e"
+           <!-- <p:lineChart id="category" value="#{viewReportsBean.categoryModel}" legendPosition="e"
                          title="Last 4 Weeks trends" minY="0" maxY="200" style="height:300px;margin-top:20px"/>
-
+-->
         </h:form>
     </ui:define>
     <ui:define name="sidebar">
 
         <p:outputPanel id="eventViewer">
-            <h:outputText value="#{tableBean.selectedEvent.eventType}" rendered="#{not empty tableBean.selectedEvent}" />
-            <h:outputText value="#{tableBean.selectedEvent.eventDate}" rendered="#{not empty tableBean.selectedEvent}" />
-            <h:outputText value="#{tableBean.selectedEvent.attendance}" rendered="#{not empty tableBean.selectedEvent}" />
-            <h:outputText value="#{tableBean.selectedEvent.comment}" rendered="#{not empty tableBean.selectedEvent}" />
+            <h:outputText value="#{viewReportsBean.selectedEvent.eventType}" rendered="#{not empty viewReportsBean.selectedEvent}" />
+            <h:outputText value="#{viewReportsBean.selectedEvent.eventDate}" rendered="#{not empty viewReportsBean.selectedEvent}" />
+            <h:outputText value="#{viewReportsBean.selectedEvent.attendance}" rendered="#{not empty viewReportsBean.selectedEvent}" />
+            <h:outputText value="#{viewReportsBean.selectedEvent.comment}" rendered="#{not empty viewReportsBean.selectedEvent}" />
         </p:outputPanel>
 
     </ui:define>
