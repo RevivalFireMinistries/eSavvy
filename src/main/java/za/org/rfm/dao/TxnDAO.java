@@ -8,6 +8,7 @@ import za.org.rfm.beans.Tithe;
 import za.org.rfm.model.Account;
 import za.org.rfm.model.Member;
 import za.org.rfm.model.Transaction;
+import za.org.rfm.utils.DateRange;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,16 +36,16 @@ public class TxnDAO {
         sessionFactory.getCurrentSession().saveOrUpdate(txn);
     }
 
-    public List<Transaction> getTithesByMemberAndDateRange(Member member, Date startDate, Date endDate) {
+    public List<Transaction> getTithesByMemberAndDateRange(Member member, DateRange dateRange) {
         Account account = member.getAccount();
         if(account != null){
         Query query;
-        if(startDate == null && endDate == null){
+        if(dateRange.getStartDate() == null && dateRange.getEndDate() == null){
             query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account ");
         } else {
-         query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account and txndate between startDate and endDate");
-            query.setDate("startDate",startDate);
-            query.setDate("endDate",endDate);
+         query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account and txndate between :startDate and :endDate");
+            query.setDate("startDate",dateRange.getStartDate());
+            query.setDate("endDate",dateRange.getEndDate());
         }
 
         query.setLong("account",account.getAccountnumber());

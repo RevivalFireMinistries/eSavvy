@@ -1,10 +1,12 @@
 package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Member;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +37,7 @@ public class ViewMembersBean implements Serializable {
     @ManagedProperty(value="#{AssemblyService}")
     AssemblyService assemblyService;
 
+
     public MemberService getMemberService() {
         return memberService;
     }
@@ -41,6 +45,7 @@ public class ViewMembersBean implements Serializable {
     public void setMemberService(MemberService memberService) {
         this.memberService = memberService;
     }
+
 
     public AssemblyService getAssemblyService() {
         return assemblyService;

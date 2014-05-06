@@ -7,9 +7,9 @@ import za.org.rfm.beans.Tithe;
 import za.org.rfm.dao.TxnDAO;
 import za.org.rfm.model.Member;
 import za.org.rfm.model.Transaction;
+import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +37,8 @@ public class TxnService {
         System.out.println("txn saved..."+txn.getTransactionid());
     }
 
-    public List<Transaction> getTithesByMemberAndDateRange(Member member,Date startDate, Date endDate){
-        return getTxnDAO().getTithesByMemberAndDateRange(member,startDate,endDate);
+    public List<Transaction> getTithesByMemberAndDateRange(Member member, DateRange dateRange){
+        return getTxnDAO().getTithesByMemberAndDateRange(member,dateRange);
     }
 
     public void processTithe(Tithe tithe){

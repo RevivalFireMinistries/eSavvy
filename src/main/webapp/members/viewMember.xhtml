@@ -5,10 +5,11 @@
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
-    <h:form prependId="false">
+    <h:form prependId="false" id="membersform">
         <p:tabView id="tabView" dynamic="true" cache="true">
         <p:growl id="growl" sticky="true" showDetail="true" autoUpdate="true"/>
         <h:messages errorClass="error"/>
+            <p:messages id="msgs"/>
             <p:tab id="tba1" title="Member Details">
         <p:panel header="#{viewMemberBean.fullName}" style="width:500px;" id="member">
             <h:panelGrid columns="2" columnClasses="column" cellpadding="5" style="width:400px;">
@@ -111,32 +112,60 @@
                     </h:form>
                 </p:dialog>
             </p:tab>
-            <p:tab id="tab3" title="Tithe History">
+            <p:tab id="tab3" title="Tithe History ">
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel value="Search By Date: "/>
+                    <h:outputLabel value=" "/>
+
+                    <h:outputLabel value="Start of Date Range: "/>
+                    <p:calendar value="#{viewMemberBean.dateRange.startDate}" id="popupButtonCal" showOn="button" />
+
+                    <h:outputLabel value="End of Date Range: "/>
+                    <p:calendar value="#{viewMemberBean.dateRange.endDate}" id="popupButtonCal54" showOn="button" />
+
+                    <p:commandButton actionListener="#{viewMemberBean.search}" value="Search Tithe Transactions" update="tabView:titheTable100 "  ajax="true"/>
+
+                </h:panelGrid>
                 <p:dataTable  style="width:850px;" var="tithe" value="#{viewMemberBean.titheList}" rowKey="#{tithe.id}" paginator="true" rows="20"
                               widgetVar="membersTable"      id="titheTable100">
 
                     <p:ajax event="rowSelect"  listener="#{viewMembersBean.onRowSelect}" />
 
                     <f:facet name="header">
-                        List of Tithe Transaction
+                        List of Tithe Transaction <b> #{viewMemberBean.member.fullName}</b>
                     </f:facet>
                     <f:facet name="header">
-                        <p:outputPanel>
-                            <h:outputText value="Search all fields:" />
-                            <p:inputText id="globalFilter" onkeyup="membersTable.filter()" style="width:150px" />
-                        </p:outputPanel>
+
                     </f:facet>
-                    <p:column headerText="Date" sortBy="txnDate" filterBy="txnDate" id="firstname">
+                    <p:column headerText="Date" sortBy="txnDate"  id="firstname">
                         #{tithe.formattedDate}
                     </p:column>
 
-                    <p:column headerText="Amount" sortBy="amount" filterBy="amount" id="lastname">
+                    <p:column headerText="Amount" sortBy="amount"  id="lastname">
                         #{tithe.formattedAmount}
                     </p:column>
 
 
                 </p:dataTable>
+                <p:panel header="Export Page Data">
+                    <h:commandLink>
+                        <p:graphicImage value="/images/excel.png" />
+                        <p:dataExporter type="xls" target="titheTable100" fileName="titheReport" pageOnly="true"/>
+                    </h:commandLink>
 
+                    <h:commandLink>
+                        <p:graphicImage value="/images/pdf.png" />
+                        <p:dataExporter type="pdf" target="titheTable100" fileName="titheReport" pageOnly="true"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/images/csv.png" />
+                        <p:dataExporter type="csv" target="titheTable100" fileName="titheReport" pageOnly="true"/>
+                    </h:commandLink>
+
+
+                </p:panel>
 
                     </p:tab>
             <p:tab id="tab4" title="Attendance History">
