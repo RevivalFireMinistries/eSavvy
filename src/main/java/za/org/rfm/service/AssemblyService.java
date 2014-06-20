@@ -27,4 +27,9 @@ public class AssemblyService {
     public Assembly getAssemblyById(long l) {
         return assemblyDAO.getAssemblyById(l);
     }
+    @Transactional(readOnly = false)
+    public void saveAssembly(Assembly assembly){
+        assemblyDAO.saveMember(assembly);
+    }
+
 }

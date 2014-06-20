@@ -40,12 +40,22 @@ public class MenuBean {
         item2.setIcon("ui-icon-home");
         firstSubmenu.addElement(item2);
 
-        /*DefaultMenuItem item3 = new DefaultMenuItem("Add Attendance Info");
-        item3.setUrl("/members/addAttendance.faces");
-        item3.setIcon("ui-icon-home");
-        firstSubmenu.addElement(item3);*/
-
         model.addElement(firstSubmenu);
+
+        DefaultSubMenu assembly = new DefaultSubMenu("Assembly Management");
+
+        DefaultMenuItem a1 = new DefaultMenuItem("Add New Assembly");
+        a1.setUrl("/assembly/newAssembly.faces");
+        a1.setIcon("ui-icon-home");
+        assembly.addElement(a1);
+        DefaultMenuItem a2 = new DefaultMenuItem("View Assemblies");
+        a2.setUrl("/assembly/viewAssemblies.faces");
+        a2.setIcon("ui-icon-home");
+        assembly.addElement(a2);
+
+
+
+        model.addElement(assembly);
 
         //services
         DefaultSubMenu services = new DefaultSubMenu("Services");

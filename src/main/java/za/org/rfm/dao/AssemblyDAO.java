@@ -41,4 +41,8 @@ public class AssemblyDAO {
         assembly.setMembersRegistered(assembly.getTotalRegistered());
         return assembly;
     }
+
+    public void saveMember(Assembly assembly) {
+        getSessionFactory().getCurrentSession().saveOrUpdate(assembly);
+    }
 }

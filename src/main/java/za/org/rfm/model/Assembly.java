@@ -3,6 +3,7 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,8 +23,8 @@ public class Assembly extends ChurchManagerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assemblyid", unique = true, nullable = false)
     public Long assemblyid;
-    public String name,physicalAddress,email,status,country;
-    public String phone;
+    public String name,physicalAddress,status,locale;
+    public String phone,email;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
     private List<Member> members;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
@@ -32,7 +33,6 @@ public class Assembly extends ChurchManagerEntity {
     private int membersRegistered;
     @Override
     public boolean equals(Object o) {
-        System.out.println("---now in equals----");
         if (this == o) return true;
         if (!(o instanceof Assembly)) return false;
 
@@ -55,4 +55,8 @@ public class Assembly extends ChurchManagerEntity {
    public int getTotalRegistered(){
        return  members.size();
    }
+
+    public String getCountry(){
+        return Utils.getCountryFriendlyName(getLocale());
+    }
 }

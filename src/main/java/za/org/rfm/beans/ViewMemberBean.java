@@ -16,6 +16,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,24 @@ public class ViewMemberBean {
     TxnService txnService;
     private DateRange dateRange;
     public boolean tithesEmpty;
+
+    public Date getMaxDate() {
+        return maxDate;
+    }
+
+    public void setMaxDate(Date maxDate) {
+        this.maxDate = maxDate;
+    }
+
+    private Date maxDate = new Date(System.currentTimeMillis());
+
+    public Tithe getTithe() {
+        return tithe;
+    }
+
+    public void setTithe(Tithe tithe) {
+        this.tithe = tithe;
+    }
 
     public boolean isTithesEmpty() {
         return tithesEmpty;
@@ -135,28 +154,42 @@ public class ViewMemberBean {
 
     @PostConstruct
     public void init() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        String memberid = facesContext.getExternalContext().getRequestParameterMap().get("memberid");
-        setMember(memberService.getMemberById(Long.parseLong(memberid)));
-        initializeDateRange();
-        setTithesEmpty(true);
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            String memberid = facesContext.getExternalContext().getRequestParameterMap().get("memberid");
+            if(memberid == null){
+                facesContext.getExternalContext().responseSendError(401,"Invalid member id specified");
+            }
+            setMember(memberService.getMemberById(Long.parseLong(memberid)));
+            initializeDateRange();
+            setTithesEmpty(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void search() {
 
         List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(this.member, this.getDateRange());
+        titheList.clear();
         for(Transaction txn: transactions){
             titheList.add(new Tithe(this.member,txn.getAmount(),txn.getTxndate()));
         }
         Utils.addFacesMessage(transactions.size()+" results found ",FacesMessage.SEVERITY_INFO);
-        System.out.println("---finished searching and got ----- "+titheList.size()+" txns render: "+titheList.isEmpty());
         setTithesEmpty(titheList.isEmpty());
     }
     public void sendSMS(){
         SMSLog smsLog = getMember().sendSMS(getSms(), false);
         smsService.saveSMSLog(smsLog);
-        System.out.println("---sms has been sent");
         Utils.addFacesMessage("SMS Status "+smsLog.getStatus(), FacesMessage.SEVERITY_INFO);
+    }
+
+    public void enterTithe(){
+        System.out.println("---now processing tithe---");
+        getTithe().setMember(getMember());
+        System.out.println("Tithe "+tithe.getMember().getFullName()+" amt "+tithe.getAmount()+" date "+tithe.getTxnDate());
+        txnService.processTithe(getTithe());
+        Utils.addFacesMessage("Tithe entered succesfully",FacesMessage.SEVERITY_INFO);
     }
     private void initializeDateRange() {
 

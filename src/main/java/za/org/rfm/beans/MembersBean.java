@@ -42,7 +42,7 @@ public class MembersBean implements Serializable {
 
     private void populateMembers(List<Member> list, long assemblyid) {
         list = memberService.getMembersByAssembly(assemblyid);
-        System.out.println("---the members loaded----"+list.size());
+
     }
 
 

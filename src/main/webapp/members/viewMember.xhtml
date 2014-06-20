@@ -65,7 +65,7 @@
                     <p:commandButton id="showDialogButton" type="button" value="Send SMS" onclick="PF('sms').show()" oncomplete="PF('sms').hide();"/>
 
                     <p:separator />
-                    <p:commandButton type="button" value="Enter Tithe" icon="ui-icon-folder-open"/>
+                    <p:commandButton type="button" value="Enter Tithe" icon="ui-icon-folder-open" onclick="PF('dlg').show()" />
                     <p:separator />
 
                     <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
@@ -88,27 +88,28 @@
                     <h:outputText id="counter" />
                 </h:panelGrid>
 
-                <p:commandButton id="submitButton" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('dlg').hide();"/>
+                <p:commandButton id="submitButton" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('sms').hide();"/>
                 <p:outputPanel id="display" style="display:block;margin-top:10px;">
                     <h:outputText id="name" value="Hello #{viewMemberBean.sms}" rendered="#{not empty viewMemberBean.sms}"/>
                 </p:outputPanel>
             </h:form>
         </p:dialog>
                 <p:dialog header="Enter Tithe" widgetVar="dlg" resizable="false">
-                    <h:form id="smsform" prependId="false">
+                    <h:form id="titheform" prependId="true">
 
                         <h:panelGrid columns="2" style="margin-bottom:10px">
-                            <h:outputLabel for="sms" value="SMS message:" />
-                            <p:inputTextarea id="sms" rows="10" cols="30" counter="counter" maxlength="160"
-                                             counterTemplate="{0} characters remaining." autoResize="false" value="#{viewMemberBean.sms}"/>
+                            <h:outputText value="Tithe  Date: " />
+                            <p:calendar maxdate="#{viewMemberBean.maxDate}" required="true" value="#{viewMemberBean.tithe.date}" id="popupButtonCal" showOn="button" />
+                            <h:outputLabel for="amount" value="Amount:" />
+                            <p:inputText id="amount"
+                                         value="#{viewMemberBean.tithe.amount}" required="true" >
+                                <f:validateDoubleRange minimum="0.1" />
+                            </p:inputText>
 
-                            <h:outputText id="counter" />
                         </h:panelGrid>
 
-                        <p:commandButton id="submitButton" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('dlg').hide();"/>
-                        <p:outputPanel id="display" style="display:block;margin-top:10px;">
-                            <h:outputText id="name" value="Hello #{viewMemberBean.sms}" rendered="#{not empty viewMemberBean.sms}"/>
-                        </p:outputPanel>
+                        <p:commandButton id="submitButton3" value="Submit" action="#{viewMemberBean.sendSMS}" oncomplete="PF('dlg').hide();"/>
+
                     </h:form>
                 </p:dialog>
             </p:tab>
@@ -119,7 +120,7 @@
                     <h:outputLabel value=" "/>
 
                     <h:outputLabel value="Start of Date Range: "/>
-                    <p:calendar value="#{viewMemberBean.dateRange.startDate}" id="popupButtonCal" showOn="button" />
+                    <p:calendar value="#{viewMemberBean.dateRange.startDate}" id="popupButtonCal34" showOn="button" />
 
                     <h:outputLabel value="End of Date Range: "/>
                     <p:calendar value="#{viewMemberBean.dateRange.endDate}" id="popupButtonCal54" showOn="button" />

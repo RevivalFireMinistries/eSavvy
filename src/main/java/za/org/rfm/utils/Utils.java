@@ -8,8 +8,6 @@ import za.org.rfm.beans.Tithe;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -51,19 +49,50 @@ public class Utils {
 
         return ft.format(date);
     }
+    public static Country getSelectedCountry(String code){
+        for(Country c : getAllCountries()){
+           if(c.getCode().equalsIgnoreCase(code)){
+               return c;
+           }
+        }
+        return null;
+    }
+
+    public static List<Country> getAllCountries(){
+        List<Country> countries = new ArrayList<Country>();
+        Locale[] locales = Locale.getAvailableLocales();
+        System.out.println(locales.length);
+        for (Locale locale : locales) {
+            try{
+                String iso = locale.getISO3Country();
+                String code = locale.getCountry();
+                String name = locale.getDisplayCountry();
+
+                if (!"".equals(iso) && !"".equals(code) && !"".equals(name)) {
+                    countries.add(new Country(iso, code, name));
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                continue;
+            }
+        }
+
+        Collections.sort(countries, new CountryComparator());
+        return  countries;
+    }
 
     public static Map<String, String> getCountriesMap() {
-        Properties properties = new Properties();
+
         Map<String,String> map = new HashMap<String, String>();
         try{
-            properties.load(new FileInputStream(Constants.COUNTRY_LIST_FILE));
-            Iterator it = properties.entrySet().iterator();
+
+            Iterator it = getAllCountries().iterator();
             while(it.hasNext()){
-                Map.Entry pairs = (Map.Entry)it.next();
-                map.put((String)pairs.getKey(),(String)pairs.getValue());
+               Country country = (Country)it.next();
+                map.put(country.getCode(),country.getName());
             }
 
-        }catch (IOException ex){
+        }catch (Exception ex){
             ex.printStackTrace();
         }
         return sortByValue(map);

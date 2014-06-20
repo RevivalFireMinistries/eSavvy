@@ -44,7 +44,6 @@ public class MemberConverter implements Converter {
             }else{
                 Long id = Long.parseLong(submittedValue);
                 memberList = memberService.getMembersByAssembly(WebUtil.getUserAssemblyId());
-                System.out.println("---the member list----"+memberList.size());
                 for(Member member: memberList){
                     if(member.getId() == id ){
                         return member;

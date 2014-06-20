@@ -49,6 +49,39 @@
                         </h:panelGrid>
                     </p:panel>
                 </p:tab>
+                <p:tab id="register" title="Event Register">
+                  <p:panel header="Event Register">
+                       <h:messages errorClass="error"/>
+                      <p:dataTable id="members" var="member" value="#{newReportBean.memberDataModel}" paginator="true" rows="10"
+                                   selection="#{newReportBean.selectedMembers}">
+
+                          <f:facet name="header">
+                              Please tick on all the members who were present
+                          </f:facet>
+
+                          <p:column selectionMode="multiple" style="width:2%" />
+
+                          <p:column headerText="Member's Name" style="width:25%">
+                              #{member.fullName}
+                          </p:column>
+
+                          <p:column headerText="Member Type" style="width:25%">
+                              #{member.type}
+                          </p:column>
+
+                          <p:column headerText="Status" style="width:24%">
+                              #{member.status}
+                          </p:column>
+
+
+
+                          <f:facet name="footer">
+                              <p:commandButton id="present" value="Submit Register" icon="ui-icon-search"
+                                               actionListener="#{newReportBean.processRegister}"     oncomplete="PF('reportSummary').show()"/>
+                          </f:facet>
+                      </p:dataTable>
+                  </p:panel>
+                </p:tab>
                 <p:tab id="other" title="Other">
                     <p:panel header="Event Other Info">
 

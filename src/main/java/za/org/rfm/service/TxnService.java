@@ -43,10 +43,13 @@ public class TxnService {
 
     public void processTithe(Tithe tithe){
         System.out.println("---now processing tithe txn...");
+        //txn to db first
+        saveTxn(new Transaction(tithe));
         //Now create and send an sms
         String sms = "RFM: Hi "+tithe.getMember().getFirstName()+", Your tithe payment of "+ Utils.moneyFormatter(tithe.getAmount())+" made on "+ Utils.dateFormatter(tithe.getTxnDate())+" has been received.Thank you & Stay Blessed!For more info visit www.rfm.org.za.";
         System.out.println("...sending sms..."+sms);
         tithe.getMember().sendSMS(sms,true);
+
     }
 
 }

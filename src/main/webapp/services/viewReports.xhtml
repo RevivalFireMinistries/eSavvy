@@ -40,6 +40,12 @@
             <p:column headerText="Attendance" sortBy="attendance" filterBy="#{event.attendance}">
                 <h:outputText value="#{event.attendance}"  />
                 </p:column>
+                <p:column headerText="Total Income" sortBy="totalIncomeFormatted" filterBy="#{event.eventDate}">
+                    <h:outputText value="#{event.totalIncomeFormatted}" />
+                </p:column>
+                <p:column headerText="Comment" sortBy="comment" filterBy="#{event.eventDate}">
+                    <h:outputText value="#{event.comment}" />
+                </p:column>
                 <p:column headerText="Attendance Register" >
                     <p:commandLink id="ajax55553"  rendered="#{event.register}" actionListener="#{pprBean.savePerson}" style="margin-right:20px;">
                         <h:outputText value="[View Register]" />

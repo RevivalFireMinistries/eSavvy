@@ -3,7 +3,6 @@ package za.org.rfm.beans;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Member;
-import za.org.rfm.model.Transaction;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.TxnService;
 import za.org.rfm.utils.Utils;
@@ -15,7 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,7 +129,6 @@ public class EnterTitheBean {
     public void addTithe(){
         //first check if there isn't a similar txn already
 
-        System.out.println("---the member---"+getSelectedMember().getFullName());
         Tithe tithe = new Tithe(getSelectedMember(),getAmount(),getDate());
         if(!Utils.txnExists(titheList,tithe))  {
             //similar txn doesn't exist so go ahead!
@@ -173,12 +170,7 @@ public class EnterTitheBean {
         for(Tithe tithe: titheList){
            txnService.processTithe(tithe);
             //create txn object and save to db
-            Transaction txn = new Transaction();
-            txn.setAccount(tithe.getMember().getAccount());
-            txn.setTxndate(new Timestamp(tithe.getTxnDate().getTime()));
-            txn.setAmount(tithe.getAmount());
-            txn.setTransactionid(Utils.generateID());
-            txnService.saveTxn(txn);
+
         }
         titheList.clear();
         Utils.addFacesMessage(size+" Tithe transactions have been processed successfully",FacesMessage.SEVERITY_INFO);

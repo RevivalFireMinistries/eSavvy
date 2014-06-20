@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="myform" prependId="false">
+
+            <p:dataTable  style="width:850px;" var="assembly" value="#{viewAssembliesBean.assemblyList}" rowKey="#{assembly.assemblyid}" paginator="true" rows="10"
+                          widgetVar="assembliesTable"     selection="#{viewAssembliesBean.selectedAssembly}" selectionMode="single" filteredValue="#{viewAssembliesBean.filteredAssemblies}" id="membersTable100">
+
+                <p:ajax event="rowSelect"  listener="#{viewAssembliesBean.onRowSelect}" />
+
+                <f:facet name="header">
+                    List of Assemblies
+                </f:facet>
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="assembliesTable.filter()" style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column headerText="Name" sortBy="name" filterBy="name" id="name">
+                    #{assembly.name}
+                </p:column>
+
+                <p:column headerText="Country" sortBy="country" filterBy="country" id="country">
+                    #{assembly.country}
+                </p:column>
+                <p:column headerText="Physical Address"  id="address">
+                    #{assembly.physicalAddress}
+                </p:column>
+                <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
+                    #{assembly.phone}
+                </p:column>
+                <p:column headerText="Status" sortBy="status" filterBy="status" id="status">
+                    #{assembly.status}
+                </p:column>
+
+
+            </p:dataTable>
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>

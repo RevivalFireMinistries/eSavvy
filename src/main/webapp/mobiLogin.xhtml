@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+<f:view renderKitId="PRIMEFACES_MOBILE" />
+
+<h:head>
+
+</h:head>
+
+<h:body>
+
+    <pm:page>
+        <pm:header title="Title">eSavvy Mobile Login</pm:header>
+
+        <pm:content>
+            <p:messages id="msgs"/>
+            <h:form id="mobileTreeForm">
+            <pm:field>
+                <p:outputLabel for="username" value="Username:" />
+                <p:inputText id="username"  placeholder="Username"/>
+            </pm:field>
+
+            <pm:field>
+                <p:outputLabel for="password" value="Password:" />
+                <p:inputText id="password" placeholder="Password" />
+            </pm:field>
+            <p:commandButton value="Login" ajax="true"/>
+            </h:form>
+        </pm:content>
+
+        <pm:footer title="Footer">(c) 2014 ECYOD Technologies</pm:footer>
+    </pm:page>
+</h:body>
+
+</html>

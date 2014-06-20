@@ -27,6 +27,7 @@ public final class User extends ChurchManagerEntity {
     private Member member;
     private String fullname,password,status,role;
     private Date dateCreated;
+    private Assembly assembly;
 
     public User(String username){
         this.username = username;
