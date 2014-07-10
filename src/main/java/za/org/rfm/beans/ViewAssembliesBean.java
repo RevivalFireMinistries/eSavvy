@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.service.AssemblyService;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
@@ -81,7 +82,7 @@ public class ViewAssembliesBean {
 
     }
     private void populateAssemblies() {
-        List<Assembly> assemblies = assemblyService.getAssemblyList();
+        List<Assembly> assemblies = assemblyService.getAssemblyList(Constants.STATUS_ALL);
         setAssemblyList(assemblies);
     }
 

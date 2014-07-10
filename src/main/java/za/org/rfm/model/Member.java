@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Russel.Mupfumira
@@ -40,6 +41,8 @@ public class Member extends ChurchManagerEntity{
     private Account account;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<SMSLog> smsLogs;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "member")
+    private Set<MemberGroup> memberGroupList;
 
 
 

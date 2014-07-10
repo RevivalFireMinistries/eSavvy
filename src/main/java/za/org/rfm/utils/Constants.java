@@ -45,4 +45,7 @@ public class Constants {
     public static final String USER_ROLE_ADMINISTRATOR = "Admin";
     public static final String USER_ROLE_SUPER_ADMIN = "Super Admin";
 
+    public static String[]roles = {USER_ROLE_ADMINISTRATOR,USER_ROLE_PASTOR,USER_ROLE_SUPER_ADMIN};
+
+    public static final int DEFAULT_USER_PASSWORD_SIZE = 6;
 }

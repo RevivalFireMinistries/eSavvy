@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.MemberGroup;
+import za.org.rfm.utils.Constants;
 
 import java.util.List;
 
@@ -35,15 +37,25 @@ public class MemberDAO {
 
 
     public List<Member> getMembersByAssembly(long assemblyid) {
-        System.out.println("---assembly id "+assemblyid);
         Query query = sessionFactory.getCurrentSession().createQuery("from Member where assembly =:assemblyid");
         query.setLong("assemblyid",assemblyid);
         List<Member> memberList = (List<Member>)query.list();
         return memberList;
     }
 
-
-
+    public List<MemberGroup> getMemberGroups(Long memberId){
+        Query query = sessionFactory.getCurrentSession().createQuery("from MemberGroup mg where mg.member.id =:memberId");
+        query.setLong("memberId",memberId);
+        List<MemberGroup> memberGroupList = (List<MemberGroup>)query.list();
+        return memberGroupList;
+    }
+     public void saveMemberGroup(MemberGroup memberGroup){
+         if(memberGroup.getStatus().equalsIgnoreCase(Constants.STATUS_DELETED)){
+             sessionFactory.getCurrentSession().delete(memberGroup);
+         }else{
+             sessionFactory.getCurrentSession().saveOrUpdate(memberGroup);
+         }
+     }
 
     public Member getMemberById(long memberid) {
         Query query = sessionFactory.getCurrentSession().createQuery("from Member where id =:memberid");

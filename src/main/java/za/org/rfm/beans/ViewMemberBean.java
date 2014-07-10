@@ -1,13 +1,19 @@
 package za.org.rfm.beans;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DualListModel;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.MemberGroup;
 import za.org.rfm.model.SMSLog;
 import za.org.rfm.model.Transaction;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SMSService;
 import za.org.rfm.service.TxnService;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
+import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +35,7 @@ import java.util.List;
 @ManagedBean(name = "viewMemberBean")
 @ViewScoped
 public class ViewMemberBean {
+    Logger logger = Logger.getLogger(ViewMemberBean.class);
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;
     @ManagedProperty(value="#{SMSService}")
@@ -37,6 +44,44 @@ public class ViewMemberBean {
     TxnService txnService;
     private DateRange dateRange;
     public boolean tithesEmpty;
+    List<Group> target;
+    List<MemberGroup> memberGroupList;
+
+    public List<MemberGroup> getMemberGroupList() {
+        return memberGroupList;
+    }
+
+    public void setMemberGroupList(List<MemberGroup> memberGroupList) {
+        this.memberGroupList = memberGroupList;
+    }
+
+    public List<Group> getSource() {
+        return source;
+    }
+
+    public void setSource(List<Group> source) {
+        this.source = source;
+    }
+
+    public List<Group> getTarget() {
+        return target;
+    }
+
+    public DualListModel<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(DualListModel<Group> groups) {
+        this.groups = groups;
+    }
+
+    public void setTarget(List<Group> target) {
+
+        this.target = target;
+    }
+
+    List<Group> source;
+    private DualListModel<Group> groups;
 
     public Date getMaxDate() {
         return maxDate;
@@ -160,14 +205,28 @@ public class ViewMemberBean {
             if(memberid == null){
                 facesContext.getExternalContext().responseSendError(401,"Invalid member id specified");
             }
-            setMember(memberService.getMemberById(Long.parseLong(memberid)));
+            long id = Long.parseLong(memberid);
+            setMember(memberService.getMemberById(id));
             initializeDateRange();
+            memberGroupList = memberService.getMemberGroups(id);
+            initializeGroups();
+            tithe = new Tithe();
             setTithesEmpty(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private void initializeGroups() {
+        source = Utils.getGroupsAsList();
+        target = new ArrayList<Group>();
+        for(MemberGroup memberGroup : memberGroupList){
+            target.add(Group.valueOf(memberGroup.getGroupName()));
+            source.remove(Group.valueOf(memberGroup.getGroupName()));
+        }
+        logger.debug("Groups initialised - source :"+source.size()+" target : "+target.size());
+        groups = new DualListModel<Group>(source, target);
+    }
     public void search() {
 
         List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(this.member, this.getDateRange());
@@ -183,11 +242,71 @@ public class ViewMemberBean {
         smsService.saveSMSLog(smsLog);
         Utils.addFacesMessage("SMS Status "+smsLog.getStatus(), FacesMessage.SEVERITY_INFO);
     }
+    public void onTransfer(TransferEvent event) {
+       logger.debug("Found "+getGroups().getTarget().size()+" groups to be saved");
+        setMemberGroupList(updateGroupStatusAndSave());
+        FacesMessage msg = new FacesMessage();
+        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+        msg.setSummary("Changes to groups saved successfully");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+         initializeGroups();
+    }
+
+    private List<MemberGroup> updateGroupStatusAndSave() {
+        //first get this member's groups from db
+        List<MemberGroup> oldGroups = memberService.getMemberGroups(this.member.id);
+        List<MemberGroup> finalList = new ArrayList<MemberGroup>();
+        MemberGroup memberGroup;
+        if(oldGroups.isEmpty()){
+            //just create new groups from the selected ones then save and exit
+            for(Group group : getGroups().getTarget()){
+                memberGroup = new MemberGroup();
+                memberGroup.setStatus(Constants.STATUS_ACTIVE);
+                memberGroup.setDateCreated(new Date());
+                memberGroup.setGroupName(group.name());
+                memberGroup.setMember(this.member);
+                memberService.saveMemberGroup(memberGroup);
+                finalList.add(memberGroup);
+            }
+            return finalList;
+        }else{
+            //there are groups existing - first check what happened to them after selection
+            for(MemberGroup memberGroup1 : oldGroups){
+                if(!getGroups().getTarget().contains(Group.valueOf(memberGroup1.getGroupName()))){
+                   memberGroup1.setStatus(Constants.STATUS_DELETED);//mark as deleted and save
+                    memberService.saveMemberGroup(memberGroup1);
+                } else{
+                    //they were not changed - so put into final
+                    finalList.add(memberGroup1);
+                }
+            }
+        }  //Now we need to deal with the new ones
+        boolean found = false;
+        for(Group group : getGroups().getTarget()){
+            for(MemberGroup mg: oldGroups){
+                if(group.name().equalsIgnoreCase(mg.getGroupName())){
+                   found = true;      //its not new anyway so skip!
+                }
+            }
+            if(!found){
+               //this is a new selection  - so create memberGrp and save to db
+                memberGroup = new MemberGroup();
+                memberGroup.setStatus(Constants.STATUS_ACTIVE);
+                memberGroup.setDateCreated(new Date());
+                memberGroup.setGroupName(group.name());
+                memberGroup.setMember(this.member);
+                memberService.saveMemberGroup(memberGroup);
+                finalList.add(memberGroup);
+            }
+            found = false;
+        }
+        return finalList;
+    }
 
     public void enterTithe(){
-        System.out.println("---now processing tithe---");
+        logger.debug("---now processing tithe---");
         getTithe().setMember(getMember());
-        System.out.println("Tithe "+tithe.getMember().getFullName()+" amt "+tithe.getAmount()+" date "+tithe.getTxnDate());
+        logger.debug("Tithe "+tithe.getMember().getFullName()+" amt "+tithe.getAmount()+" date "+tithe.getTxnDate());
         txnService.processTithe(getTithe());
         Utils.addFacesMessage("Tithe entered succesfully",FacesMessage.SEVERITY_INFO);
     }

@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
     <title>eSavvy - Login</title>
     <style type="text/css">
@@ -272,29 +273,31 @@
 <h:body>
     <div class="container">
         <section id="content">
-            <p:messages id="msgs"/>
+            <p:panel header="Login" toggleable="true" id="panel">
             <h:form id="loginForm">
+                <p:messages id="msgs"/>
                 <h1>eSavvy - Login</h1>
                 <div>
-                    <p:inputText id="username" value="#{loginBean.uname}" required="true"></p:inputText>
+                    <p:inputText id="username" value="#{loginBean.uname}" required="true" ></p:inputText>
                     <p:watermark for="username" value="Username" />
+                    <h:message for="username" style="color:red" />
                 </div>
                 <div>
-                    <p:password id="password" value="#{loginBean.password}"  feedback="false" required="true"></p:password>
+                    <p:password id="password" value="#{loginBean.password}"  required="true"></p:password>
                     <p:watermark for="password" value="Password" />
+                    <h:message for="password" style="color:red" />
                 </div>
                 <div>
                     <p:spacer></p:spacer>
 
-                    <p:commandButton action="#{loginBean.loginProject}" value="Login" update="loginForm" ajax="true"></p:commandButton>
+                    <p:commandButton action="#{loginBean.loginProject}" value="Login" update="msgs" ajax="true"></p:commandButton>
                     <a href="#">Lost your password?</a>
                     <a href="#">Register</a>
                 </div>
             </h:form>
+            </p:panel>
            <!-- form -->
-            <div class="button">
-                <a href="#">Download source file</a>
-            </div><!-- button -->
+
         </section><!-- content -->
     </div><!-- container -->
 </h:body>

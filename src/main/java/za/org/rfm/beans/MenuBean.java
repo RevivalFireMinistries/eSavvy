@@ -53,9 +53,27 @@ public class MenuBean {
         a2.setIcon("ui-icon-home");
         assembly.addElement(a2);
 
-
-
         model.addElement(assembly);
+
+        DefaultSubMenu users = new DefaultSubMenu("User Management");
+        DefaultMenuItem user = new DefaultMenuItem("New User");
+        user.setUrl("/users/newUser.faces");
+        user.setIcon("ui-icon-home");
+        users.addElement(user);
+
+        DefaultMenuItem pwd = new DefaultMenuItem("Change Password");
+        pwd.setUrl("/users/changePassword.faces");
+        pwd.setIcon("ui-icon-home");
+        users.addElement(pwd);
+
+        DefaultMenuItem view = new DefaultMenuItem("View Users");
+        view.setUrl("/users/viewUsers.faces");
+        view.setIcon("ui-icon-home");
+        users.addElement(view);
+
+        model.addElement(users);
+
+
 
         //services
         DefaultSubMenu services = new DefaultSubMenu("Services");

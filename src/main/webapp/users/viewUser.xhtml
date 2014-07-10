@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form prependId="false" id="membersform">
+            <p:tabView id="tabView" dynamic="true" cache="true">
+
+                <p:tab id="tba1" title="User Details">
+                    <p:panel header="#{viewUserBean.user.fullname}" style="width:500px;" id="member">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                        <h:panelGrid columns="2" columnClasses="column" cellpadding="5" style="width:400px;">
+                            <h:outputText value="Username: " />
+
+                            <h:outputText value="#{viewUserBean.user.username}"
+                                          required="true" label="text" readonly="true"/>
+
+                            <h:outputText value="First Name: " />
+                            <p:inplace id="basic" editor="true">
+                                <p:ajax event="save" listener="#{viewUserBean.saveUser}" update="member" />
+                                <p:inputText value="#{viewUserBean.user.firstName}" label="First Name" />
+                            </p:inplace>
+
+                            <h:outputText value="Last Name: " />
+                            <p:inplace id="ajaxInplace" editor="true">
+                                <p:ajax event="save" listener="#{viewUserBean.saveUser}" update="member" />
+                                <p:inputText value="#{viewUserBean.user.lastName}"
+                                             required="true" label="text"/>
+                            </p:inplace>
+                            <h:outputText value="Phone : " />
+                            <p:inplace id="ajaxInplace1" editor="true">
+                                <p:ajax event="save" listener="#{viewUserBean.saveUser}" update="member" />
+                                <p:inputText value="#{viewUserBean.user.phone}"
+                                             required="true" label="text" validator="phoneNumberValidator"/>
+                            </p:inplace>
+
+                            <h:outputText value="Email: " />
+                            <p:inplace id="ajaxInplace3" editor="true">
+                                <p:ajax event="save" listener="#{viewUserBean.saveUser}" update="member" />
+                                <p:inputText value="#{viewUserBean.user.email}"
+                                             required="true" label="text" validator="emailAddressValidator"/>
+                            </p:inplace>
+                            <h:outputText value="Assembly: " />
+
+                                <h:outputText value="#{viewUserBean.user.assembly.name}"
+                                             required="true" label="text" readonly="true"/>
+
+                            <h:outputText value="Role: " />
+                            <p:inplace id="selectableInplace"  effectSpeed="fast" event="dblclick" label="#{viewUserBean.user.role}">
+                                <h:selectOneMenu value="#{viewUserBean.user.role}" required="true">
+                                    <p:ajax listener="#{viewUserBean.saveUser}" update="member" event="change" process="@this"/>
+                                    <f:selectItems value="#{viewUserBean.roles}" />
+                                </h:selectOneMenu>
+                            </p:inplace>
+                            <h:outputText value="Status: " />
+                            <p:inplace id="selectableInplace3535"  effectSpeed="fast" event="dblclick" label="#{viewUserBean.user.status}">
+                                <h:selectOneMenu value="#{viewUserBean.user.status}" required="true">
+                                    <p:ajax listener="#{viewUserBean.saveUser}" update="member" event="change" process="@this"/>
+                                    <f:selectItems value="#{viewUserBean.userStates}" />
+                                </h:selectOneMenu>
+                            </p:inplace>
+
+                            <p:toolbar>
+                                <p:toolbarGroup align="center" style="width: 350px" >
+
+                                    <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                                    <p:separator />
+                                    <p:commandButton value="Reset Password" actionListener="#{viewUserBean.resetUserPassword}" update="messages" onclick="return confirm('Are you sure you want to reset the user password?')" />
+                                    <p:separator />
+                                    <p:commandButton value="Block User" actionListener="#{viewUserBean.blockUser}" update="messages" onclick="return confirm('Are you sure you want to BLOCK this user?')" />
+                                    <p:separator />
+                                    <p:commandButton value="UnBlock User" actionListener="#{viewUserBean.unBlockUser}" update="messages" onclick="return confirm('Are you sure you want to UNBLOCK this user?')" />                             </p:toolbarGroup>
+                            </p:toolbar>
+                        </h:panelGrid>
+
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="tab4" title="Profile Settings">
+
+                </p:tab>
+                <p:tab id="tab5" title="Audit Trail">
+                </p:tab>
+            </p:tabView>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

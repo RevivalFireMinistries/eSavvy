@@ -9,16 +9,93 @@
             <h3>View Assembly</h3>
         <p:tabView orientation="top">
             <p:tab title="Assembly Details">
-                <h:panelGrid columns="2" cellpadding="10">
-                    <p:graphicImage name="demo/images/godfather/godfather1.jpg" />
-                    <h:outputText
-                            value="The story begins as Don Vito Corleone..." />
-                </h:panelGrid>
+                <p:panelGrid columns="2" id="assembly" columnClasses="column" cellpadding="5" style="width:400px;">
+
+                    <h:outputText value="Name:" />
+                    <p:inplace id="basic" editor="true">
+                        <p:ajax event="save" listener="#{viewAssemblyBean.saveAssembly}" update="assembly" />
+                        <p:inputText value="#{viewAssemblyBean.assembly.name}" label="Name" />
+                    </p:inplace>
+
+                    <h:outputText value="Country:" />
+                    <h:outputText value="#{viewAssemblyBean.assembly.country}" />
+
+                    <h:outputText value="Address:" />
+                    <p:inplace id="basic44" editor="true">
+                        <p:ajax event="save" listener="#{viewAssemblyBean.saveAssembly}" update="assembly" />
+                        <p:inputText value="#{viewAssemblyBean.assembly.physicalAddress}" label="Name" />
+                    </p:inplace>
+
+                    <h:outputText value="Phone:" />
+                    <p:inplace id="basic65" editor="true">
+                        <p:ajax event="save" listener="#{viewAssemblyBean.saveAssembly}" update="assembly" />
+                        <p:inputText value="#{viewAssemblyBean.assembly.phone}" label="Name" />
+                    </p:inplace>
+                    <h:outputText value="Status:" />
+                    <p:inplace id="selectableInplace3535"  effectSpeed="fast" event="dblclick" label="#{viewAssemblyBean.assembly.status}">
+                        <h:selectOneMenu value="#{viewAssemblyBean.assembly.status}" required="true">
+                            <p:ajax listener="#{viewAssemblyBean.saveAssembly}" update="assembly" event="change" process="@this"/>
+                            <f:selectItems value="#{viewAssemblyBean.assemblyStates}" />
+                        </h:selectOneMenu>
+                    </p:inplace>
+                </p:panelGrid>
             </p:tab>
             <p:tab title="System Users">
                 <h:panelGrid columns="2" cellpadding="10">
-                    <p:graphicImage name="demo/images/godfather/godfather2.jpg" />
-                    <h:outputText value="Francis Ford Coppola's legendary..." />
+                    <h:form id="myform2" prependId="false">
+
+                        <p:dataTable  style="width:850px;" var="user" value="#{viewAssemblyBean.userList}" rowKey="#{user.username}" paginator="true" rows="10"
+                                      widgetVar="usersTable"     selection="#{viewAssemblyBean.selectedUser}" selectionMode="single" filteredValue="#{viewAssemblyBean.filteredUsers}" id="usersTable100">
+
+                            <p:ajax event="rowSelect"  listener="#{viewAssemblyBean.onRowSelect}" />
+
+                            <f:facet name="header">
+                                List of Users
+                            </f:facet>
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="usersTable.filter()" style="width:150px" />
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column headerText="UserName" sortBy="username" filterBy="username" id="username">
+                                #{user.username}
+                            </p:column>
+
+                            <p:column headerText="Full Name" sortBy="fullName" filterBy="fullName" id="fullName">
+                                #{user.fullname}
+                            </p:column>
+                            <p:column headerText="Role"  id="role">
+                                #{user.role}
+                            </p:column>
+                            <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
+                                #{user.phone}
+                            </p:column>
+                            <p:column headerText="Email" sortBy="email" filterBy="email" id="email">
+                                #{user.email}
+                            </p:column>
+                            <p:column headerText="Status" sortBy="status" filterBy="status" id="status">
+                                #{user.status}
+                            </p:column>
+
+
+                        </p:dataTable>
+                        <p:toolbar>
+                            <p:toolbarGroup align="center" style="width: 350px" >
+                                <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                                <p:separator />
+                                <p:commandButton id="showDialogButton" type="button" value="New User" actionListener="#{viewAssemblyBean.newUser}"/>
+
+                                <p:separator />
+                                <p:commandButton type="button" value="Enter Tithe" icon="ui-icon-folder-open" onclick="PF('dlg').show()" />
+                                <p:separator />
+
+                                <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
+                                <p:commandButton type="button" title="Print" icon="ui-icon-print"/>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+
+                    </h:form>
                 </h:panelGrid>
             </p:tab>
             <p:tab title="Members">

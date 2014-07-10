@@ -7,15 +7,19 @@ import za.org.rfm.model.User;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.UserService;
-import za.org.rfm.utils.Utils;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.WebUtil;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -106,7 +110,7 @@ public class LoginBean implements Serializable {
         this.emailService = emailService;
     }
 
-    public String loginProject() {
+    public void loginProject() {
 
         try {
             boolean result = getUserService().login(uname, password);
@@ -117,33 +121,52 @@ public class LoginBean implements Serializable {
 
                 session.setAttribute("username", uname);
                 User user = getUserService().getUser(uname);
+                if(user.getStatus().equalsIgnoreCase(Constants.STATUS_DELETED) || user.getStatus().equalsIgnoreCase(Constants.STATUS_IN_ACTIVE)){
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login failed : User blocked/deleted",null));
+                    //Utils.addFacesMessage("Invalid login details!",FacesMessage.SEVERITY_ERROR);
+                    logger.error("Failed login attempt - user blocked/deleted : "+uname);
+                    return;
+                }
                 setUser(user);
-                setAssembly(user.getMember().getAssembly());
-                session.setAttribute("assembyid",user.getAssembly());
-                List<Member> members = memberService.getMembersByAssembly(WebUtil.getUserAssemblyId());
+                setAssembly(user.getAssembly());
+                session.setAttribute("assembly", user.getAssembly());
+                logger.info("User's Assembly : "+user.getAssembly().getName());
                 //sendEmail(members);
                 logger.info("Login successful for user : "+user.getFullname());
-                return "home";
+                String url = "home.faces";
+                //now set the lastlogin to now
+                user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
+                userService.saveUser(user);
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
-                Utils.addFacesMessage("Invalid login details!",FacesMessage.SEVERITY_ERROR);
-                logger.error("Failed login attempt : "+uname);
-                return "login";
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Invalid login details!",null));
+                logger.error("Failed login attempt : " + uname);
             }
         } catch (Exception e) {
             logger.error("Login error : "+e.getMessage());
             e.printStackTrace();
-            Utils.addFacesMessage("System currently unavailable, Please try again later",FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"System currently unavailable, Please try again later!",null));
+
         }
-        return "login";
+       //return "login";
     }
 
-    public String logout() {
-        HttpSession session = WebUtil.getSession();
-        String user = WebUtil.getUserName();
-        session.invalidate();
-        Utils.addFacesMessage("Logout successful ",FacesMessage.SEVERITY_INFO);
-        logger.info("Logout user : "+user);
-        return "/login.xhtml?faces-redirect=true";
+    public void logout() {
+        try {
+            HttpSession session = WebUtil.getSession();
+            String user = WebUtil.getUserName();
+            session.invalidate();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            Flash flash = facesContext.getExternalContext().getFlash();
+            flash.setKeepMessages(true);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Logout successful", "Logout successful"));
+            String url = "login.faces";
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            logger.info("Logout user : "+user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     public void sendEmail(List<Member> members){
         System.out.println("Now sending an email....");

@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="form">
+
+    <p:growl id="growl" sticky="true" showDetail="true"/>
+
+    <p:wizard flowListener="#{userWizard.onFlowProcess}">
+        <p:tab id="personal" title="Personal">
+                <p:panel header="User Details">
+                <h:panelGrid id="grid" columns="3" cellpadding="10" >
+                    <h:outputLabel for="fname" value="First Name:" />
+                    <p:inputText id="fname"
+                                 value="#{userWizard.user.firstName}"  required="true"/>
+                    <p:message for="fname" />
+                    <h:outputLabel for="lname" value="Last Name:" />
+                    <p:inputText id="lname"   value="#{userWizard.user.lastName}"  rendered="true"/>
+                    <p:message for="lname" />
+                    <h:outputLabel for="email" value="Email:" />
+                    <p:inputText id="email"
+                                 value="#{userWizard.user.email}" required="true">
+                    <f:validator validatorId="emailAddressValidator" />
+                    </p:inputText>
+                    <p:message for="email" />
+                    <h:outputText value="Roles : " />
+                    <p:selectOneMenu value="#{userWizard.user.role}" required="true" id="role" >
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{userWizard.roles}" />
+                    </p:selectOneMenu>
+                    <p:message for="role" />
+                    <h:outputText value="Assembly : " />
+                    <p:selectOneMenu value="#{userWizard.assembly}" required="true" id="assembly">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{userWizard.assemblyMap.entrySet()}" var="entry"
+                                       itemValue="#{entry.key}" itemLabel="#{entry.value}"/>
+                    </p:selectOneMenu>
+                    <p:message for="assembly" />
+                    <h:outputLabel for="phoneNumber" value="Phone Number:" />
+                    <p:inputText id="phoneNumber"
+                                 value="#{userWizard.user.phone}"  required="true" validator="phoneNumberValidator"/>
+                    <p:message for="phoneNumber" />
+                    <p:spacer></p:spacer>
+                    <h:selectBooleanCheckbox value="#{userWizard.skip}" />
+                </h:panelGrid>
+                </p:panel>
+        </p:tab>
+
+        <p:tab id="confirm" title="Confirmation">
+            <p:panel header="Confirmation">
+
+                    <h:panelGrid columns="2" columnClasses="label, value">
+                        <h:outputText value="Firstname: " />
+                        <h:outputText value="#{userWizard.user.firstName}" styleClass="outputLabel"/>
+
+                        <h:outputText value="Lastname: " />
+                        <h:outputText value="#{userWizard.user.lastName}" styleClass="outputLabel"/>
+
+                        <h:outputText value="Email: " />
+                        <h:outputText value="#{userWizard.user.email}" styleClass="outputLabel"/>
+
+                        <h:outputText value="Phone: " />
+                        <h:outputText value="#{userWizard.user.phone}" styleClass="outputLabel"/>
+
+                        <h:outputText value="Role: " />
+                        <h:outputText value="#{userWizard.user.role}" styleClass="outputLabel"/>
+
+                        <h:outputText value="Assembly: " />
+                        <h:outputText value="#{userWizard.tempAssembly.name}" styleClass="outputLabel"/>
+
+
+                    </h:panelGrid>
+
+                <p:commandButton value="Submit" actionListener="#{userWizard.save}" update="growl" process="@this"/>
+            </p:panel>
+        </p:tab>
+    </p:wizard>
+
+</h:form>
+
+
+    </ui:define>
+</ui:composition>

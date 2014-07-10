@@ -4,6 +4,9 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import za.org.rfm.beans.Tithe;
+import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Member;
+import za.org.rfm.model.User;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -42,7 +45,17 @@ public class Utils {
         String moneyString = formatter.format(money);
         return moneyString;
     }
-
+    public static void capitaliseUser(User user){
+        user.setFirstName(capitaliseFirstLetter(user.getFirstName()));
+        user.setLastName(capitaliseFirstLetter(user.getLastName()));
+    }
+    public static void capitaliseMember(Member member){
+        member.setFirstName(capitaliseFirstLetter(member.getFirstName()));
+        member.setLastName(capitaliseFirstLetter(member.getLastName()));
+    }
+    public static String capitaliseFirstLetter(String original){
+        return original.length() == 0 ? original : original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
     public static String dateFormatter(Date date){
         SimpleDateFormat ft =
                 new SimpleDateFormat ("E dd.MM.yyyy ");
@@ -67,12 +80,10 @@ public class Utils {
                 String iso = locale.getISO3Country();
                 String code = locale.getCountry();
                 String name = locale.getDisplayCountry();
-
                 if (!"".equals(iso) && !"".equals(code) && !"".equals(name)) {
                     countries.add(new Country(iso, code, name));
                 }
             }catch (Exception e){
-                System.out.println(e.getMessage());
                 continue;
             }
         }
@@ -97,6 +108,13 @@ public class Utils {
         }
         return sortByValue(map);
     }
+    public static Map<Long,String> getAssembliesAsMap(List<Assembly> assemblyList){
+        Map<Long,String> map = new HashMap<Long, String>();
+        for(Assembly assembly : assemblyList){
+            map.put(assembly.getAssemblyid(),assembly.getName());
+        }
+        return map;
+    }
     public static String getCountryFriendlyName(String code){
         return getCountriesMap().get(code);
     }
@@ -118,7 +136,8 @@ public class Utils {
             URL url = new URL(urlstring);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             url = uri.toURL();
-            System.out.println(url);
+            logger.info("Sending sms...");
+            logger.info(url);
             HttpURLConnection wincon = (HttpURLConnection)url.openConnection();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -130,6 +149,7 @@ public class Utils {
                 x++;
             }
             in.close();
+            logger.info("Done!");
             //now check for failure
             if("FAIL".toLowerCase().contains(inputLine.toLowerCase())){
                 return false;
@@ -195,7 +215,12 @@ public class Utils {
         return new String[]{Constants.SERVICE_TYPE_SUNDAY,Constants.SERVICE_TYPE_MIDWEEK};
     }
 
-
+    public static void generateUserName(User user,int x) {
+        String username = user.getFirstName().charAt(0) + user.getLastName();
+        if(x > 0) //only  append the integer x  its not the first attempt -
+        username +=x;
+        user.setUsername(username.toLowerCase());
+    }
 
     public static boolean txnExists(List<Tithe> titheList, Tithe tithe) {
        for(Tithe t : titheList){
@@ -204,10 +229,33 @@ public class Utils {
                    return true;
                }
 
-           }
+        }
 
        }
         return false;
     }
 
+    public static String generateRandomPassword(int length){
+        StringBuffer sb = new StringBuffer();
+        for (int x = 0; x < length; x++)
+        {
+            sb.append((char)((int)(Math.random()*26)+97));
+        }
+        return sb.toString().toLowerCase();
+    }
+
+   public static List<String> getGroupsAsStringList(){
+       List<String> list = new ArrayList<String>();
+       for(Group group : Group.values()){
+              list.add(group.name());
+       }
+       return list;
+   }
+    public static List<Group> getGroupsAsList(){
+        List<Group> list = new ArrayList<Group>();
+        for(Group group : Group.values()){
+            list.add(group);
+        }
+        return list;
+    }
 }

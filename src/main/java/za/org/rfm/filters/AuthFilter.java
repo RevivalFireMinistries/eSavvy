@@ -46,7 +46,8 @@ public class AuthFilter implements Filter {
                 res.sendRedirect(req.getContextPath() + "/login.xhtml");  // Anonymous user. Redirect to login page
         }
         catch(Throwable t) {
-            System.out.println( t.getMessage());
+            logger.error(t.getMessage());
+            t.printStackTrace();
         }
     } //doFilter
 

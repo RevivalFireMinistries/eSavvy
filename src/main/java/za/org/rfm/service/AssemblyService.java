@@ -1,5 +1,6 @@
 package za.org.rfm.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +17,15 @@ import java.util.List;
 @Service("AssemblyService")
 @Transactional(readOnly = true)
 public class AssemblyService {
-
+    Logger logger = Logger.getLogger(AssemblyService.class);
     @Autowired
     AssemblyDAO assemblyDAO;
 
-    public List<Assembly> getAssemblyList(){
-        return assemblyDAO.getAssemblyList();
+    public List<Assembly> getAssemblyList(String status){
+        logger.debug("Getting assemblies by status : "+status);
+        List<Assembly> assemblyList = assemblyDAO.getAssemblyList(status);
+        logger.debug("Assemblies retrieved : "+assemblyList.size());
+        return assemblyList;
     }
 
     public Assembly getAssemblyById(long l) {

@@ -32,6 +32,15 @@ public class EnterTitheBean {
     MemberService memberService;
     @ManagedProperty(value="#{TxnService}")
     TxnService txnService;
+    String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public TxnService getTxnService() {
         return txnService;
@@ -124,6 +133,7 @@ public class EnterTitheBean {
         Member m = (Member)event.getObject();
         Member tmpmember = memberService.getMemberById(m.getId());
         setSelectedMember(tmpmember);
+        setPhone(tmpmember.getPhone());
     }
 
     public void addTithe(){
@@ -144,6 +154,7 @@ public class EnterTitheBean {
     }
     public void clear(){
         setSelectedMember(null);
+        setPhone("");
         setAmount(0.0);
         setDate(null);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Tithe form cleared"));
@@ -168,7 +179,7 @@ public class EnterTitheBean {
     public void submitAll(){
         int size = titheList.size();
         for(Tithe tithe: titheList){
-           txnService.processTithe(tithe);
+            txnService.processTithe(tithe);
             //create txn object and save to db
 
         }

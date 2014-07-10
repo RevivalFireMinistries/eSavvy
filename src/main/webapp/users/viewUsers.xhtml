@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="myform" prependId="false">
+
+            <p:dataTable  style="width:850px;" var="user" value="#{viewUsersBean.userList}" rowKey="#{user.username}" paginator="true" rows="10"
+                          widgetVar="usersTable"     selection="#{viewUsersBean.selectedUsers}" selectionMode="single" filteredValue="#{viewUsersBean.filteredUsers}" id="usersTable100">
+
+                <p:ajax event="rowSelect"  listener="#{viewUsersBean.onRowSelect}" />
+
+                <f:facet name="header">
+                    List of Users
+                </f:facet>
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="usersTable.filter()" style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column headerText="First Name" sortBy="firstName" filterBy="firstName" id="firstname">
+                    #{user.firstName}
+                </p:column>
+
+                <p:column headerText="Last Name" sortBy="lastName" filterBy="lastName" id="lastname">
+                    #{user.lastName}
+                </p:column>
+
+                <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
+                    #{user.phone}
+                </p:column>
+
+                <p:column headerText="Email"  id="email">
+                    #{user.email}
+                </p:column>
+                <p:column headerText="Role"  id="role">
+                    #{user.role}
+                </p:column>
+                <p:column headerText="Status"  id="status">
+                    #{user.status}
+                </p:column>
+                <p:column headerText="Assembly"  id="assembly">
+                    #{user.assembly.name}
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="User Detail" widgetVar="memberDialog" resizable="false"
+                      width="200" showEffect="explode" hideEffect="explode">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4"  >
+
+
+                    <h:outputText value="First Name:" />
+                    <h:outputText value="#{viewUsersBean.selectedUser.firstName}" id="firstName"/>
+
+                    <h:outputText value="Last Name:" />
+                    <h:outputText value="#{viewUsersBean.selectedUser.lastName}" id="lastName"/>
+
+                    <h:outputText value="Role:" />
+                    <h:outputText value="#{viewUsersBean.selectedUser.role}" id="phone"/>
+
+                    <h:outputText value="Status:" />
+                    <h:outputText value="#{viewUsersBean.selectedUser.status}" id="email"/>
+                </h:panelGrid>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

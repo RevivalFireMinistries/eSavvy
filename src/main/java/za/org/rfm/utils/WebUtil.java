@@ -1,5 +1,7 @@
 package za.org.rfm.utils;
 
+import za.org.rfm.model.Assembly;
+
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,21 +26,21 @@ public class WebUtil {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         return  session.getAttribute("username").toString();
     }
-
-    public static String getUserId()
+      //FIXME:This doesn't make sense!!!
+  /*  public static String getUserId()
     {
         HttpSession session = getSession();
         if ( session != null )
             return (String) session.getAttribute("userid");
         else
             return null;
-    }
+    }*/
 
     public static Long getUserAssemblyId(){
         HttpSession session = getSession();
         if ( session != null )  {
-            Long id = (Long)session.getAttribute("assembyid");
-            return  id;
+            Assembly assembly = (Assembly)session.getAttribute("assembly");
+            return  assembly.getAssemblyid();
         }
         else
             return null;

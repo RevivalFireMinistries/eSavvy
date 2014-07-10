@@ -6,33 +6,81 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
         <h:form prependId="false">
-            <p:growl id="growl" showDetail="true"/>
+
 
             <h3>Send SMS</h3>
             <p:panel header="Send SMS" footer="Visca el Barca!">
-               <h:form>
-                   <p:growl id="growl" sticky="true" showDetail="true"/>
+
+                   <p:growl id="growl4" sticky="true" showDetail="true"/>
 
                    <p:wizard flowListener="#{smsBean.onFlowProcess}"  style="width:600px;" >
 
-                   <!--<p:tab id="personal" title="Recepients">
+                   <p:tab id="assemblies" title="Select Assemblies">
 
-                       <p:panel header="Select Receipients">
+                       <p:panel header="Assemblies">
 
                            <h:messages errorClass="error"/>
+                           <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
 
-                           <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
-                               <h:outputText value="Assembly: " />
-                               <p:selectOneMenu value="#{smsBean.selectedAssembly}" effect="fade" converter="assemblyConverter">
-                                   <f:selectItem itemLabel="Select One" itemValue="" />
-                                   <f:selectItems value="#{smsBean.assemblyList}" var="assembly" itemLabel="#{assembly.name}" itemValue="#{assembly}"/>
-                               </p:selectOneMenu>
+                               <h:outputText value="Select Assembly(s):" />
+                               <p:selectManyCheckbox id="grid1" value="#{smsBean.selectedAssemblies}" layout="grid" columns="1" converter="assemblyConverter">
+                                   <f:selectItems value="#{smsBean.assemblyList}" var="asssembly" itemLabel="#{asssembly.name}" itemValue="#{asssembly}" />
+                               </p:selectManyCheckbox>
+
 
                                <h:outputText value="Skip to last: " />
                                <h:selectBooleanCheckbox value="#{smsBean.skip}" />
                            </h:panelGrid>
                        </p:panel>
-                   </p:tab>-->
+                   </p:tab>
+                       <p:tab id="groups" title="Groups">
+
+                           <p:panel header="Select Groups">
+
+                               <h:messages errorClass="error"/>
+                               <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+
+                                   <h:outputText value="Select Group(s):" />
+                                   <p:selectManyCheckbox id="grid" value="#{smsBean.selectedGroups}" layout="grid" columns="3" converter="groupConverter">
+                                       <f:selectItems value="#{smsBean.groupList}" var="group" itemLabel="#{group}" itemValue="#{group}" />
+                                   </p:selectManyCheckbox>
+
+
+                                   <h:outputText value="Skip to last: " />
+                                   <h:selectBooleanCheckbox value="#{smsBean.skip}" />
+                               </h:panelGrid>
+                           </p:panel>
+                       </p:tab>
+                       <p:tab id="finalList" title="Members List">
+                           <p:panel header="Final Members List">
+
+
+                                   <h:messages errorClass="error"/>
+                                   <p:dataTable id="members" var="member" value="#{smsBean.memberDataModel}" paginator="true" rows="10"
+                                                selection="#{smsBean.selectedMembers}">
+
+                                       <f:facet name="header">
+                                           Please UNTICK  members who to exclude in the sms
+                                       </f:facet>
+
+                                       <p:column selectionMode="multiple" style="width:2%" />
+
+                                       <p:column headerText="Member's Name" style="width:25%">
+                                           #{member.fullName}
+                                       </p:column>
+
+                                       <p:column headerText="Status" style="width:24%">
+                                           #{member.status}
+                                       </p:column>
+                                      <!-- <f:facet name="footer">
+                                           <p:commandButton id="present" value="Submit Register" icon="ui-icon-search"
+                                                            action="#{smsBean.send}"    oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);"/>
+                                       </f:facet>-->
+                                   </p:dataTable>
+
+
+                           </p:panel>
+                       </p:tab>
                        <p:tab id="sms" title="SMS">
                            <p:panel header="SMS Details">
 
@@ -50,28 +98,17 @@
                        </p:tab>
                        <p:tab id="confirm" title="Confirm">
                            <p:panel header="Confirmation">
-                               <h:outputText value="Assembly: " />
+
+                               <h:outputText value="SMS Message: " />
                                <h:outputText styleClass="outputLabel"
-                                             value="#{smsBean.assembly.name}" />
-                               <h:panelGrid id="confirmation" columns="6">
-                                   <h:outputText value="SMS: " />
-                                   <h:outputText styleClass="outputLabel"
-                                                 value="#{smsBean.sms}" />
-
-
-
-
-
-                                   <h:outputText />
-                               </h:panelGrid>
+                                             value="#{smsBean.sms}" />
 
                                <p:commandButton value="Submit" update="growl"
-                                                action="#{smsBean.send}"  oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);"/>
-
+                                                actionListener="#{smsBean.send}"/>
                            </p:panel>
                        </p:tab>
                    </p:wizard>
-               </h:form>
+
             </p:panel>
         </h:form>
 

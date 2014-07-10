@@ -25,7 +25,6 @@ import java.util.List;
 public class MemberConverter implements Converter {
 
     private static MemberService memberService;
-
     @Autowired
     private MemberService tmpMemberService;
     public List<Member> memberList ;

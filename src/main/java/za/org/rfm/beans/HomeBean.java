@@ -1,5 +1,6 @@
 package za.org.rfm.beans;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.chart.CartesianChartModel;
@@ -33,7 +34,7 @@ import java.util.List;
 @ManagedBean(name = "homeBean")
 @SessionScoped
 public class HomeBean {
-
+        Logger logger = Logger.getLogger(HomeBean.class);
         private CartesianChartModel categoryModel;
         private int avgAttendance;
         private String currentMonth;
@@ -48,9 +49,9 @@ public class HomeBean {
         double sum = 0.0;
         for(Event event1: events){
             sum += event1.getTotalIncome();
-            System.out.println("this event income "+event1.getTotalIncome());
+            logger.debug("this event income "+event1.getTotalIncome());
         }
-        System.out.println("sum  : "+sum);
+        logger.debug("sum  : "+sum);
         this.apostolic = sum*Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
     }
 
@@ -96,7 +97,7 @@ public class HomeBean {
         }
 
         public double getPercentageOfAttendance() {
-            System.out.println("----avg att: "+getAvgAttendance()+" registered :"+getAssembly().getMembersRegistered());
+            logger.debug("----avg att: "+getAvgAttendance()+" registered :"+getAssembly().getMembersRegistered());
             return getAvgAttendance()/getAssembly().getMembersRegistered();
         }
 
@@ -199,11 +200,12 @@ public class HomeBean {
 
         @PostConstruct
         public void init(){
+            System.out.println("");
             setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
             DateRange dateRange = initializeDateRange();
-            System.out.println("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
+            logger.debug("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
             events = eventService.getEventsByAssemblyAndType(Constants.SERVICE_TYPE_SUNDAY, WebUtil.getUserAssemblyId(), 4);
-            System.out.println("---num of events retrieved---"+events.size());
+            logger.debug("Number of events retrieved---"+events.size());
             //setEvents(events);
             lazyModel = new LazyEventDataModel(events);
             createCategoryModel();
@@ -249,6 +251,8 @@ public class HomeBean {
                 String url = "/members/addRegister.faces?eventid="+event.getId();
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } catch (IOException e) {
+                logger.error("Error : "+e.getMessage());
+                e.printStackTrace();
                 Utils.addFacesMessage("Error : Failed to open requested page", FacesMessage.SEVERITY_ERROR);
             }
         }

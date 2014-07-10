@@ -58,7 +58,7 @@ public class MemberBean implements Serializable{
 
     public List<Assembly> getAssemblyList() {
         if(getAssemblyList() == null || getAssemblyList().isEmpty()){
-            setAssemblyList(assemblyService.getAssemblyList());
+            setAssemblyList(assemblyService.getAssemblyList(Constants.STATUS_ALL));
         } else{
         }
         return getAssemblyList();
@@ -105,6 +105,7 @@ public class MemberBean implements Serializable{
         Account account = new Account();
         account.setMember(getMember());
         getMember().setAccount(account);
+        Utils.capitaliseMember(getMember());
         getMemberService().saveMember(getMember());
         Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved", FacesMessage.SEVERITY_INFO);
     }

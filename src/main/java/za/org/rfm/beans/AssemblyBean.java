@@ -2,14 +2,11 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FlowEvent;
-import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Member;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
-import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.Country;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -21,7 +18,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,14 +34,9 @@ public class AssemblyBean {
     AssemblyService assemblyService;
     private Assembly assembly;
     private boolean skip;
-    private Member selectedMember;
-    private Country selectedCountry;
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;
-    @ManagedProperty(value="#{UserService}")
-    UserService userService;
     List<Member> memberList;
-    List<Country> countryList;
     Map<String,String> countries;
 
     public Map<String, String> getCountries() {
@@ -74,21 +65,9 @@ public class AssemblyBean {
         countries = Utils.getCountriesMap();
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 
-    public Member getSelectedMember() {
-        return selectedMember;
-    }
 
-    public void setSelectedMember(Member selectedMember) {
-        this.selectedMember = selectedMember;
-    }
 
     public MemberService getMemberService() {
         return memberService;
@@ -123,50 +102,8 @@ public class AssemblyBean {
     }
 
 
-    public Country getSelectedCountry() {
-        return selectedCountry;
-    }
 
-    public void setSelectedCountry(Country selectedCountry) {
-        logger.info("Now setting  selected country : "+selectedCountry.getName());
-        this.selectedCountry = selectedCountry;
-    }
 
-    public List<Member> getMemberList() {
-        return memberList;
-    }
-
-    public void setMemberList(List<Member> memberList) {
-        this.memberList = memberList;
-    }
-
-    public List<Country> getCountryList() {
-        return countryList;
-    }
-
-    public void setCountryList(List<Country> countryList) {
-        this.countryList = countryList;
-    }
-
-    public void onCountryChange(SelectEvent event) {
-        Country c = (Country)event.getObject();
-        Country tmpCountry = Utils.getSelectedCountry(c.getCode());
-        setSelectedCountry(tmpCountry);
-    }
-    public List<Country> completeCountry(String query){
-        List<Country> suggestions = new ArrayList<Country>();
-        for(Country country: countryList){
-            if(country.getName().toLowerCase().startsWith(query.toLowerCase())){
-                suggestions.add(country);
-            }
-        }
-        return suggestions;
-    }
-    public void onNameChange(SelectEvent event) {
-        Member m = (Member)event.getObject();
-        Member tmpmember = memberService.getMemberById(m.getId());
-        setSelectedMember(tmpmember);
-    }
     public String onFlowProcess(FlowEvent event) {
         logger.info("Current wizard step:" + event.getOldStep());
         logger.info("Next step:" + event.getNewStep());

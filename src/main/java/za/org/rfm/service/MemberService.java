@@ -1,10 +1,12 @@
 package za.org.rfm.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.MemberDAO;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.MemberGroup;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @Service("MemberService")
 @Transactional(readOnly = true)
 public class MemberService {
+    Logger logger = Logger.getLogger(MemberService.class);
     @Autowired
     MemberDAO memberDAO;
 
@@ -28,7 +31,15 @@ public class MemberService {
         return memberDAO.getMembersByAssembly(assemblyid);
     }
 
-    public Member getMemberById(long memberid) {
-        return memberDAO.getMemberById(memberid);
+    public Member getMemberById(long memberId) {
+        return memberDAO.getMemberById(memberId);
+    }
+    public List<MemberGroup> getMemberGroups(long memberId){
+        return  memberDAO.getMemberGroups(memberId);
+    }
+    @Transactional(readOnly = false)
+    public void saveMemberGroup(MemberGroup memberGroup){
+        memberDAO.saveMemberGroup(memberGroup);
+        logger.debug("Group saved successfully : "+memberGroup.getMember().getFullName()+" - "+memberGroup.getGroupName());
     }
 }

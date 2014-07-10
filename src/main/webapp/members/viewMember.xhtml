@@ -5,6 +5,11 @@
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
+    <style type="text/css">
+        .datalist-noborder .ui-widget-content {
+            border: none;
+        }
+    </style>
     <h:form prependId="false" id="membersform">
         <p:tabView id="tabView" dynamic="true" cache="true">
         <p:growl id="growl" sticky="true" showDetail="true" autoUpdate="true"/>
@@ -52,11 +57,11 @@
                 </p:inplace>
                 <h:outputText value="Status: " />
                 <p:inplace id="selectableInplace3535"  effectSpeed="fast" event="dblclick" label="#{viewMemberBean.member.status}">
-                    <h:selectOneMenu value="#{viewMemberBean.member.status}" required="true">
-                        <p:ajax listener="#{viewMemberBean.saveMember}" update="member" event="change" process="@this"/>
-                        <f:selectItems value="#{viewMemberBean.memberStates}" />
-                    </h:selectOneMenu>
-                </p:inplace>
+                <h:selectOneMenu value="#{viewMemberBean.member.status}" required="true">
+                    <p:ajax listener="#{viewMemberBean.saveMember}" update="member" event="change" process="@this"/>
+                    <f:selectItems value="#{viewMemberBean.memberStates}" />
+                </h:selectOneMenu>
+            </p:inplace>
 
                 <p:toolbar>
                 <p:toolbarGroup align="center" style="width: 350px" >
@@ -99,7 +104,7 @@
 
                         <h:panelGrid columns="2" style="margin-bottom:10px">
                             <h:outputText value="Tithe  Date: " />
-                            <p:calendar maxdate="#{viewMemberBean.maxDate}" required="true" value="#{viewMemberBean.tithe.date}" id="popupButtonCal" showOn="button" />
+                            <p:calendar maxdate="#{viewMemberBean.maxDate}" required="true" value="#{viewMemberBean.tithe.txnDate}" id="popupButtonCal" showOn="button" />
                             <h:outputLabel for="amount" value="Amount:" />
                             <p:inputText id="amount"
                                          value="#{viewMemberBean.tithe.amount}" required="true" >
@@ -171,8 +176,38 @@
                     </p:tab>
             <p:tab id="tab4" title="Attendance History">
                     </p:tab>
-            <p:tab id="tab5" title="Ministry Involvement">
-                    </p:tab>
+            <p:tab id="tab5" title="Ministry Involvement" >
+                <p:messages id="msgspick"/>
+                <h:form id="form">
+                    <p:fieldset legend="#{viewMemberBean.fullName}'s Current Groups" style="margin-bottom:20px">
+
+                            <div class="datalist-noborder">
+                                <p:dataList value="#{viewMemberBean.memberGroupList}" var="grp" type="ordered" id="grpList">
+                                    #{grp.groupName}
+                                </p:dataList>
+                            </div>
+
+                    </p:fieldset>
+
+                </h:form>
+                <h:outputText style="color: red" value="Select items to and from inorder to change this member's groups"></h:outputText>
+                <p:pickList id="PojoPickList" value="#{viewMemberBean.groups}" var="grp" effect="bounce"
+                            itemValue="#{grp}" itemLabel="#{grp}" showSourceControls="true" showTargetControls="true" showCheckbox="true"
+                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="groupConverter">
+
+                    <f:facet name="sourceCaption">Groups in the Church</f:facet>
+                    <f:facet name="targetCaption">#{viewMemberBean.fullName}'s groups</f:facet>
+                    <p:ajax event="transfer" listener="#{viewMemberBean.onTransfer}"  update="PojoPickList msgspick tabView:form:grpList" />
+                    <p:column style="width:25%">
+                        <h:outputText styleClass="ui-theme ui-theme-#{grp}" />
+                    </p:column>
+
+                    <p:column style="width:75%;">
+                        <h:outputText value="#{grp}" />
+                    </p:column>
+                </p:pickList>
+
+            </p:tab>
         </p:tabView>
     </h:form>
 

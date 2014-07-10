@@ -28,6 +28,8 @@ public class Assembly extends ChurchManagerEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
     private List<Member> members;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
+    private List<User> users;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assembly")
     private List<Event> events;
     private int targetAttendance;
     private int membersRegistered;

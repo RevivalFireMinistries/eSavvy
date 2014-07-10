@@ -4,9 +4,13 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.FlowEvent;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.MemberDataModel;
+import za.org.rfm.model.MemberGroup;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SMSService;
+import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -16,7 +20,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +34,61 @@ public class SendSMS {
     private static Logger logger = Logger.getLogger(SendSMS.class.getName());
     @ManagedProperty(value="#{AssemblyService}")
     AssemblyService assemblyService;
+    Assembly[] selectedAssemblies;
+    Group[] selectedGroups;
+    List<Group> groupList;
+    private MemberDataModel memberDataModel;
+    private List<Member> memberList;
+
+    public List<Member> getMemberList() {
+        return memberList;
+    }
+
+    public void setMemberList(List<Member> memberList) {
+        this.memberList = memberList;
+    }
+
+    private List<Member> selectedMembers;
+
+    public MemberDataModel getMemberDataModel() {
+        return memberDataModel;
+    }
+
+    public void setMemberDataModel(MemberDataModel memberDataModel) {
+        this.memberDataModel = memberDataModel;
+    }
+
+    public List<Member> getSelectedMembers() {
+        return selectedMembers;
+    }
+
+    public void setSelectedMembers(List<Member> selectedMembers) {
+        this.selectedMembers = selectedMembers;
+    }
+
+    public Group[] getSelectedGroups() {
+        return selectedGroups;
+    }
+
+    public void setSelectedGroups(Group[] selectedGroups) {
+        this.selectedGroups = selectedGroups;
+    }
+
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<Group> groupList) {
+        this.groupList = groupList;
+    }
+
+    public Assembly[] getSelectedAssemblies() {
+        return selectedAssemblies;
+    }
+
+    public void setSelectedAssemblies(Assembly[] selectedAssemblies) {
+        this.selectedAssemblies = selectedAssemblies;
+    }
 
     public MemberService getMemberService() {
         return memberService;
@@ -58,7 +117,10 @@ public class SendSMS {
     public String onFlowProcess(FlowEvent event) {
         logger.info("Current wizard step:" + event.getOldStep());
         logger.info("Next step:" + event.getNewStep());
-
+        if(event.getOldStep().equalsIgnoreCase("groups")) {
+           //prepare final members list from the select assembly and group
+            loadMembersDataList();
+        }
         if(skip) {
             skip = false;	//reset in case user goes back
             return "confirm";
@@ -67,7 +129,39 @@ public class SendSMS {
             return event.getNewStep();
         }
     }
+    private void loadMembersDataList(){
+        List<Member> tempList = new ArrayList<Member>();
+        //first add all members from the selected assemblies
+        for(Assembly assembly1 : getSelectedAssemblies()){
+            List<Member> assemblyMembers = memberService.getMembersByAssembly(assembly1.getAssemblyid());
+            if( assemblyMembers != null){
+                logger.debug("got "+assemblyMembers.size()+" for assembly :"+assembly1.name);
+                memberList.addAll(assemblyMembers);
+            }
 
+        }
+        //now for these members filter by selected groups
+        for(Member member : memberList){
+            if(isAllowed(member,selectedGroups)){
+                tempList.add(member);
+            }
+        }
+        memberDataModel = new MemberDataModel(tempList);
+
+    }
+    private boolean isAllowed(Member member,Group[] selectedGroups){
+        for(MemberGroup memberGroup : member.getMemberGroupList()){
+            for(Group group : selectedGroups){
+                if(group.equals(Group.valueOf(memberGroup.getGroupName()))){
+                    logger.debug("Member added to final list : "+member.getFullName());
+                    //there is a match so return with true
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
     public String getSms() {
         return sms;
     }
@@ -124,11 +218,10 @@ public class SendSMS {
     public void init() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        HttpSession session = WebUtil.getSession();
-        Long id = (Long)session.getAttribute("assembyid");
-        setAssembly(assemblyService.getAssemblyById(id));
-        setAssemblyList(assemblyService.getAssemblyList());
-
+        setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
+        setAssemblyList(assemblyService.getAssemblyList(Constants.STATUS_ACTIVE));
+        setGroupList(Utils.getGroupsAsList());
+        memberList = new ArrayList<Member>();
     }
 
     public void send(){

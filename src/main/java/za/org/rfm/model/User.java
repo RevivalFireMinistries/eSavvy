@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -23,10 +24,11 @@ public final class User extends ChurchManagerEntity {
     @Id
     private String username;
     // The user's name
-    @OneToOne(fetch = FetchType.EAGER)
-    private Member member;
-    private String fullname,password,status,role;
+    private String firstName,lastName,phone,email,password,status,role;
     private Date dateCreated;
+    private Timestamp lastLoginDate;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assembly")
     private Assembly assembly;
 
     public User(String username){
@@ -34,15 +36,8 @@ public final class User extends ChurchManagerEntity {
     }
 
     public String getFullname() {
-       return this.member.getFullName();
-        //return "Chacharak";
+       return this.firstName+" "+getLastName();
     }
-
-    public Long getAssembly(){
-        return getMember().getAssembly().getAssemblyid();
-    }
-
-
 
     /**
      * @see java.lang.Object#toString()

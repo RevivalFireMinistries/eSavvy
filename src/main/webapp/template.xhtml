@@ -40,31 +40,69 @@
 </h:head>
 
 <h:body>
+    <h:form>
+        <p:growl id="messages"/>
 
+        <p:menubar>
+            <p:submenu label="File" icon="ui-icon-document">
+                <p:submenu label="New" icon="ui-icon-contact">
+                    <p:menuitem value="Project" url="#" />
+                    <p:menuitem value="Other" url="#" />
+                </p:submenu>
+                <p:menuitem value="Open" url="#" />
+                <p:separator />
+                <p:menuitem value="Quit" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Edit" icon="ui-icon-pencil">
+                <p:menuitem value="Undo" url="#" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" />
+            </p:submenu>
+
+            <p:submenu label="Help" icon="ui-icon-help">
+                <p:menuitem value="Contents" url="#" />
+                <p:submenu label="Search" icon="ui-icon-search">
+                    <p:submenu label="Text">
+                        <p:menuitem value="Workspace" url="#" />
+                    </p:submenu>
+                    <p:menuitem value="File" url="#" />
+                </p:submenu>
+            </p:submenu>
+
+            <p:submenu label="Actions" icon="ui-icon-gear">
+                <p:submenu label="Ajax" icon="ui-icon-refresh">
+                    <p:menuitem value="Save" actionListener="#{menuView.save}" icon="ui-icon-disk" />
+                    <p:menuitem value="Update" actionListener="#{menuView.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>
+                </p:submenu>
+                <p:submenu label="Non-Ajax" icon="ui-icon-newwin">
+                    <p:menuitem value="Delete" actionListener="#{menuView.delete}" icon="ui-icon-close" update="messages" ajax="false"/>
+                </p:submenu>
+            </p:submenu>
+
+            <p:menuitem value="Logout"  icon="ui-icon-close"  actionListener="#{menuView.logout}"   />
+
+            <f:facet name="options">
+                <p:carousel headerText="Basic" var="car" itemStyleClass="carItem">
+                <p:panelGrid >
+
+                <p:row>
+                    <p:column >russel</p:column>
+                    <p:column >Stellenboch</p:column>
+                    <p:column >Pastor</p:column>
+                    <p:column>28/90/2014</p:column>
+                </p:row>
+                </p:panelGrid>
+                </p:carousel>
+            </f:facet>
+        </p:menubar>
+    </h:form>
 <div id="head">
  <div id="head_cen">
   <div id="head_sup" class="head_height">
 <h1 class="logo"></h1>
-   <p class="search">
-    <label>SEARCH</label>
-    <input name="search" type="text" class="txt" />
-    <input name="search-btn" type="submit" class="btn" value="SEARCH" />
-   </p>
-    
-      
+
   </div>
-     <h:form>
-     <p:dock position="top" style="color: #ffffff">
-         <p:menuitem style="color: #ffffff" value="Home" icon="/images/home.png" url="/home.faces"/>
-         <p:menuitem style="color: #ffffff" value="Members" icon="/images/members.png" url="/members/viewMembers.faces"/>
-         <p:menuitem style="color: #ffffff" value="Reports" icon="/images/reports.png" url="/services/viewReports.faces"/>
-         <p:menuitem style="color: #ffffff" value="SMS" icon="/images/sms.png" url="/sms/sendSMS.faces"/>
-         <p:menuitem style="color: #ffffff" value="Tithes" icon="/images/tithe.png" url="/tithes/enterTithe.faces"/>
-         <p:menuitem style="color: #ffffff" value="Finance" icon="/images/finance.png" url="/tithes/finance.faces"/>
-          <p:menuitem style="color: #ffffff" value="Help" icon="/images/help.png" url="/help.faces"/>
-         <p:menuitem style="color: #ffffff" value="Logout" icon="/images/logout.png" action="#{loginBean.logout}"/>
-     </p:dock>
-     </h:form>
+
  </div>
 </div>
 <div id="content">
