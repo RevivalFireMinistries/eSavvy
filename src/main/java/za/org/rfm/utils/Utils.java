@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 import za.org.rfm.beans.Tithe;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.SystemVar;
 import za.org.rfm.model.User;
 
 import javax.faces.application.FacesMessage;
@@ -107,6 +108,13 @@ public class Utils {
             ex.printStackTrace();
         }
         return sortByValue(map);
+    }
+    public static Map<Long,String> getVarsAsMap(List<SystemVar> vars){
+        Map<Long,String> map = new HashMap<Long, String>();
+        for(SystemVar var : vars){
+            map.put(var.getId(),var.getName());
+        }
+        return map;
     }
     public static Map<Long,String> getAssembliesAsMap(List<Assembly> assemblyList){
         Map<Long,String> map = new HashMap<Long, String>();

@@ -2,6 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
@@ -9,10 +10,12 @@
 
 
             <h3>Send SMS</h3>
-            <p:panel header="Send SMS" footer="Visca el Barca!">
+            <p:panel header="Send SMS" footer="">
+                <p:progressBar widgetVar="pbAjax" ajax="true" value="#{smsBean.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
+                    <p:ajax event="complete" listener="#{smsBean.onComplete}" update="messages" oncomplete="startButton2.enable()"/>
+                </p:progressBar>
 
-                   <p:growl id="growl4" sticky="true" showDetail="true"/>
-
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
                    <p:wizard flowListener="#{smsBean.onFlowProcess}"  style="width:600px;" >
 
                    <p:tab id="assemblies" title="Select Assemblies">
@@ -23,7 +26,7 @@
                            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
 
                                <h:outputText value="Select Assembly(s):" />
-                               <p:selectManyCheckbox id="grid1" value="#{smsBean.selectedAssemblies}" layout="grid" columns="1" converter="assemblyConverter">
+                               <p:selectManyCheckbox id="assembly" value="#{smsBean.selectedAssemblies}" layout="grid" columns="1" converter="assemblyConverter" required="true" requiredMessage="Please select at least one Assembly">
                                    <f:selectItems value="#{smsBean.assemblyList}" var="asssembly" itemLabel="#{asssembly.name}" itemValue="#{asssembly}" />
                                </p:selectManyCheckbox>
 
@@ -41,7 +44,7 @@
                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
 
                                    <h:outputText value="Select Group(s):" />
-                                   <p:selectManyCheckbox id="grid" value="#{smsBean.selectedGroups}" layout="grid" columns="3" converter="groupConverter">
+                                   <p:selectManyCheckbox id="group" value="#{smsBean.selectedGroups}" layout="grid" columns="2" converter="groupConverter" required="true" requiredMessage="Please select at least one group">
                                        <f:selectItems value="#{smsBean.groupList}" var="group" itemLabel="#{group}" itemValue="#{group}" />
                                    </p:selectManyCheckbox>
 
@@ -52,15 +55,16 @@
                            </p:panel>
                        </p:tab>
                        <p:tab id="finalList" title="Members List">
-                           <p:panel header="Final Members List">
+                           <p:panel header="Final Members List : Total SMS Messages : #{fn:length(smsBean.selectedMembers)}">
 
 
-                                   <h:messages errorClass="error"/>
-                                   <p:dataTable id="members" var="member" value="#{smsBean.memberDataModel}" paginator="true" rows="10"
-                                                selection="#{smsBean.selectedMembers}">
+                                   <h:messages errorClass="error" style="color:red; font-weight: bolder"/>
+                                   <p:dataTable id="members" var="member" value="#{smsBean.memberDataModel}" paginator="true"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                rowsPerPageTemplate="5,10,15,20"  selection="#{smsBean.selectedMembers}" >
 
                                        <f:facet name="header">
                                            Please UNTICK  members who to exclude in the sms
+
                                        </f:facet>
 
                                        <p:column selectionMode="multiple" style="width:2%" />
@@ -72,10 +76,9 @@
                                        <p:column headerText="Status" style="width:24%">
                                            #{member.status}
                                        </p:column>
-                                      <!-- <f:facet name="footer">
-                                           <p:commandButton id="present" value="Submit Register" icon="ui-icon-search"
-                                                            action="#{smsBean.send}"    oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);"/>
-                                       </f:facet>-->
+                                       <f:facet name="footer">
+                                           In total there are #{fn:length(smsBean.selectedMembers)} members.
+                                       </f:facet>
                                    </p:dataTable>
 
 
@@ -87,9 +90,17 @@
                                <h:messages errorClass="error"/>
 
                                <h:panelGrid columns="2" columnClasses="label, value">
+                                   <p:outputLabel for="template" value="Select a predefined sms: " />
+                                   <p:selectOneMenu id="template" value="#{smsBean.selectedTmpl}" >
+                                       <p:ajax listener="#{smsBean.onTemplateChange}" update="smsBody" />
+                                       <f:ajax render="smsBody" listener="#{smsBean.onTemplateChange}" event="change" execute="@this"  />
+                                       <f:selectItem itemLabel="Select an SMS Template..." itemValue="" />
+                                       <f:selectItems value="#{smsBean.systemVars.entrySet()}" var="entry"
+                                                      itemValue="#{entry.key}" itemLabel="#{entry.value}"/>
+                                   </p:selectOneMenu>
                                    <h3>Remaining Chars</h3>
-                                   <p:inputTextarea rows="8" cols="50" counter="counter" maxlength="150"
-                                                    counterTemplate="{0} characters remaining." autoResize="false" value="#{smsBean.sms}"/>
+                                   <p:inputTextarea id="smsBody" rows="8" cols="50" counter="counter" maxlength="150"
+                                                    counterTemplate="{0} characters remaining." autoResize="true" value="#{smsBean.sms}" />
                                    <h:outputText id="counter" />
                                    <h:outputText value="Skip to last: " />
                                    <h:selectBooleanCheckbox value="#{smsBean.skip}" />
@@ -98,13 +109,25 @@
                        </p:tab>
                        <p:tab id="confirm" title="Confirm">
                            <p:panel header="Confirmation">
+                               <p:panelGrid columns="2">
+                                   <f:facet name="header">
+                                       <h:outputText value="You are encouraged to proof read your sms against spelling mistakes and grammatical errors before sending "  style="color:white;font-weight: bolder; font-family: Times New Roman"/>
+                                   </f:facet>
+                                   <h:outputText value="Total SMSes to be sent:" />
+                                   <h:outputText value="#{fn:length(smsBean.selectedMembers)}" />
 
-                               <h:outputText value="SMS Message: " />
-                               <h:outputText styleClass="outputLabel"
-                                             value="#{smsBean.sms}" />
+                                   <h:outputText value="Message Body:" />
+                                   <h:outputText value="#{smsBean.sms}" />
+                                   <f:facet name="footer">
 
-                               <p:commandButton value="Submit" update="growl"
-                                                actionListener="#{smsBean.send}"/>
+                                       <p:commandButton value="Start" type="button"   action="#{smsBean.goToNextpage}" onclick="PF('pbAjax').start();myRemote();PF('startButton2').disable();" widgetVar="startButton2" />
+                                       <p:commandButton value="Cancel" actionListener="#{smsBean.cancel}" oncomplete="PF('pbAjax').cancel();PF('startButton2').enable();" />
+                                       <p:remoteCommand name="myRemote" actionListener="#{smsBean.send}"/>
+                                       <br /><br />
+
+                                   </f:facet>
+                               </p:panelGrid>
+
                            </p:panel>
                        </p:tab>
                    </p:wizard>

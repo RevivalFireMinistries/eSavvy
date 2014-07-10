@@ -37,8 +37,9 @@ public class MemberDAO {
 
 
     public List<Member> getMembersByAssembly(long assemblyid) {
-        Query query = sessionFactory.getCurrentSession().createQuery("from Member where assembly =:assemblyid");
+        Query query = sessionFactory.getCurrentSession().createQuery("from Member where assembly =:assemblyid and status !=:status");
         query.setLong("assemblyid",assemblyid);
+        query.setString("status",Constants.STATUS_DELETED);
         List<Member> memberList = (List<Member>)query.list();
         return memberList;
     }
