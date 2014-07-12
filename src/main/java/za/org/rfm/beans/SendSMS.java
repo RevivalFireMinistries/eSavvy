@@ -297,7 +297,7 @@ public class SendSMS {
         this.progress = progress;
     }
 
-    public void send(){
+    public String send(){
        //now send to the finalised group
         logger.debug("Now sending sms...");
         setProgress(0);
@@ -309,6 +309,8 @@ public class SendSMS {
         }
         logger.debug("SMS sending completed!");
         setProgress(100);   //done!
+
+        return "sendSMS";
 
     }
 

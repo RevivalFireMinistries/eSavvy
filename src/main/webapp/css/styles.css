@@ -104,3 +104,7 @@ ul#infoPan li p.descrip						{margin-top:13px; font-size:12px; line-height:16px;
 #service_pan ul li h5						{width:auto; margin:10px 0 0 10px; float:left; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#31a1ff}
 #service_pan ul li p						{width:300px; margin:5px 0 0 10px; float:left; font-family:"Trebuchet MS", Arial, Helvetica, sans-serif; font-size:12px; color:#5c5c5c}
 #service_pan ul li p a						{width:auto; float:right; color:#31a1ff}
+.styleGreen {
+    background-color: #009900;
+    font-family: Arial,Helvetica,sans-serif;
+}

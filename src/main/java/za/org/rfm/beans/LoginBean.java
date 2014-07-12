@@ -77,6 +77,9 @@ public class LoginBean implements Serializable {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+    public String changePassword(){
+        return "changePassword";
+    }
 
     public String getMessage() {
         return message;
@@ -151,7 +154,7 @@ public class LoginBean implements Serializable {
        //return "login";
     }
 
-    public void logout() {
+    public String logout() {
         try {
             HttpSession session = WebUtil.getSession();
             String user = WebUtil.getUserName();
@@ -163,10 +166,11 @@ public class LoginBean implements Serializable {
             String url = "login.faces";
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             logger.info("Logout user : "+user);
+            return "login";
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+       return "";
     }
     public void sendEmail(List<Member> members){
         System.out.println("Now sending an email....");

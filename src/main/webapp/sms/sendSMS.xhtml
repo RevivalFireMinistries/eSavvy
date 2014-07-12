@@ -121,7 +121,7 @@
                                    <f:facet name="footer">
 
                                        <p:commandButton value="Start" type="button"   action="#{smsBean.goToNextpage}" onclick="PF('pbAjax').start();myRemote();PF('startButton2').disable();" widgetVar="startButton2" />
-                                       <p:commandButton value="Cancel" actionListener="#{smsBean.cancel}" oncomplete="PF('pbAjax').cancel();PF('startButton2').enable();" />
+                                       <p:commandButton value="Cancel" actionListener="#{smsBean.cancel}" oncomplete="PF('pbAjax').cancel();PF('startButton2').enable();wiz.loadStep (wiz.cfg.steps [0], true)" />
                                        <p:remoteCommand name="myRemote" actionListener="#{smsBean.send}"/>
                                        <br /><br />
 
