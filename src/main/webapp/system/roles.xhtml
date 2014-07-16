@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+
+
+            <h:form>
+                <p:panel id="panel" header="New Role">
+                    <p:messages id="msgs" />
+                    <h:panelGrid columns="3" cellpadding="5">
+                        <p:outputLabel for="name" value="Role Name:" />
+                        <p:inputText id="name" value="#{rolesBean.role.name}" required="true" label="Name">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>
+                        <p:message for="name" display="icon" />
+
+                        <p:outputLabel for="desc" value="Description:" />
+                        <p:inputText id="desc" value="#{rolesBean.role.description}" label="Description" required="true">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>
+                        <p:message for="desc" id="msgValue" display="icon" />
+
+                    </h:panelGrid>
+
+                    <p:commandButton value="Save" update="panel :form:vars" actionListener="#{rolesBean.save}" icon="ui-icon-check" />
+                </p:panel>
+            </h:form>
+        <h:form id="form">
+            <p:messages id="msgs" />
+            <p:dataTable id="vars" var="var" value="#{rolesBean.roles}" editable="true" style="margin-bottom:20px" paginator="true"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15" widgetVar="varsTable">
+                <f:facet name="header">
+                    System Roles
+                </f:facet>
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('varsTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+                <p:ajax event="rowEdit" listener="#{rolesBean.onRowEdit}" update=":form:vars :form:msgs"/>
+                <p:ajax event="rowEditCancel" listener="#{rolesBean.onRowCancel}" update=":form:vars :form:msgs" />
+
+                <p:column headerText="Name" sortBy="#{var.name}" filterBy="#{var.name}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{var.name}" /></f:facet>
+                        <f:facet name="input"><p:inputText id="modelInput" value="#{var.name}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Description" sortBy="#{var.description}"  filterBy="#{var.description}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{var.description}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{var.description}" style="width:100%" label="Year"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

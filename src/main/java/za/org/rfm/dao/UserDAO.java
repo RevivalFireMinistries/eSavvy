@@ -103,4 +103,8 @@ public class UserDAO {
        }
         return false;
     }
+    public void saveRole(Role role1) {
+        getSessionFactory().getCurrentSession().saveOrUpdate(role1);
+    }
+
 }

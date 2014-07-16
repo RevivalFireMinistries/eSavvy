@@ -84,5 +84,8 @@ public class UserService {
     public void saveOrUpdateUserRole(UserRole userRole1) {
         userDAO.saveOrUpdateUserRole(userRole1);
     }
-
+    @Transactional(readOnly = false)
+    public void saveRole(Role role1) {
+        userDAO.saveRole(role1);
+    }
 }

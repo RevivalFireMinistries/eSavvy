@@ -155,6 +155,25 @@ public class MenuBean {
         /////////////////////////////////////
         }
 
+        if(Utils.isAuthorised(currentUser, Role.SuperAdmin) ){
+            //System mgt
+            DefaultSubMenu secondSubmenu = new DefaultSubMenu("System Config");
+            DefaultMenuItem item = new DefaultMenuItem();
+            item = new DefaultMenuItem("Manage");
+            item.setUrl("/system/viewSystemConfig.faces");
+            item.setIcon("ui-icon-home");
+            secondSubmenu.addElement(item);
+            model.addElement(secondSubmenu);
+
+            item = new DefaultMenuItem();
+            item = new DefaultMenuItem("Roles");
+            item.setUrl("/system/roles.faces");
+            item.setIcon("ui-icon-home");
+            secondSubmenu.addElement(item);
+            model.addElement(secondSubmenu);
+            /////////////////////////////////////
+        }
+
     }
     public MenuBean() {
 
