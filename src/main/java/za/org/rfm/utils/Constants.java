@@ -42,7 +42,7 @@ public class Constants {
 
     //roles
     public static final String USER_ROLE_PASTOR = "Pastor";
-    public static final String USER_ROLE_ADMINISTRATOR = "Admin";
+    public static final String USER_ROLE_ADMINISTRATOR = "Administrator";
     public static final String USER_ROLE_SUPER_ADMIN = "Super Admin";
 
     public static String[]roles = {USER_ROLE_ADMINISTRATOR,USER_ROLE_PASTOR,USER_ROLE_SUPER_ADMIN};

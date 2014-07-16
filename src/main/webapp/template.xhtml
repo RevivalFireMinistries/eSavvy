@@ -90,7 +90,7 @@
                 <p:row >
                     <p:column><b>Logged in as :</b>  <i>#{loginBean.user.fullname}</i></p:column>
                     <p:column ><b>Assembly :</b> <i>#{loginBean.user.assembly.name}</i></p:column>
-                    <p:column ><b>Role : </b><i>#{loginBean.user.role}</i></p:column>
+                    <p:column ><b>Role(s) : </b><i>#{loginBean.user.roleToString}</i></p:column>
                     <!--<p:column><b>Last Login :</b> <i><h:outputText value="#{loginBean.user.lastLoginDate}" ><f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputText></i></p:column>-->
                              <p:column ><h:commandButton value="Change Password" style="background-color: #000000;color: #ffffff;font-family: Arial,Helvetica,sans-serif;" action="/users/changePassword"></h:commandButton></p:column>
                     <p:column ><h:commandButton value="Logout" style="background-color: #000000;color: #ffffff;font-family: Arial,Helvetica,sans-serif;" action="#{loginBean.logout}"></h:commandButton></p:column>

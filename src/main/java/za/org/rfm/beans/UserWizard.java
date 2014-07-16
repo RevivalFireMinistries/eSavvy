@@ -2,9 +2,7 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FlowEvent;
-import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.User;
+import za.org.rfm.model.*;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
@@ -18,7 +16,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,10 +39,31 @@ public class UserWizard {
     UserService userService;
     List<Member> memberList;
     Map<Long,String> assemblyMap;
-    String[] roles = Constants.roles;
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+
+    private List<Role> roles;
+    private Role[] selectedRoles;
+
+
     private boolean skip;
     String assembly;
     Assembly tempAssembly;
+
+    public Role[] getSelectedRoles() {
+        return selectedRoles;
+    }
+
+    public void setSelectedRoles(Role[] selectedRoles) {
+        this.selectedRoles = selectedRoles;
+    }
 
     public Assembly getTempAssembly() {
         return tempAssembly;
@@ -69,17 +87,35 @@ public class UserWizard {
 
     @PostConstruct
     public void init() {
-        //preload assemblies
-        setAssemblyMap(Utils.getAssembliesAsMap(assemblyService.getAssemblyList(Constants.STATUS_ACTIVE)));
-        user = new User();
+        try {
+            //preload assemblies  and roles
+            List<Assembly> assemblies = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
+            if(assemblies.isEmpty()){
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                Flash flash = facesContext.getExternalContext().getFlash();
+                flash.setKeepMessages(true);
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"Please add assemblies first before users", "Please add assemblies first before users"));
+                String url = "../assembly/newAssembly.faces";
+                facesContext.getExternalContext().redirect(url);
+                logger.warn("No active assemblies found in the system db...please load or reactivate ");
+                return;
+            }
+            setAssemblyMap(Utils.getAssembliesAsMap(assemblies));
+            user = new User();
+            roles = userService.getRoles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+
+
     public AssemblyService getAssemblyService() {
-        return assemblyService;
+      return assemblyService;
     }
 
     public void setAssemblyService(AssemblyService assemblyService) {
-        this.assemblyService = assemblyService;
+     this.assemblyService = assemblyService;
     }
 
 
@@ -91,21 +127,8 @@ public class UserWizard {
         this.assemblyMap = assemblyMap;
     }
 
-    public String[] getRoles() {
-        return roles;
-    }
 
-    public void setRoles(String[] roles) {
-        this.roles = roles;
-    }
 
-    public Member getSelectedMember() {
-        return selectedMember;
-    }
-
-    public void setSelectedMember(Member selectedMember) {
-        this.selectedMember = selectedMember;
-    }
 
 
     public UserService getUserService() {
@@ -126,15 +149,6 @@ public class UserWizard {
         this.user = user;
     }
 
-    public List<Member> completeMember(String query){
-        List<Member> suggestions = new ArrayList<Member>();
-        for(Member member: memberList){
-            if(member.getFirstName().toLowerCase().startsWith(query.toLowerCase())){
-                suggestions.add(member);
-            }
-        }
-        return suggestions;
-    }
 
 
     public void save(ActionEvent actionEvent) {
@@ -156,6 +170,18 @@ public class UserWizard {
             getUser().setPassword(Utils.generateRandomPassword(Constants.DEFAULT_USER_PASSWORD_SIZE));
             user.setAssembly(tempAssembly);
             Utils.capitaliseUser(user);
+            //now process roles
+            UserRole userRole;
+            List<UserRole> userRoleList = new ArrayList<UserRole>();
+            for(Role role : getSelectedRoles()){
+                 userRole = new UserRole();
+                userRole.setUser(this.user);
+                userRole.setRole(role);
+                userRole.setStatus(Constants.STATUS_ACTIVE);
+                userRoleList.add(userRole);
+            }
+            logger.debug("Found "+userRoleList.size()+" user roles ready for persistence");
+            user.setUserRoles(userRoleList);
             userService.saveUser(getUser());
             FacesContext facesContext = FacesContext.getCurrentInstance();
             Flash flash = facesContext.getExternalContext().getFlash();
@@ -189,14 +215,5 @@ public class UserWizard {
             return event.getNewStep();
         }
     }
-    public void handleChange(ValueChangeEvent valueChangeEvent){   //TODO:Might need to be removed permanently - but you never know
-       /* logger.debug("Event has been fired : ValueChange");
-        showAssemblyList = false;
-        String value = getUser().getRole();
-        if(value != null || !value.equalsIgnoreCase(Constants.USER_ROLE_SUPER_ADMIN)){
-            //only load assemblies if its not a local assembly role TODO:Need to put roles into groups
-           showAssemblyList = true;
-            return;
-        }*/
-    }
+
 }

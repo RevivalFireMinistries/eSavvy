@@ -1,11 +1,15 @@
 package za.org.rfm.dao;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import za.org.rfm.model.Role;
 import za.org.rfm.model.User;
+import za.org.rfm.model.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +34,27 @@ public class UserDAO {
     }
 
     public User getUser(String username){
-        User user = null;
-        Query query = sessionFactory.getCurrentSession().createQuery("from User where username =:username");
-         query.setString("username", username);
-        if(!query.list().isEmpty()){
-           user = (User)query.list().get(0);
-    }
+        User user = (User) sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.idEq(username)).uniqueResult();
         return user;
+
+    }
+
+    public Role getRoleById(Long id){
+        Role role = null;
+        Query query = sessionFactory.getCurrentSession().createQuery("from Role where id =:id");
+         query.setLong("id", id);
+        if(!query.list().isEmpty()){
+           role = (Role)query.list().get(0);
+    }
+        return role;
     }
 
     public void saveUser(User user) {
         sessionFactory.getCurrentSession().saveOrUpdate(user);
+    }
+
+    public List<Role> getRoles(){
+        return (List<Role>)sessionFactory.getCurrentSession().createQuery("from Role ").list();
     }
 
     public List<User> getUsersByAssembly(long assemblyId) {
@@ -65,5 +79,28 @@ public class UserDAO {
         //He has specified something and we have checked with the db and its not there! :-)
         return false;
     }
+    public UserRole getUserRoleById(Long id) {
+        UserRole userRole = (UserRole) sessionFactory.getCurrentSession().createCriteria(UserRole.class).add(Restrictions.idEq(id)).uniqueResult();
+        return userRole;
+    }
 
+    public void deleteUserRole(UserRole userRole) {
+        sessionFactory.getCurrentSession().delete(userRole);
+    }
+
+    public void saveOrUpdateUserRole(UserRole userRole1) {
+        if(!userRoleExists(userRole1))  {
+            sessionFactory.getCurrentSession().saveOrUpdate(userRole1);
+        }
+
+    }
+    public boolean userRoleExists(UserRole userRole){
+        User user = getUser(userRole.getUser().getUsername());
+        for(UserRole userRole1: user.getUserRoles()){
+             if(userRole.equals(userRole1)){
+                 return true;
+             }
+       }
+        return false;
+    }
 }

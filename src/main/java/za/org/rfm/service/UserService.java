@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.UserDAO;
+import za.org.rfm.model.Role;
 import za.org.rfm.model.User;
+import za.org.rfm.model.UserRole;
 
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class UserService {
         return userDAO.getUser(username);
 
     }
+    public List<Role> getRoles(){
+        return userDAO.getRoles();
+    }
     public  boolean login(String username,String password){
         boolean success = false;
         User user = getUser(username);
@@ -65,6 +70,19 @@ public class UserService {
     public boolean checkUserNameExists(User user){
         return getUserDAO().checkUserNameExists(user);
     }
-
+    public Role getRoleById(Long id){
+        return userDAO.getRoleById(id);
+    }
+    public UserRole getUserRoleById(Long id){
+        return userDAO.getUserRoleById(id);
+    }
+    @Transactional(readOnly = false)
+    public void deleteUserRole(UserRole userRole){
+        userDAO.deleteUserRole(userRole);
+    }
+    @Transactional(readOnly = false)
+    public void saveOrUpdateUserRole(UserRole userRole1) {
+        userDAO.saveOrUpdateUserRole(userRole1);
+    }
 
 }

@@ -28,16 +28,8 @@
                 <p:column headerText="Last Name" sortBy="lastName" filterBy="lastName" id="lastname">
                     #{user.lastName}
                 </p:column>
-
-                <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
-                    #{user.phone}
-                </p:column>
-
-                <p:column headerText="Email"  id="email">
-                    #{user.email}
-                </p:column>
-                <p:column headerText="Role"  id="role">
-                    #{user.role}
+                <p:column headerText="Role(s)"  id="role">
+                    #{user.roleToString}
                 </p:column>
                 <p:column headerText="Status"  id="status">
                     #{user.status}

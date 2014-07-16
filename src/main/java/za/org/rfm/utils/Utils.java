@@ -4,10 +4,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import za.org.rfm.beans.Tithe;
-import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.SystemVar;
-import za.org.rfm.model.User;
+import za.org.rfm.model.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -250,6 +247,15 @@ public class Utils {
             sb.append((char)((int)(Math.random()*26)+97));
         }
         return sb.toString().toLowerCase();
+    }
+
+    public static boolean isAuthorised(User user,Role role){
+       for(UserRole userRole: user.getUserRoles()){
+           if(userRole.getRole().getName().equalsIgnoreCase(role.name())){
+               return true;
+           }
+       }
+       return false;
     }
 
    public static List<String> getGroupsAsStringList(){

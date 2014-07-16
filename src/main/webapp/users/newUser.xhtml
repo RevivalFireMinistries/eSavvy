@@ -6,12 +6,12 @@
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
-        <h:form id="form">
 
+      <h:form id="mainForm" prependId="false">
     <p:growl id="growl" sticky="true" showDetail="true"/>
 
     <p:wizard flowListener="#{userWizard.onFlowProcess}">
-        <p:tab id="personal" title="Personal">
+        <p:tab id="personal" title="Personal" >
                 <p:panel header="User Details">
                 <h:panelGrid id="grid" columns="3" cellpadding="10" >
                     <h:outputLabel for="fname" value="First Name:" />
@@ -27,12 +27,7 @@
                     <f:validator validatorId="emailAddressValidator" />
                     </p:inputText>
                     <p:message for="email" />
-                    <h:outputText value="Roles : " />
-                    <p:selectOneMenu value="#{userWizard.user.role}" required="true" id="role" >
-                        <f:selectItem itemLabel="Select One" itemValue="" />
-                        <f:selectItems value="#{userWizard.roles}" />
-                    </p:selectOneMenu>
-                    <p:message for="role" />
+
                     <h:outputText value="Assembly : " />
                     <p:selectOneMenu value="#{userWizard.assembly}" required="true" id="assembly">
                         <f:selectItem itemLabel="Select One" itemValue="" />
@@ -42,14 +37,31 @@
                     <p:message for="assembly" />
                     <h:outputLabel for="phoneNumber" value="Phone Number:" />
                     <p:inputText id="phoneNumber"
-                                 value="#{userWizard.user.phone}"  required="true" validator="phoneNumberValidator"/>
+                                 value="#{userWizard.user.phone}" />
                     <p:message for="phoneNumber" />
                     <p:spacer></p:spacer>
                     <h:selectBooleanCheckbox value="#{userWizard.skip}" />
                 </h:panelGrid>
                 </p:panel>
         </p:tab>
+        <p:tab id="roles" title="User Roles"  >
+            <p:messages id="msgspick"/>
+                <h:panelGrid columns="3" cellpadding="5">
+                    <h:outputLabel for="menu" value="Please select Roles :" />
+                    <p:selectCheckboxMenu id="menu" value="#{userWizard.selectedRoles}" label="Roles"
+                                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px" converter="roleConverter" required="true" requiredMessage="Please select at least one role from the list">
+                        <f:selectItems value="#{userWizard.roles}" var="rl" itemLabel="#{rl.name}" itemValue="#{rl}"/>
+                    </p:selectCheckboxMenu>
+                    <p:commandLink value="Done" update="display" ajax="true"/>
+                </h:panelGrid>
 
+                <p:outputPanel id="display" style="width:250px;padding-left:5px;margin-top:10px">
+                    <p:dataList value="#{userWizard.selectedRoles}" var="role" emptyMessage="No roles selected">
+                        #{role.name}
+                    </p:dataList>
+                </p:outputPanel>
+
+        </p:tab>
         <p:tab id="confirm" title="Confirmation">
             <p:panel header="Confirmation">
 
@@ -66,12 +78,16 @@
                         <h:outputText value="Phone: " />
                         <h:outputText value="#{userWizard.user.phone}" styleClass="outputLabel"/>
 
-                        <h:outputText value="Role: " />
-                        <h:outputText value="#{userWizard.user.role}" styleClass="outputLabel"/>
+
 
                         <h:outputText value="Assembly: " />
                         <h:outputText value="#{userWizard.tempAssembly.name}" styleClass="outputLabel"/>
 
+                        <p:outputPanel id="display2" style="width:500px;padding-left:5px;margin-top:10px; background-color: white;font-size: 2em;">
+                            <p:dataList value="#{userWizard.selectedRoles}" var="role" emptyMessage="No roles selected">
+                                #{role.name}     - #{role.description}
+                            </p:dataList>
+                        </p:outputPanel>
 
                     </h:panelGrid>
 
@@ -80,8 +96,8 @@
         </p:tab>
     </p:wizard>
 
-</h:form>
 
 
+      </h:form>
     </ui:define>
 </ui:composition>

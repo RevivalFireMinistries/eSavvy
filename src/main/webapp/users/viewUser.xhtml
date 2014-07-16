@@ -47,13 +47,7 @@
                                 <h:outputText value="#{viewUserBean.user.assembly.name}"
                                              required="true" label="text" readonly="true"/>
 
-                            <h:outputText value="Role: " />
-                            <p:inplace id="selectableInplace"  effectSpeed="fast" event="dblclick" label="#{viewUserBean.user.role}">
-                                <h:selectOneMenu value="#{viewUserBean.user.role}" required="true">
-                                    <p:ajax listener="#{viewUserBean.saveUser}" update="member" event="change" process="@this"/>
-                                    <f:selectItems value="#{viewUserBean.roles}" />
-                                </h:selectOneMenu>
-                            </p:inplace>
+
                             <h:outputText value="Status: " />
                             <p:inplace id="selectableInplace3535"  effectSpeed="fast" event="dblclick" label="#{viewUserBean.user.status}">
                                 <h:selectOneMenu value="#{viewUserBean.user.status}" required="true">
@@ -79,6 +73,24 @@
                 </p:tab>
 
                 <p:tab id="tab4" title="Profile Settings">
+                    <p:messages id="msgspick"/>
+                    <h:outputText value="Current Roles"/>
+                    <p:outputPanel id="display" style="width:250px;padding-left:5px;margin-top:10px">
+                        <p:dataList value="#{viewUserBean.myRoles}" var="role" emptyMessage="No roles selected">
+                            #{role.name}
+                        </p:dataList>
+                    </p:outputPanel>
+                    <h:panelGrid columns="3" cellpadding="5">
+                        <h:outputLabel for="menu" value="Please select Roles :" />
+                        <p:selectCheckboxMenu id="menu" value="#{viewUserBean.myRoles}" label="Roles"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px" converter="roleConverter" required="true" requiredMessage="Please select at least one role from the list">
+                            <p:ajax listener="#{viewUserBean.handleChange}" update="display msgspick" />
+                            <f:selectItems value="#{viewUserBean.roles}" var="rl" itemLabel="#{rl.name}" itemValue="#{rl}"/>
+                        </p:selectCheckboxMenu>
+                        <p:commandLink value="Done" update="display" ajax="true"/>
+                    </h:panelGrid>
+
+
 
                 </p:tab>
                 <p:tab id="tab5" title="Audit Trail">

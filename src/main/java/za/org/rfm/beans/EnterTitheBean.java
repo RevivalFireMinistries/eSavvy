@@ -1,5 +1,6 @@
 package za.org.rfm.beans;
 
+import org.apache.log4j.Logger;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Member;
@@ -26,7 +27,7 @@ import java.util.List;
 @ManagedBean(name = "enterTitheBean")
 @SessionScoped
 public class EnterTitheBean {
-
+     Logger logger = Logger.getLogger(getClass());
     private Member selectedMember;
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;

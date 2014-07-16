@@ -39,6 +39,14 @@
                         </h:selectOneMenu>
                     </p:inplace>
                 </p:panelGrid>
+                <p:toolbar>
+                    <p:toolbarGroup align="center" style="width: 350px" >
+                        <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                        <p:separator />
+                        <p:commandButton id="showDialogButton56" type="button" value="New User" action="newUser.faces"/>
+
+                    </p:toolbarGroup>
+                </p:toolbar>
             </p:tab>
             <p:tab title="System Users">
                 <h:panelGrid columns="2" cellpadding="10">
@@ -65,8 +73,8 @@
                             <p:column headerText="Full Name" sortBy="fullName" filterBy="fullName" id="fullName">
                                 #{user.fullname}
                             </p:column>
-                            <p:column headerText="Role"  id="role">
-                                #{user.role}
+                            <p:column headerText="Role(s)"  id="role">
+                                #{user.roleToString}
                             </p:column>
                             <p:column headerText="Phone" sortBy="phone" filterBy="phone" id="phone">
                                 #{user.phone}
@@ -86,11 +94,7 @@
                                 <p:separator />
                                 <p:commandButton id="showDialogButton" type="button" value="New User" actionListener="#{viewAssemblyBean.newUser}"/>
 
-                                <p:separator />
-                                <p:commandButton type="button" value="Enter Tithe" icon="ui-icon-folder-open" onclick="PF('dlg').show()" />
-                                <p:separator />
-
-                                <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
+                               <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
                                 <p:commandButton type="button" title="Print" icon="ui-icon-print"/>
                             </p:toolbarGroup>
                         </p:toolbar>
