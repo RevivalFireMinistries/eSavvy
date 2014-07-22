@@ -1,0 +1,233 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="form">
+
+            <p:fieldset legend="Event Report" id="report">
+                <p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+                <p:panelGrid columns="4">
+                    <f:facet name="header">
+                        Event Information
+                    </f:facet>
+
+                    <h:outputLabel  style="font-weight:bold" value="Name of Event: " />
+                    <h:outputText value="#{followUpBean.event.eventType}" />
+
+
+                    <h:outputLabel  style="font-weight:bold" value="Date: " />
+                    <h:outputText value="#{followUpBean.event.eventDateFormatted}" />
+
+                    <h:outputLabel  style="font-weight:bold" value="Target Attendance: " />
+                    <h:outputText value="#{followUpBean.event.targetAttendance}" />
+
+                    <h:outputLabel  style="font-weight:bold" value="Leader's Comment: " />
+                    <h:outputText value="#{followUpBean.event.comment}" />
+                    <h:outputLabel  style="font-weight:bold" value="Total Registered: " />
+                    <h:outputText value="#{followUpBean.event.totalRegistered}" />
+
+                    <h:outputLabel  style="font-weight:bold" value="% Present: " />
+                    <h:outputText value="#{followUpBean.event.percentagePresent}" />
+
+                    <f:facet name="footer">
+                        <p:toolbar rendered="#{!followUpBean.event.followUp}">
+                            <p:toolbarGroup align="center" style="width: 350px" >
+
+                                <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                                <p:separator />
+                                <p:commandButton value="Generate Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(attendance.event)}"  onclick="return confirm('Are you sure you want to generate the follow up report?')" />
+                                <p:separator />
+                              </p:toolbarGroup>
+                        </p:toolbar>
+                    </f:facet>
+                </p:panelGrid>
+                <h:panelGrid columns="2" cellpadding="10">
+
+            </h:panelGrid>
+
+            <p:dataTable id="cellEditingTable" var="fup" value="#{followUpBean.eventFollowUpList}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         filteredValue="#{followUpBean.fliteredMembers}"
+                         editable="#{!followUpBean.event.followUp}" editMode="cell">
+
+                <f:facet name="{Exporters}">
+                    <h:commandLink>
+                        <p:graphicImage name="#{request.contextPath}/images/excel.png" width="24"/>
+                        <p:dataExporter type="xls" target="tbl" fileName="cars" />
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage name="#{request.contextPath}/images/pdf.png" width="24"/>
+                        <p:dataExporter type="pdf" target="tbl" fileName="cars"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage name="#{request.contextPath}/images/csv.png" width="24"/>
+                        <p:dataExporter type="csv" target="tbl" fileName="cars" />
+                    </h:commandLink>
+
+                </f:facet>
+                <f:facet name="header">
+                    Follow Up Report
+                </f:facet>
+
+                <p:column filterBy="#{fup.member.fullName}">
+                    <f:facet name="header">
+                        <h:outputText value="Member's Name"/>
+                    </f:facet>
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{fup.member.fullName}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#fup.member.fullName}" style="width:96%"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column filterBy="#{fup.member.phone}">
+                    <f:facet name="header">
+                        <h:outputText value="Phone Number"/>
+                    </f:facet>
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{fup.member.phone}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{fup.member.phone}" style="width:96%"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column filterBy="#{fup.member.status}">
+                    <f:facet name="header">
+                        <h:outputText value="Date Last Seen"/>
+                    </f:facet>
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{member.status}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{fup.member.status}" style="width:96%"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column filterBy="#{fup.comment}">
+                    <f:facet name="header">
+                        <h:outputText value="Comment/Response"/>
+                    </f:facet>
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{fup.comment}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu id="comment" value="#{fup.comment}" effect="fold" editable="true">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{followUpBean.followUpStates}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column filterBy="#{fup.followUpActions}">
+                    <f:facet name="header">
+                        <h:outputText value="Action to be taken"/>
+                    </f:facet>
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{fup.action}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu id="actions" value="#{fup.action}"  editable="true">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{followUpBean.followUpActions}" />
+                            </p:selectOneMenu>
+
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <f:facet name="footer">
+                    <p:toolbar rendered="#{!followUpBean.event.followUp}">
+                        <p:toolbarGroup align="center" style="width: 350px" >
+
+                            <p:commandButton type="button" value="Cancel Report" icon="ui-icon-menuItem" onclick="history.back()"/>
+                            <p:separator />
+                            <p:commandButton value="Save Report" actionListener="#{followUpBean.saveReport}"  onclick="return confirm('Are you sure you want to save this follow up report?')" />
+                            <p:separator />
+                            <p:commandButton value="Reset Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(attendance.event)}"  onclick="return confirm('Are you sure you want to RESET the follow up report?')" />
+                            <p:separator />
+                          </p:toolbarGroup>
+                    </p:toolbar>
+                    <p:toolbar rendered="#{followUpBean.event.followUp}">
+                        <p:toolbarGroup align="center" style="width: 350px" >
+
+                            <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
+                            <p:separator />
+                            <p:commandButton value="Print Report">
+                                <p:printer target=":form:report" />
+                                    </p:commandButton>
+                            <p:separator />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </f:facet>
+            </p:dataTable>
+            </p:fieldset>
+            <p:spacer height="20"/>
+
+
+
+            <p:spacer height="40"/>
+            <p:dialog id="multiDialog" header="Report Summary" widgetVar="reportSummary"
+                      height="600" width="700" showEffect="fade" hideEffect="explode">
+
+
+                    <p:panelGrid columns="2" >
+                        <f:facet name="header">
+
+                        </f:facet>
+
+                        <h:outputLabel  style="font-weight:bold" value="Target Attendance: " />
+                        <h:outputText value="#{attendance.event.targetAttendance}" />
+                        <h:outputLabel  style="font-weight:bold" value="Total Registered: " />
+                        <h:outputText value="#{attendance.event.totalRegistered}" />
+                        <h:outputLabel  style="font-weight:bold" value="Actual Attendance: " />
+                        <h:outputText value="#{attendance.event.attendance}" />
+                        <h:outputLabel  style="font-weight:bold" value="% Present: " />
+                        <h:outputText value="#{attendance.event.percentagePresent}" />
+                        <h:outputLabel  style="font-weight:bold" value="% Present: " />
+                        <h:outputText value="#{attendance.event.percentageAbsent}" />
+
+
+                        <f:facet name="footer">
+
+                        </f:facet>
+
+                    </p:panelGrid>
+                        <h:form>
+
+                        <p:dataTable var="m" value="#{attendance.eventFollowUpList}" id="followup">
+
+                            <f:facet name="header">
+                                Absent Members
+                            </f:facet>
+                        <p:column headerText="Full Name">
+                            <h:outputText value="#{m.member.fullName}" />
+                        </p:column>
+                            <p:column headerText="Phone">
+                                <h:outputText value="#{m.member.phone}" />
+                            </p:column>
+                            <p:column headerText="Date Last @ Church">
+                                <h:outputText value="#{m.dateCreated}" />
+                            </p:column>
+                        </p:dataTable>
+                            <h:commandButton value="Print Report" type="button" icon="ui-icon-print">
+                                <p:printer target="followup" />
+                            </h:commandButton>
+                        </h:form>
+
+
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -49,7 +49,7 @@ public class Tithe {
     public SMSLog sendSMS(){
 
         //Now create and send an sms
-        String sms = "Revival Fire Ministries : Your tithe payment of "+ Utils.moneyFormatter(this.amount)+" made on "+ Utils.dateFormatter(this.getTxnDate())+" has been received.Thank you & Stay Blessed!For more info visit www.rfm.org.za.";
+        String sms = "Revival Fire Ministries : Your tithe payment of "+ Utils.moneyFormatter(this.amount,getMember().getAssembly().getLocaleObject())+" made on "+ Utils.dateFormatter(this.getTxnDate())+" has been received.Thank you & Stay Blessed!For more info visit www.rfm.org.za.";
         return getMember().sendSMS(sms,true);
     }
 
@@ -75,6 +75,6 @@ public class Tithe {
         return Utils.dateFormatter(this.getTxnDate());
     }
     public String getFormattedAmount() {
-        return Utils.moneyFormatter(this.amount);
+        return Utils.moneyFormatter(this.amount,getMember().getAssembly().getLocaleObject());
     }
 }

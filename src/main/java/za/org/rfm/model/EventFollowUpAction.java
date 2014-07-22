@@ -9,29 +9,24 @@ import java.util.Date;
 
 /**
  * User: Russel.Mupfumira
- * Date: 2014/04/24
- * Time: 12:04 PM
+ * Date: 2014/07/17
+ * Time: 11:07 AM
  */
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "rfm_assemblyfollowup")
-public class AssemblyFollowUp {
+@Table(name = "rfm_event_follow_up_action")
+public class EventFollowUpAction extends ChurchManagerEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public Long id;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member")
-    private Member member;
+    @JoinColumn(name = "eventFollowUp")
+    private EventFollowUp eventFollowUp;
+    private String name;
     private String status;
-    private Date dateCreated;
-    private int absenteesmDuration;
+    private Date dateOpened,dateClosed;
 
-    public AssemblyFollowUp(Member member,String status,Date dateCreated){
-         this.member = member;
-         this.status = status;
-        this.dateCreated = dateCreated;
-    }
 }

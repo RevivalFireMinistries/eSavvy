@@ -25,7 +25,7 @@ import java.util.*;
 public class Utils {
 
     public static Logger logger = Logger.getLogger(Utils.class);
-
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("locale.messages_en_ZA", Locale.getDefault());
     public static List<String> getStates(){
         List<String> states = Arrays.asList(Constants.STATUS_ACTIVE,
          Constants.STATUS_IN_ACTIVE, Constants.STATUS_DELETED);
@@ -38,8 +38,8 @@ public class Utils {
         return genders;
     }
 
-    public static String moneyFormatter(double money){
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    public static String moneyFormatter(double money,Locale locale){
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
         String moneyString = formatter.format(money);
         return moneyString;
     }
@@ -68,7 +68,9 @@ public class Utils {
         }
         return null;
     }
-
+    public static String getResource(String key,Object...args){
+        return (new NonStaticMessageFormat(resourceBundle.getString(key),args).getMsg());
+    }
     public static List<Country> getAllCountries(){
         List<Country> countries = new ArrayList<Country>();
         Locale[] locales = Locale.getAvailableLocales();
@@ -78,8 +80,9 @@ public class Utils {
                 String iso = locale.getISO3Country();
                 String code = locale.getCountry();
                 String name = locale.getDisplayCountry();
+                String lang = locale.getLanguage();
                 if (!"".equals(iso) && !"".equals(code) && !"".equals(name)) {
-                    countries.add(new Country(iso, code, name));
+                    countries.add(new Country(iso, code, name,lang));
                 }
             }catch (Exception e){
                 continue;
@@ -89,7 +92,23 @@ public class Utils {
         Collections.sort(countries, new CountryComparator());
         return  countries;
     }
-
+    public static Locale getCountryLocale(String code){
+        List<Country> countries = new ArrayList<Country>();
+        Locale[] locales = Locale.getAvailableLocales();
+        for (Locale locale : locales) {
+            try{
+                System.out.println(locale.getCountry()+" : "+code);
+              if(locale.getCountry().equalsIgnoreCase(code)){
+                  logger.info("Locale found..."+locale.getDisplayCountry());
+                  return locale;
+              }
+            }catch (Exception e){
+                continue;
+            }
+        }
+        logger.warn(" Failed to find a locale: using system default : " + Locale.getDefault().getDisplayCountry());
+        return Locale.getDefault();
+    }
     public static Map<String, String> getCountriesMap() {
 
         Map<String,String> map = new HashMap<String, String>();
@@ -127,7 +146,14 @@ public class Utils {
         return (d.getDayOfWeek() > weekday)?d.withDayOfWeek(weekday):d.minusWeeks(1).withDayOfWeek(weekday);
     }
 
+    public static DateRange calcLastMonthDateRange(Date day) {
+        LocalDate date = new LocalDate(day);
+        //first go back one month
+        LocalDate lastMonth = date.minusMonths(1);
+        //now get the fist and last day of this month
+        return new DateRange(lastMonth.dayOfMonth().withMinimumValue().toDate(),lastMonth.dayOfMonth().withMaximumValue().toDate());
 
+    }
     public static Date calcLastSunday(Date date) {
         LocalDate lastSunday = calcNextDay(LocalDate.fromDateFields(date), DateTimeConstants.SUNDAY);
         return lastSunday.toDate();
@@ -272,4 +298,14 @@ public class Utils {
         }
         return list;
     }
+    public static void sendBulkSMS(List<Member> smsList,String sms) {
+        //TODO:need to use the bulk sms send api for winsms
+          for(Member member: smsList){
+              member.sendSMS(sms,true);
+          }
+    }
+
+
+
+
 }

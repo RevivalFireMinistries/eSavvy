@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.FlowEvent;
 import za.org.rfm.model.*;
 import za.org.rfm.service.AssemblyService;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
@@ -39,6 +40,16 @@ public class UserWizard {
     UserService userService;
     List<Member> memberList;
     Map<Long,String> assemblyMap;
+    @ManagedProperty(value="#{mailService}")
+    EmailService emailService;
+
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     public List<Role> getRoles() {
         return roles;
@@ -183,6 +194,8 @@ public class UserWizard {
             logger.debug("Found "+userRoleList.size()+" user roles ready for persistence");
             user.setUserRoles(userRoleList);
             userService.saveUser(getUser());
+            //now send user email with info!
+            emailService.sendWelcomeEmail(user);
             FacesContext facesContext = FacesContext.getCurrentInstance();
             Flash flash = facesContext.getExternalContext().getFlash();
             flash.setKeepMessages(true);

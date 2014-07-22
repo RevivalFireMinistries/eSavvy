@@ -3,11 +3,15 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -20,6 +24,8 @@ import java.sql.Timestamp;
 @Getter
 @Table(name = "rfm_event")
 public class Event extends ChurchManagerEntity {
+
+    private static final long serialVersionUID = 5860576192855907797L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -27,6 +33,9 @@ public class Event extends ChurchManagerEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assembly")
     private Assembly assembly;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    private List<EventLog> eventLogList;
     private Timestamp eventDate;
     private String eventType;
     private int attendance;
@@ -36,21 +45,24 @@ public class Event extends ChurchManagerEntity {
     private int guests,totalRegistered;
     private Timestamp timeStart,timeEnd;
     private int converts;
-    private boolean register;
+    private boolean followUp;
     private int targetAttendance;
     private transient double totalIncome,percentageOfAttendance,percentageOfAbsent;
-
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
+    private List<EventFollowUp> eventFollowUpList;
 
    public String getEventDateFormatted(){
        return Utils.dateFormatter(getEventDate());
    }
 
    public String getTitheFormatted(){
-       return Utils.moneyFormatter(getTithes());
+       return Utils.moneyFormatter(getTithes(),getAssembly().getLocaleObject());
    }
 
     public String getOfferingFormatted(){
-        return Utils.moneyFormatter(getOfferings());
+        return Utils.moneyFormatter(getOfferings(),getAssembly().getLocaleObject());
     }
 
     public void setAssembly(Assembly assembly){
@@ -66,10 +78,10 @@ public class Event extends ChurchManagerEntity {
         return getTotalIncome()* Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
     }
     public String getTotalIncomeFormatted(){
-        return Utils.moneyFormatter(this.getTotalIncome());
+        return Utils.moneyFormatter(this.getTotalIncome(),getAssembly().getLocaleObject());
     }
     public String getApostolicFormatted(){
-        return Utils.moneyFormatter(this.getApostolic());
+        return Utils.moneyFormatter(this.getApostolic(),getAssembly().getLocaleObject());
     }
 
     public double getPercentageAbsent(){

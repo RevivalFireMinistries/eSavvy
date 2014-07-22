@@ -69,7 +69,7 @@ public class ViewReportsBean {
     }
     public void search() {
          if(getEventtype() != null && !getEventtype().equalsIgnoreCase("")){
-             List<Event> eventsRes = eventService.getEventsByAssemblyAndTypeAndDate(WebUtil.getUserAssemblyId(), getEventtype(), dateRange);
+             List<Event> eventsRes = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), getEventtype(), dateRange);
             setEvents(eventsRes);
              Utils.addFacesMessage(eventsRes.size()+" results found ",FacesMessage.SEVERITY_INFO);
          }
@@ -83,7 +83,7 @@ public class ViewReportsBean {
     }
 
     public String getTotalIncome() {
-        return Utils.moneyFormatter(totalIncome);
+        return Utils.moneyFormatter(totalIncome,getAssembly().getLocaleObject());
     }
 
     public void setTotalIncome(List<Event> events) {
@@ -218,7 +218,7 @@ public class ViewReportsBean {
          setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
         dateRange = initializeDateRange();
         /*System.out.println("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
-        events = eventService.getEventsByAssemblyAndTypeAndDate(WebUtil.getUserAssemblyId(),Constants.SERVICE_TYPE_SUNDAY,dateRange);
+        events = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(),Constants.SERVICE_TYPE_SUNDAY,dateRange);
         System.out.println("---num of events retrieved---"+events.size());
         //setEvents(events);
         lazyModel = new LazyEventDataModel(events);
@@ -266,7 +266,7 @@ public class ViewReportsBean {
     }
     public void addRegister(Event event){
         try {
-            String url = "/members/addRegister.faces?eventid="+event.getId();
+            String url = "/services/viewReport.faces?eventid="+event.getId();
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
         } catch (IOException e) {
             Utils.addFacesMessage("Error : Failed to open requested page", FacesMessage.SEVERITY_ERROR);

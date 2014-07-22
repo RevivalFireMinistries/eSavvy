@@ -3,6 +3,7 @@ package za.org.rfm.beans;
 import za.org.rfm.model.Role;
 import za.org.rfm.model.User;
 import za.org.rfm.model.UserRole;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
@@ -14,8 +15,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * User: Russel.Mupfumira
@@ -25,13 +26,23 @@ import java.util.List;
 @ViewScoped
 @ManagedBean(name = "viewUserBean")
 public class ViewUser extends SuperBean{
-
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("locale.messages_en_ZA", Locale.getDefault());
     @ManagedProperty(value="#{UserService}")
     UserService userService;
+    @ManagedProperty(value="#{mailService}")
+    EmailService emailService;
     User user;
 
     List<Role> myRoles;
     List<Role> roles;
+
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     public List<Role> getRoles() {
         return roles;
@@ -110,20 +121,25 @@ public class ViewUser extends SuperBean{
     public void resetUserPassword(){
         user.setPassword(Utils.generateRandomPassword(Constants.DEFAULT_USER_PASSWORD_SIZE));
         userService.saveUser(user);
-        //TODO: Add logic to email this user his new password
+        String subject = resourceBundle.getString("email.subject.password.reset");
+        String main = resourceBundle.getString("email.body.password.reset.message.main");
+        String username = (MessageFormat.format(resourceBundle.getString("email.body.password.reset.message.username"),user.getUsername()));
+        String password = (MessageFormat.format(resourceBundle.getString("email.body.password.reset.message.password"),user.getPassword()));
+        emailService.sendNotification(user, subject,main,username,password);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Password has been reset & emailed to user"));
     }
     public void blockUser(){
         user.setStatus(Constants.STATUS_IN_ACTIVE);
         userService.saveUser(user);
-        //TODO: Add logic to email this user that his account is blocked
+       emailService.sendNotification(user,resourceBundle.getString("email.subject.account.blocked"),resourceBundle.getString("email.body.account.blocked"));
+
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "User blocking successful"));
     }
 
     public void unBlockUser(){
         user.setStatus(Constants.STATUS_ACTIVE);
         userService.saveUser(user);
-        //TODO: Add logic to email this user that his account is unblocked
+        emailService.sendNotification(user,resourceBundle.getString("email.subject.account.unblocked"),resourceBundle.getString("email.body.account.unblocked"));
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "User unblocking successful"));
     }
 

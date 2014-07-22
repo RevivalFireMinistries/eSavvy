@@ -16,7 +16,9 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Table(name = "rfm_eventlog")
-public class EventLog {
+public class EventLog extends ChurchManagerEntity{
+
+    private static final long serialVersionUID = -1416157716450288501L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

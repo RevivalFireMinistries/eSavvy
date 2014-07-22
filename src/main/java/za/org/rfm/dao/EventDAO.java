@@ -4,7 +4,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import za.org.rfm.model.AssemblyFollowUp;
+import za.org.rfm.model.EventFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 import za.org.rfm.utils.Constants;
@@ -71,7 +71,7 @@ public class EventDAO {
         return eventList;
     }
 
-    public List<Event> getEventsByAssemblyAndTypeAndDate(long assemblyid,String eventtype,DateRange dateRange) {
+    public List<Event> getEventsByAssemblyAndTypeAndDateRange(long assemblyid, String eventtype, DateRange dateRange) {
         String hql = "";
         if(Constants.STATUS_ALL.equalsIgnoreCase(eventtype)){
             hql =  "from Event where assembly = :assemblyid and eventdate between :from and :to order by eventdate asc";
@@ -80,6 +80,22 @@ public class EventDAO {
         }
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setLong("assemblyid",assemblyid);
+        if(!Constants.STATUS_ALL.equalsIgnoreCase(eventtype))
+        query.setString("eventtype",eventtype);
+        query.setDate("from",dateRange.getStartDate());
+        query.setDate("to",dateRange.getEndDate());
+        List<Event> eventList = (List<Event>)query.list();
+        return eventList;
+    }
+
+public List<Event> getEventsByTypeAndDateRange(String eventtype, DateRange dateRange) {
+        String hql = "";
+        if(Constants.STATUS_ALL.equalsIgnoreCase(eventtype)){
+            hql =  "from Event where  eventdate between :from and :to order by eventdate asc";
+        }else{
+            hql = "from Event where  eventtype = :eventtype and eventdate between :from and :to order by eventdate asc";
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
         if(!Constants.STATUS_ALL.equalsIgnoreCase(eventtype))
         query.setString("eventtype",eventtype);
         query.setDate("from",dateRange.getStartDate());
@@ -101,8 +117,19 @@ public class EventDAO {
     public void saveEventLog(EventLog eventLog) {
         getSessionFactory().getCurrentSession().saveOrUpdate(eventLog);
     }
-    public void saveAssemblyFollowUp(AssemblyFollowUp assemblyFollowUp) {
-          getSessionFactory().getCurrentSession().saveOrUpdate(assemblyFollowUp);
+    public void saveAssemblyFollowUp(EventFollowUp eventFollowUp) {
+          getSessionFactory().getCurrentSession().saveOrUpdate(eventFollowUp);
+    }
+    public List<EventFollowUp> getEventFollowUpList(Event event) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from EventFollowUp where event =:eventid");
+        query.setLong("eventid",event.getId());
+        return (List<EventFollowUp>)query.list();
+    }
+    public List<EventLog> getEventLogsByEventId(Long eventId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from EventLog where event =:eventid");
+        query.setLong("eventid",eventId);
+       return (List<EventLog>)query.list();
+
     }
 
 }

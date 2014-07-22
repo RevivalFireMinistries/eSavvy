@@ -1,35 +1,107 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:remove="all">Template for HTML email with inline image</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<p th:text="#{greeting(${name})}">
-    Hello, Peter Static!
-</p>
-<p th:if="${name.length() > 10}">
-    Wow! You've got a long name (more than 10 chars)!
-</p>
-<p>
-    You have been successfully logged in to <b>eSavvy</b> on
-    <span th:text="${#dates.format(loginDate)}">28-12-2012</span>
-</p>
-<p>Your hobbies are:</p>
-<ul th:remove="all-but-first">
-    <li th:each="hobby : ${hobbies}" th:text="${hobby}">Reading</li>
-    <li>Writing</li>
-    <li>Bowling</li>
-</ul>
-<p>
-    Welcome to eSavvy - managerial excellence
-</p>
-<p>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>
+      Classical
+    </title>
+	<style type="text/css">
+	a:hover { text-decoration: none !important; }
+	.header h1 {color: #fff !important; font: normal 33px Georgia, serif; margin: 0; padding: 0; line-height: 33px;}
+	.header p {color: #dfa575; font: normal 11px Georgia, serif; margin: 0; padding: 0; line-height: 11px; letter-spacing: 2px}
+	.content h2 {color:#8598a3 !important; font-weight: normal; margin: 0; padding: 0; font-style: italic; line-height: 30px; font-size: 30px;font-family: Georgia, serif; }
+	.content p {color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Georgia, serif;}
+	.content a {color: #d18648; text-decoration: none;}
+	.footer p {padding: 0; font-size: 11px; color:#fff; margin: 0; font-family: Georgia, serif;}
+	.footer a {color: #f7a766; text-decoration: none;}
+    p {
+        color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Georgia, serif;
+    }
+    body {
+        color:#767676;
+    }
+    ul#example2 {
+        margin: 2em;
+    }
+    ul#example2 li {
+        padding-left: 1em;
+        margin-bottom: .5em;
+        font-size: 12px;
+    }
+        a{
+            color: #d18648; text-decoration: none;
+        }
+	</style>
+  </head>
+  <body style="margin: 0; padding: 0; background: #bccdd9;">
+  	<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+		  <tr>
+		  	<td align="center" style="margin: 0; padding: 0; background:#bccdd9 ;padding: 35px 0">
+			    <table cellpadding="0" cellspacing="0" border="0" align="center" width="650" style="font-family: Georgia, serif;" class="header">
+			      <tr>
+			        <td bgcolor="#698291" height="115" align="center">
+						<h1 style="color: #fff; font: normal 33px Georgia, serif; margin: 0; padding: 0; line-height: 33px;">eSavvy </h1>
+						<p style="color: #dfa575; font: normal 11px Georgia, serif; margin: 0; padding: 0; line-height: 11px;">Intelligent Church Management</p>
+			        </td>
+			      </tr>
+				  <tr>
+					  <td style="font-size: 1px; height: 5px; line-height: 1px;" height="5">&nbsp;</td>
+				  </tr>	
+				</table><!-- header-->
+				<table cellpadding="0" cellspacing="0" border="0" align="center" width="650" style="font-family: Georgia, serif; background: #fff;" bgcolor="#ffffff">
+			      <tr>
+			        <td width="14" style="font-size: 0px;" bgcolor="#ffffff">&nbsp;</td>
+					<td width="620" valign="top" align="left" bgcolor="#ffffff" style="font-family: Georgia, serif; background: #fff;">
+                        <h2 style="color:#8598a3; font-weight: normal; margin: 0; padding: 0; font-style: italic; line-height: 30px; font-size: 30px;font-family: Georgia, serif; ">Welcome</h2><br/>
+                        <span>Hi  </span><span th:text="${name}" style="color:#767676; font-weight: bolder; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Georgia, serif; ">
+                            Greeting comes here!
+                        </span> <br/><br/> <!-- Content Area -->
+                        <p>Congratulations on your new eSavvy account!</p>
+                        <p>We are pleased to welcome you as a new user with <span th:text="${churchName}"> Church Management System.</span><br/>Your <b>eSavvy</b> account gives you access to online church management.  </p>
+                        <p>Here's what you can expect from eSavvy:</p>
+                        <ul id="example2">
+                            <li >Fine grained members management</li>
+                            <li >Financial Reports</li>
+                            <li >SMS and Email to groups</li>
+                            <li >Flexible reporting</li>
+                        </ul>
+                        <p>You are called to equip people as they fulfill the gospel. We are called to offer you support on the vital work you do.</p>
+                        <p>You can login to eSavvy from anywhere in the world by clicking the following link <a th:href="@{${eSavvyLink}}" >eSavvy Login</a></p>
+                        <p>Please find below your eSavvy profile information:</p>  <br/><br/>
 
-</p>
-<p>
-    Regards, <br />
-      <em>eSavvy Team!</em>
-</p>
-</body>
+
+                            <table>
+                                               <tr>
+                            <td><b>Username :</b></td><td><span th:text="${username}" style="font-style: italic"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Password :</b></td><td><span th:text="${password}" style="font-style: italic"></span></td>
+                        </tr> <tr>
+                            <td><b>Roles :</b></td><td><span th:text="${roles}" style="font-style: italic"></span></td>
+                        </tr> <tr>
+                            <td><b>Assembly :</b></td><td><span th:text="${assembly}" style="font-style: italic"></span></td>
+                        </tr>
+                            </table>
+
+                        <br/><br/>
+                        <p>We are looking forward to be of service to you and your church.</p> <br/><br/>
+                        <p>Yours Sincerely<br/><br/>
+                        eSavvy Team!</p>
+                        <p><i>For any queries please email esavvy@rfm.org.za or contact Help Desk on +27 72 262 1278</i></p>
+
+					</td>
+					<td width="16" bgcolor="#ffffff" style="font-size: 0px;font-family: Georgia, serif; background: #fff;">&nbsp;</td>
+			      </tr>
+				</table><!-- body -->
+				<table cellpadding="0" cellspacing="0" border="0" align="center" width="650" style="font-family: Georgia, serif; line-height: 10px;" bgcolor="#698291" class="footer">
+			      <tr>
+			        <td bgcolor="#698291"  align="center" style="padding: 15px 0 10px; font-size: 11px; color:#fff; margin: 0; line-height: 1.2;font-family: Georgia, serif;" valign="top">
+						<p style="padding: 0; font-size: 11px; color:#fff; margin: 0; font-family: Georgia, serif;">You're receiving this email because you are a registered user on the system.</p>
+						<p style="padding: 0; font-size: 11px; color:#fff; margin: 0 0 8px 0; font-family: Georgia, serif;">Having trouble reading this? <webversion style="color: #f7a766; text-decoration: none;">View it in your browser</webversion>. </p>
+					</td>
+			      </tr> 
+				</table><!-- footer-->
+		  	</td>
+		</tr>
+    </table>
+  </body>
 </html>

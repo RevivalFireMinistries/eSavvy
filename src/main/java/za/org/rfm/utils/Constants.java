@@ -16,14 +16,27 @@ public class Constants {
     public static final String STATUS_SENT = "Sent";
     public static final String STATUS_FAILED = "Failed";
     public static final String STATUS_ALL = "ALL";
+    public static final String FOLLOW_UP_STATUS_COMING = "Coming";
+    public static final String FOLLOW_UP_STATUS_AT_WORK = "Busy at Work";
+    public static final String FOLLOW_UP_STATUS_NOT_FEELING_WELL = "Not Feeling Well";
+    public static final String FOLLOW_UP_STATUS_PHONE_UNREACHABLE = "Phone Unreachable";
+    public static final String FOLLOW_UP_STATUS_FACING_CHALLENGES = "Facing Challenges";
+    public static final String FOLLOW_UP_STATUS_TRANSPORT_PROBLEM = "Transport Problem";
+    public static final String FOLLOW_UP_STATUS_BUSY = "Busy";
+    public static final String FOLLOW_UP_STATUS_NO_RESPONSE = "No Response";
+
+    //email subject
+
+
+
 
     public static final double APOSTOLIC_CONTRIBUTION_PERCENTAGE = 0.35;
+    public static final String REPORT_FREQUENCY_MONTHLY = "Monthly";
+    public static final String REPORT_FREQUENCY_WEEKLY = "Weekly";
+    public static final String REPORT_TYPE_APOSTOLIC = "Apostolic";
+    public static final String REPORT_TYPE_PASTORAL = "Pastoral";
 
-    //severity of message
-    public static final String FACES_MSG_SEVERITY_ERROR = "ERROR";
-    public static final String FACES_MSG_SEVERITY_INFO = "INFO";
-    public static final String FACES_MSG_SEVERITY_WARNING = "WARNING";
-    public static final String FACES_MSG_SEVERITY_FATAL = "FATAL";
+
 
 
 
@@ -44,8 +57,18 @@ public class Constants {
     public static final String USER_ROLE_PASTOR = "Pastor";
     public static final String USER_ROLE_ADMINISTRATOR = "Administrator";
     public static final String USER_ROLE_SUPER_ADMIN = "Super Admin";
+    //follow up actions
+    public static final String ACTION_REFER_TO_PASTOR = "Refer To Pastor";
+    public static final String ACTION_SEND_MOTIVATIONAL_SMS = "Send Motivational SMS";
+    public static final String ACTION_NO_ACTION_REQUIRED = "No Action Required";
 
+    public static final String[]followUpActions = {ACTION_NO_ACTION_REQUIRED,ACTION_REFER_TO_PASTOR,ACTION_SEND_MOTIVATIONAL_SMS};
+    public static final  String SYSTEM_DEFAULT_EMAIL = "esavvy@rfm.org.za" ;
+    public static final  String CHURCH_NAME = "church-name";
+    public static final  String ESAVVY_LINK = "esavvy-link";
     public static String[]roles = {USER_ROLE_ADMINISTRATOR,USER_ROLE_PASTOR,USER_ROLE_SUPER_ADMIN};
+    public static String[]followUpStates = {FOLLOW_UP_STATUS_BUSY,FOLLOW_UP_STATUS_NO_RESPONSE,FOLLOW_UP_STATUS_AT_WORK,FOLLOW_UP_STATUS_COMING,FOLLOW_UP_STATUS_FACING_CHALLENGES,FOLLOW_UP_STATUS_NOT_FEELING_WELL,FOLLOW_UP_STATUS_PHONE_UNREACHABLE,FOLLOW_UP_STATUS_TRANSPORT_PROBLEM};
 
+    public static final  String MOTIVATIONAL_SMS = "Motivational-sms";
     public static final int DEFAULT_USER_PASSWORD_SIZE = 6;
 }

@@ -44,8 +44,8 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="25"/>
-        <property name="username" value="russzw@gmail.com"/>
-        <property name="password" value="password85"/>
+        <property name="username" value="esavvy@rfm.org.za"/>
+        <property name="password" value="kingdom85"/>
         <property name="javaMailProperties">
             <props>
                 <!-- Use SMTP transport protocol -->
@@ -96,11 +96,12 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
                 <value>za.org.rfm.model.Transaction</value>
                 <value>za.org.rfm.model.Event</value>
                 <value>za.org.rfm.model.EventLog</value>
-                <value>za.org.rfm.model.AssemblyFollowUp</value>
+                <value>za.org.rfm.model.EventFollowUp</value>
                 <value>za.org.rfm.model.MemberGroup</value>
                 <value>za.org.rfm.model.SystemVar</value>
                 <value>za.org.rfm.model.Role</value>
                 <value>za.org.rfm.model.UserRole</value>
+                <value>za.org.rfm.model.EventFollowUpAction</value>
 
             </list>
         </property>

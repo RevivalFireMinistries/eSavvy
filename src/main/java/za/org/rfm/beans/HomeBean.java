@@ -42,7 +42,7 @@ public class HomeBean {
         private double percentageOfAttendance;
 
     public String getApostolic() {
-        return Utils.moneyFormatter(apostolic);
+        return Utils.moneyFormatter(apostolic,getAssembly().getLocaleObject());
     }
 
     public void setApostolic(List<Event> events) {
@@ -69,7 +69,7 @@ public class HomeBean {
         }
 
         public String getTotalIncome() {
-            return Utils.moneyFormatter(this.totalIncome);
+            return Utils.moneyFormatter(this.totalIncome,getAssembly().getLocaleObject());
         }
 
         public void setTotalIncome(List<Event> events) {
@@ -204,8 +204,11 @@ public class HomeBean {
             setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
             DateRange dateRange = initializeDateRange();
             logger.debug("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
-            events = eventService.getEventsByAssemblyAndType(Constants.SERVICE_TYPE_SUNDAY, WebUtil.getUserAssemblyId(), 4);
+            events = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), Constants.SERVICE_TYPE_SUNDAY, dateRange);
             logger.debug("Number of events retrieved---"+events.size());
+            if(events.isEmpty()){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login failed : User blocked/deleted",null));
+            }
             //setEvents(events);
             lazyModel = new LazyEventDataModel(events);
             createCategoryModel();

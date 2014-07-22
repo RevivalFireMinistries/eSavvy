@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.AssemblyDAO;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.User;
 
 import java.util.List;
 
@@ -35,5 +36,7 @@ public class AssemblyService {
     public void saveAssembly(Assembly assembly){
         assemblyDAO.saveMember(assembly);
     }
-
+    public List<User> getAssemblyUsers(Long id){
+        return assemblyDAO.getAssemblyUsers(id);
+    }
 }

@@ -35,6 +35,9 @@ public class SystemVarService {
     public List<SystemVar> getSystemVarByName(String name) {
         return systemVarDAO.getSystemVarByName(name);
     }
+    public SystemVar getSystemVarByNameUnique(String name) {
+        return systemVarDAO.getSystemVarByNameUnique(name);
+    }
     public List<SystemVar> getAllVars() {
         return systemVarDAO.getAllVars();
     }

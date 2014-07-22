@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import za.org.rfm.utils.Constants;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -42,6 +43,10 @@ public final class User extends ChurchManagerEntity {
 
     public String getFullname() {
        return this.firstName+" "+getLastName();
+    }
+
+    public boolean isBlocked(){
+        return Constants.STATUS_IN_ACTIVE.equalsIgnoreCase(this.getStatus())?true:false;
     }
 
  /*   public void setUserRoles(List<UserRole> userRoleList){

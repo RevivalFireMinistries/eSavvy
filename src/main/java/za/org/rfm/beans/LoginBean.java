@@ -2,7 +2,6 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Member;
 import za.org.rfm.model.User;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -126,7 +124,6 @@ public class LoginBean implements Serializable {
                 User user = getUserService().getUser(uname);
                 if(user.getStatus().equalsIgnoreCase(Constants.STATUS_DELETED) || user.getStatus().equalsIgnoreCase(Constants.STATUS_IN_ACTIVE)){
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login failed : User blocked/deleted",null));
-                    //Utils.addFacesMessage("Invalid login details!",FacesMessage.SEVERITY_ERROR);
                     logger.error("Failed login attempt - user blocked/deleted : "+uname);
                     return;
                 }
@@ -172,11 +169,11 @@ public class LoginBean implements Serializable {
         }
        return "";
     }
-    public void sendEmail(List<Member> members){
+    public void sendEmail(User user){
         System.out.println("Now sending an email....");
-        emailService.sendMail("russzw@gmail.com", "russel@rfm.org.za", "Testing123", "Testing only \n\n Hello Spring Email Sender",members);
+        emailService.sendWelcomeEmail(user);
 
-        emailService.sendAlertMail("Exception occurred");
+        //emailService.sendAlertMail("Exception occurred");
         System.out.println("Email sent!");
     }
 }

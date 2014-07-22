@@ -2,6 +2,7 @@ package za.org.rfm.dao;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import za.org.rfm.model.SystemVar;
@@ -47,5 +48,10 @@ public class SystemVarDAO {
         Query query = sessionFactory.getCurrentSession().createQuery("from SystemVar ");
         return (List<SystemVar>)query.list();
 
+    }
+
+    public SystemVar getSystemVarByNameUnique(String name) {
+        SystemVar systemVar = (SystemVar) sessionFactory.getCurrentSession().createCriteria(SystemVar.class).add(Restrictions.eq("name",name)).uniqueResult();
+        return systemVar;
     }
 }

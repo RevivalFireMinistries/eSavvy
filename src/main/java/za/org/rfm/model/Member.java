@@ -27,6 +27,8 @@ import java.util.Set;
 @Entity
 @Table(name = "rfm_member")
 public class Member extends ChurchManagerEntity{
+
+    private static final long serialVersionUID = -3952121875186843417L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

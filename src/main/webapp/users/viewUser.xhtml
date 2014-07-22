@@ -63,9 +63,9 @@
                                     <p:separator />
                                     <p:commandButton value="Reset Password" actionListener="#{viewUserBean.resetUserPassword}" update="messages" onclick="return confirm('Are you sure you want to reset the user password?')" />
                                     <p:separator />
-                                    <p:commandButton value="Block User" actionListener="#{viewUserBean.blockUser}" update="messages" onclick="return confirm('Are you sure you want to BLOCK this user?')" />
+                                    <p:commandButton value="Block User" rendered="#{!viewUserBean.user.blocked}" actionListener="#{viewUserBean.blockUser}" update="messages" onclick="return confirm('Are you sure you want to BLOCK this user?')" />
                                     <p:separator />
-                                    <p:commandButton value="UnBlock User" actionListener="#{viewUserBean.unBlockUser}" update="messages" onclick="return confirm('Are you sure you want to UNBLOCK this user?')" />                             </p:toolbarGroup>
+                                    <p:commandButton value="UnBlock User" rendered="#{viewUserBean.user.blocked}" actionListener="#{viewUserBean.unBlockUser}" update="messages" onclick="return confirm('Are you sure you want to UNBLOCK this user?')" />                             </p:toolbarGroup>
                             </p:toolbar>
                         </h:panelGrid>
 

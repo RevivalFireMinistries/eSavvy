@@ -119,20 +119,25 @@ public class MenuBean {
 
 
         //services mgt
-        DefaultSubMenu services = new DefaultSubMenu("Services");
+        DefaultSubMenu services = null;
         if (Utils.isAuthorised(currentUser,Role.Administrator)) {
             DefaultMenuItem newreport = new DefaultMenuItem("New Report");
             newreport.setUrl("/services/newReport.faces");
             newreport.setIcon("ui-icon-home");
+            services = new DefaultSubMenu("Services");
             services.addElement(newreport);
         }
         if (Utils.isAuthorised(currentUser,Role.Pastor)) {
             DefaultMenuItem viewreports = new DefaultMenuItem("View Reports");
             viewreports.setUrl("/services/viewReports.faces");
             viewreports.setIcon("ui-icon-home");
+            if(services == null)
+                services = new DefaultSubMenu("Services");
             services.addElement(viewreports);
-            model.addElement(services);
+
         }
+        if(services != null)
+         model.addElement(services);
         if(Utils.isAuthorised(currentUser,Role.Administrator) || Utils.isAuthorised(currentUser,Role.Pastor)){
         //sms mgt
         DefaultSubMenu smsSubmenu = new DefaultSubMenu("SMS");
@@ -163,7 +168,6 @@ public class MenuBean {
             item.setUrl("/system/viewSystemConfig.faces");
             item.setIcon("ui-icon-home");
             secondSubmenu.addElement(item);
-            model.addElement(secondSubmenu);
 
             item = new DefaultMenuItem();
             item = new DefaultMenuItem("Roles");

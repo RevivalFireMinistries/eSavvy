@@ -7,8 +7,8 @@
     <ui:define name="content">
 
         <h:form>
+            <p:messages id="msgsMain"/>
 
-            <p:growl id="growl" sticky="true" showDetail="true"/>
 
             <p:wizard flowListener="#{newReportBean.onFlowProcess}"  style="width:600px;" >
 
@@ -25,7 +25,7 @@
                                 <f:selectItems value="#{newReportBean.serviceTypes}" />
                             </p:selectOneMenu>
                             <h:outputText value="Event  Date: " />
-                            <p:calendar maxdate="#{newReportBean.maxDate}" required="true" value="#{newReportBean.eventDate}" id="popupButtonCal" showOn="button" />
+                            <p:calendar maxdate="#{newReportBean.maxDate}" required="true" value="#{newReportBean.eventDate}" id="date" showOn="button" />
                             <h:outputText value="Skip to last: " />
                             <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
                         </h:panelGrid>
@@ -39,11 +39,35 @@
 
                         <h:panelGrid columns="2" columnClasses="label, value">
                             <h:outputText value="Total Tithes: " />
-                            <p:inputText value="#{newReportBean.event.tithes}" />
+                            <p:inputText value="#{newReportBean.event.tithes}" required="true">
+                                <f:validateDoubleRange minimum="0.1" />
+                                <f:validateRequired />
+                            </p:inputText>
 
                             <h:outputText value="Total Offerings: " />
-                            <p:inputText value="#{newReportBean.event.offerings}" />
+                            <p:inputText value="#{newReportBean.event.offerings}" required="true" >
+                                <f:validateDoubleRange minimum="0.1" />
+                                <f:validateRequired />
+                            </p:inputText>
 
+                            <h:outputText value="Skip to last: " />
+                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+                <p:tab id="other" title="Other">
+                    <p:panel header="Event Other Info">
+
+                        <h:messages errorClass="error"/>
+
+                        <h:panelGrid columns="2" columnClasses="label, value">
+                            <h:outputText value="Attendance: " />
+                            <p:inputText value="#{newReportBean.event.attendance}" required="true">
+                                <f:validateRequired />
+                            </p:inputText>
+
+                            <h:outputText value="Leader's comment: " />
+                            <p:inputTextarea rows="6" cols="33" value="#{newReportBean.event.comment}" required="true"/>
                             <h:outputText value="Skip to last: " />
                             <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
                         </h:panelGrid>
@@ -51,7 +75,8 @@
                 </p:tab>
                 <p:tab id="register" title="Event Register">
                   <p:panel header="Event Register">
-                       <h:messages errorClass="error"/>
+
+                      <p:messages id="msgs"/>
                       <p:dataTable id="members" var="member" value="#{newReportBean.memberDataModel}" paginator="true" rows="10"
                                    selection="#{newReportBean.selectedMembers}">
 
@@ -73,35 +98,14 @@
                               #{member.status}
                           </p:column>
 
-
-
-                          <f:facet name="footer">
-                              <p:commandButton id="present" value="Submit Register" icon="ui-icon-search"
-                                               actionListener="#{newReportBean.processRegister}"     oncomplete="PF('reportSummary').show()"/>
-                          </f:facet>
                       </p:dataTable>
                   </p:panel>
                 </p:tab>
-                <p:tab id="other" title="Other">
-                    <p:panel header="Event Other Info">
 
-                        <h:messages errorClass="error"/>
-
-                        <h:panelGrid columns="2" columnClasses="label, value">
-                            <h:outputText value="Attendance: " />
-                            <p:inputText value="#{newReportBean.event.attendance}" />
-
-                            <h:outputText value="Leader's comment: " />
-                            <p:inputTextarea rows="6" cols="33" value="#{newReportBean.event.comment}"/>
-                            <h:outputText value="Skip to last: " />
-                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
-                        </h:panelGrid>
-                    </p:panel>
-                </p:tab>
                 <p:tab id="confirm" title="Confirm">
                     <p:panel header="Confirmation">
 
-                        <h:panelGrid id="confirmation" columns="6">
+                        <h:panelGrid id="confirmation" columns="2">
                             <h:outputText value="Event Type: " />
                             <h:outputText styleClass="outputLabel"
                                           value="#{newReportBean.event.eventType}" />
@@ -112,7 +116,7 @@
 
                             <h:outputText value="Total tithes: " />
                             <h:outputText styleClass="outputLabel"
-                                          value="#{newReportBean.event.tithes}" />>
+                                          value="#{newReportBean.event.tithes}" />
 
                             <h:outputText value="Total offerings: " />
                             <h:outputText styleClass="outputLabel"
@@ -130,8 +134,9 @@
                             <h:outputText />
                         </h:panelGrid>
 
-                        <p:commandButton value="Submit" update="growl"
-                                         actionListener="#{newReportBean.save}"/>
+                        <p:commandButton immediate="true" value="Submit" update="@parent  msgsMain"
+                                         actionListener="#{newReportBean.save}" oncomplete="wiz.loadStep (wiz.cfg.steps [0], true)"/>
+
 
                     </p:panel>
                 </p:tab>

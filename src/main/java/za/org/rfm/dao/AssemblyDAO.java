@@ -2,9 +2,11 @@ package za.org.rfm.dao;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.User;
 import za.org.rfm.utils.Constants;
 
 import java.util.List;
@@ -52,5 +54,11 @@ public class AssemblyDAO {
 
     public void saveMember(Assembly assembly) {
         getSessionFactory().getCurrentSession().saveOrUpdate(assembly);
+    }
+
+    public List<User> getAssemblyUsers(Long id) {
+       Query query = sessionFactory.getCurrentSession().createQuery("from User where assembly =:id");
+        query.setLong("id",id);
+        return (List<User>)query.list();
     }
 }

@@ -19,11 +19,13 @@ public class Country {
     private String code;
 
     public String name;
+    public String language;
 
-    Country(String iso, String code, String name) {
+    Country(String iso, String code, String name,String language) {
         this.iso = iso;
         this.code = code;
         this.name = name;
+        this.language = language;
     }
 
     public String toString() {
