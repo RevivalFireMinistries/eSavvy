@@ -6,6 +6,6 @@ package za.org.rfm.utils;
  * Time: 10:07 AM
  */
 public enum Role {
-   Administrator,Pastor,SuperAdmin;
+   Administrator,Pastor,SuperAdmin,Apostle;
 
 }

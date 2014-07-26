@@ -276,7 +276,11 @@ public class Utils {
     }
 
     public static boolean isAuthorised(User user,Role role){
+
        for(UserRole userRole: user.getUserRoles()){
+           if(userRole.getRole().getName().equalsIgnoreCase(Role.Apostle.name())){
+               return true;
+           }
            if(userRole.getRole().getName().equalsIgnoreCase(role.name())){
                return true;
            }
