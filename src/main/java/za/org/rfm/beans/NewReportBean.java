@@ -177,8 +177,15 @@ public class NewReportBean {
             logger.debug(eventLogs.size()+" Event Log objs created...");
             getEvent().setEventLogList(eventLogs);
             eventService.saveEvent(getEvent());
-            //Now send an email to pastoral!
-             emailService.eventReport(getEvent());
+
+            //Now send an email to pastoral! - but spawn a new thread to separate execution
+            Thread emailThread = new Thread(){
+                @Override
+                public void run() {
+                    emailService.eventReport(getEvent());
+                }
+            };
+            emailThread.start();
             String url = "viewReports.faces";
             FacesContext facesContext = FacesContext.getCurrentInstance();
             Flash flash = facesContext.getExternalContext().getFlash();

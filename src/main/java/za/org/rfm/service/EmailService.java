@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import za.org.rfm.model.Event;
+import za.org.rfm.model.EventFollowUp;
 import za.org.rfm.model.User;
 import za.org.rfm.utils.*;
 
@@ -244,7 +245,53 @@ public class EmailService {
             logger.error("Email sending error: "+e.getMessage());
         }
     }
+    public void followUpReport(List<EventFollowUp> eventFollowUpList,Date date,Event event){
 
+        try {
+            User pastor = event.getAssembly().getUserWithRole(Role.Pastor);
+            if(pastor != null && pastor.getEmail() != null){
+
+            if(eventFollowUpList != null && !eventFollowUpList.isEmpty()){
+                //we have something to report on - @ least
+
+                String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+
+                final Context ctx = new Context(Locale.ENGLISH);
+
+                ctx.setVariable("eSavvyLink", eSavvyLink);
+                ctx.setVariable("churchName",churchName);
+                ctx.setVariable("name",pastor.getFullname());
+                ctx.setVariable("people",eventFollowUpList);
+                ctx.setVariable("header",getResource("email.subject.follow.up.report",event.getAssembly().getName(),date));
+
+
+                final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                ctx.setVariable("header",getResource("email.subject.follow.up.report",event.getAssembly().getName(),date));
+                message.setFrom(getResource("email.system.from"));
+                message.setTo(pastor.getEmail());
+
+                // Create the HTML body using Thymeleaf
+                final String htmlContent = this.templateEngine.process("../email/follow-up-report", ctx);
+                message.setText(htmlContent, true); // true = isHtml
+
+                logger.debug("Email setup complete...now send!");
+                // Send mail
+                this.mailSender.send(mimeMessage);
+                logger.debug("Email sent!");
+
+            } else {
+                logger.error("No events found for the specified criteria...abort!");
+            }
+            }else{
+                logger.error("No Pastor found for this assembly or email is invalid...abort!");
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            logger.error("Email sending error: "+e.getMessage());
+        }
+    }
     private String getResource(String key,Object...args){
        return (new NonStaticMessageFormat(resourceBundle.getString(key),args).getMsg());
     }

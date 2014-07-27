@@ -38,7 +38,7 @@
 
                                 <p:commandButton type="button" value="Back" icon="ui-icon-menuItem" onclick="history.back()"/>
                                 <p:separator />
-                                <p:commandButton value="Generate Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(attendance.event)}"  onclick="return confirm('Are you sure you want to generate the follow up report?')" />
+                                <p:commandButton value="Generate Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(followUpBean.event)}"  onclick="return confirm('Are you sure you want to generate the follow up report?')" />
                                 <p:separator />
                               </p:toolbarGroup>
                         </p:toolbar>
@@ -154,7 +154,7 @@
                             <p:separator />
                             <p:commandButton value="Save Report" actionListener="#{followUpBean.saveReport}"  onclick="return confirm('Are you sure you want to save this follow up report?')" />
                             <p:separator />
-                            <p:commandButton value="Reset Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(attendance.event)}"  onclick="return confirm('Are you sure you want to RESET the follow up report?')" />
+                            <p:commandButton value="Reset Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(followUpBean.event)}"  onclick="return confirm('Are you sure you want to RESET the follow up report?')" />
                             <p:separator />
                           </p:toolbarGroup>
                     </p:toolbar>

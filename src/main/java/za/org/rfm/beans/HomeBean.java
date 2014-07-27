@@ -207,7 +207,7 @@ public class HomeBean {
             events = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), Constants.SERVICE_TYPE_SUNDAY, dateRange);
             logger.debug("Number of events retrieved---"+events.size());
             if(events.isEmpty()){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login failed : User blocked/deleted",null));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"No events found for the default period :",null));
             }
             //setEvents(events);
             lazyModel = new LazyEventDataModel(events);

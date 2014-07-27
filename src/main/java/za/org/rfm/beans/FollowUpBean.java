@@ -1,6 +1,7 @@
 package za.org.rfm.beans;
 
 import za.org.rfm.model.*;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SystemVarService;
@@ -14,6 +15,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ public class FollowUpBean extends SuperBean{
     SystemVarService systemVarService;
     @ManagedProperty(value="#{MemberService}")
     MemberService memberService;
+    @ManagedProperty(value="#{mailService}")
+    EmailService emailService;
     List<Member> absentMembers;
     List<Member> fliteredMembers;
     String[] followUpStates = Constants.followUpStates;
@@ -38,6 +42,14 @@ public class FollowUpBean extends SuperBean{
     Event event;
     List<Member> smsList = new ArrayList<Member>();
     List<Member> referredToPastor = new ArrayList<Member>();
+
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     public SystemVarService getSystemVarService() {
         return systemVarService;
@@ -170,7 +182,14 @@ public class FollowUpBean extends SuperBean{
                 referredToPastor.add(eventFollowUp.getMember());
             } else {
             }
-        }
+        }     //now send Pastor Report on what happened to the pastor and a list pple that need his attention
+
+        Thread email = new Thread(){
+            @Override
+            public void run() {
+                emailService.followUpReport(getEventFollowUpList(),new Date(),getEvent());
+            }
+        };   email.start();
         logger.debug("Found "+smsList.size()+" members for sending smses");
         logger.debug("Found "+referredToPastor.size()+" members referred to the pastor");
         List<SystemVar> systemVars = systemVarService.getSystemVarByName(Constants.MOTIVATIONAL_SMS);
