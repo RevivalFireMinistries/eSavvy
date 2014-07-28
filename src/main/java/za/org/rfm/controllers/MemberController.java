@@ -82,7 +82,7 @@ public class MemberController {
             logger.info("Now creating the member object...."+json);
             Member member = mapper.readValue(json.toString(),Member.class);
             if(member != null){
-                if(Utils.)
+               // if(Utils.)
                 member.setDateCreated(new Date());
                 member.setStatus(Constants.STATUS_ACTIVE);
                 Account account = new Account();
