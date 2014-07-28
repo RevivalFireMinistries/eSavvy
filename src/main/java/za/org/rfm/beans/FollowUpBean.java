@@ -6,7 +6,6 @@ import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SystemVarService;
 import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -176,9 +175,9 @@ public class FollowUpBean extends SuperBean{
         logger.debug("follow up report saved...now executing actions");
         for(EventFollowUp eventFollowUp : getEventFollowUpList()) {
             String action = eventFollowUp.getAction();
-            if (action.equals(Constants.ACTION_SEND_MOTIVATIONAL_SMS)) {
+            if (Constants.ACTION_SEND_MOTIVATIONAL_SMS.equalsIgnoreCase(action)) {
                 smsList.add(eventFollowUp.getMember());
-            } else if (action.equals(Constants.ACTION_REFER_TO_PASTOR)) {
+            } else if (Constants.ACTION_REFER_TO_PASTOR.equalsIgnoreCase(action)) {
                 referredToPastor.add(eventFollowUp.getMember());
             } else {
             }
@@ -193,7 +192,7 @@ public class FollowUpBean extends SuperBean{
         logger.debug("Found "+smsList.size()+" members for sending smses");
         logger.debug("Found "+referredToPastor.size()+" members referred to the pastor");
         List<SystemVar> systemVars = systemVarService.getSystemVarByName(Constants.MOTIVATIONAL_SMS);
-        Utils.sendBulkSMS(smsList,systemVars.get(0).getValue()); //TODO:sort the sms sending here!
+//        Utils.sendBulkSMS(smsList,systemVars.get(0).getValue()); //TODO:sort the sms sending here!
 
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Your follow up report has been saved!",""));
     }

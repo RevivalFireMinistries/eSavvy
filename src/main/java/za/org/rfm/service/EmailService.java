@@ -248,6 +248,7 @@ public class EmailService {
     public void followUpReport(List<EventFollowUp> eventFollowUpList,Date date,Event event){
 
         try {
+            event.getAssembly().setUsers(assemblyService.getAssemblyUsers(event.getAssembly().getAssemblyid()));
             User pastor = event.getAssembly().getUserWithRole(Role.Pastor);
             if(pastor != null && pastor.getEmail() != null){
 

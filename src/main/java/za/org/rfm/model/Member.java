@@ -3,14 +3,14 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -33,16 +33,23 @@ public class Member extends ChurchManagerEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public Long id;
-    public String firstName,lastName,gender,phone,email,homeAddress,status,type;
+    @XmlElement(name = "firstName", required = true, nillable = false)
+    public String firstName;
+    @XmlElement(name = "lastName", required = true, nillable = false)
+    public String lastName,gender,phone,email,homeAddress,status,type;
     public Date dateCreated;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assembly")
     private Assembly assembly;
+    @JsonIgnore
     @OneToOne( mappedBy = "member")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
     private Account account;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<SMSLog> smsLogs;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "member")
     private Set<MemberGroup> memberGroupList;
 
