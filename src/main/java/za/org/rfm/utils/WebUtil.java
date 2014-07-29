@@ -36,6 +36,7 @@ public class WebUtil {
             return null;
     }*/
 
+
     public static Long getUserAssemblyId(){
         HttpSession session = getSession();
         if ( session != null )  {

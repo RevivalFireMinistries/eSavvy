@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import za.org.rfm.model.Account;
 import za.org.rfm.model.Member;
@@ -76,29 +77,38 @@ public class MemberController {
 
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @ResponseBody
-    public void createMember(@RequestBody JSONObject json) {
+    public String createMember(@RequestBody JSONObject json) {
         try {
             logger.info("Now creating the member object...."+json);
             Member member = mapper.readValue(json.toString(),Member.class);
             if(member != null){
-               // if(Utils.)
-                member.setDateCreated(new Date());
-                member.setStatus(Constants.STATUS_ACTIVE);
-                Account account = new Account();
-                account.setMember(member);
-                member.setAccount(account);
-                Utils.capitaliseMember(member);
-                memberService.saveMember(member);
-                logger.info("Member added succesfully into db");
+               if(!StringUtils.isEmpty(member.getFirstName())) {
+                    if(!StringUtils.isEmpty(member.getLastName())){
+                        if(!StringUtils.isEmpty(member.getPhone())){
+                            member.setDateCreated(new Date());
+                            member.setStatus(Constants.STATUS_ACTIVE);
+                            Account account = new Account();
+                            account.setMember(member);
+                            member.setAccount(account);
+                            Utils.capitaliseMember(member);
+                            memberService.saveMember(member);
+                            logger.info("Member added successfully into db");
+                        }
+                        return "message:Error - Phone number is  empty";
+                    }
+                   return "message:Error - Last Name is  empty";
+                }
+                return "message:Error - Phone number is null empty";
+
             }
 
         } catch (IOException e) {
             logger.error("Encountered an error : "+e.getMessage());
             e.printStackTrace();
+            return "Encountered during processing ";
         }
 
-
+         return "";
     }
 
     /*@RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
