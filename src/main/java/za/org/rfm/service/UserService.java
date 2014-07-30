@@ -23,7 +23,7 @@ public class UserService {
      Logger logger = Logger.getLogger(UserService.class);
     @Autowired
     UserDAO userDAO;
-    //TODO: need to look into using JpaReository in future
+    //TODO: need to look into using JpaRepository in future
  /*   @Resource
     private UserDAOInterface userDAOInterface;
 

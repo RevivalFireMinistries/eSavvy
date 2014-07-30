@@ -169,6 +169,10 @@ public class LoginBean implements Serializable {
         }
        return "";
     }
+
+    public void resetPassword(){
+
+    }
     public void sendEmail(User user){
         System.out.println("Now sending an email....");
         emailService.sendWelcomeEmail(user);

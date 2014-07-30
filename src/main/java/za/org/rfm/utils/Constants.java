@@ -47,8 +47,10 @@ public class Constants {
     public static final String MEMBER_TYPE_FULL_TIME = "Full Time";
 
     public static final String SERVICE_TYPE_SUNDAY = "Sunday Service";
+    public static final String REPORT_TEMPLATE_FINANCE = "Finance";
+    public static final String REPORT_TEMPLATE_SERVICE = "Service";
     public static final String SERVICE_TYPE_MIDWEEK = "Midweek Service";
-    public static final  int MAX_CONNECTIONS_PER_SEARCH = 10 ;
+
 
     public static final String WINSMS_USERNAME = "churchmanager";
     public static final String WINSMS_PASSWORD = "password85";

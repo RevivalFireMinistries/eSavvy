@@ -160,6 +160,12 @@ public class MenuBean {
         /////////////////////////////////////
         }
 
+        DefaultSubMenu other = new DefaultSubMenu("Other");
+        DefaultMenuItem downloads = new DefaultMenuItem("Downloads");
+        downloads.setUrl("/other/downloads.faces");
+        downloads.setIcon("ui-icon-home");
+        other.addElement(downloads);
+        model.addElement(other);
         if(Utils.isAuthorised(currentUser, Role.SuperAdmin) ){
             //System mgt
             DefaultSubMenu secondSubmenu = new DefaultSubMenu("System Config");

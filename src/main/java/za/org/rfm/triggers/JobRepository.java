@@ -1,7 +1,7 @@
 package za.org.rfm.triggers;
 
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.springframework.stereotype.Component;
 import za.org.rfm.jobs.ApostolicWeeklyReport;
 
@@ -28,7 +28,7 @@ public class JobRepository {
                                     .withIntervalInSeconds(Integer.parseInt(Utils.getResource("report.frequency.apostolic")))
                                     .repeatForever())
                     .build();*/
-            Trigger triggerCron = TriggerBuilder
+           /* Trigger triggerCron = TriggerBuilder
                     .newTrigger()
                     .withIdentity("apostolicWeeklyEmail")
                     .withSchedule(
@@ -40,7 +40,7 @@ public class JobRepository {
             sch.start();
 
             // Tell quartz to schedule the job using the trigger
-            sch.scheduleJob(job, triggerCron);
+            sch.scheduleJob(job, triggerCron);*/
         } catch (Exception e) {
             e.printStackTrace();
         }

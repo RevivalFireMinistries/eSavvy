@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <p:messages id="msgs"/>
+        <h:form>
+            <p:fieldset id="downloadsFiledset" legend="Downloads">
+                <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                    <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+                </p:dialog>
+
+                <h:form>
+                    <h:panelGrid columns="2" cellpadding="5" id="templates">
+                        <p:outputLabel for="car" value="Select File: " />
+                        <p:selectOneMenu id="car" value="#{downloadsBean.selected}" required="true">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{downloadsBean.items}" />
+
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="button" value="Select Date:" />
+                        <p:calendar id="button" value="#{downloadsBean.date}" showOn="button"  required="true"/>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Download" actionListener="#{downloadsBean.createLogSheet}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                        <p:fileDownload value="#{downloadsBean.file}"/>
+                    </p:commandButton>
+                </h:form>
+
+                <script type="text/javascript">
+                    function start() {
+                        PF('statusDialog').show();
+                    }
+
+                    function stop() {
+                        PF('statusDialog').hide();
+                    }
+                </script>
+            </p:fieldset>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

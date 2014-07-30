@@ -73,7 +73,7 @@ public class UserDAO {
         if(user.getUsername()== null || user.getUsername().equalsIgnoreCase(""))
             return true;
            if(getUser(user.getUsername()) != null){
-               logger.warn("This username - "+user.getUsername()+" already exists on the server");
+               logger.warn("This username - "+user.getUsername()+" exists on the server");
                  return true;
            }
         //He has specified something and we have checked with the db and its not there! :-)
