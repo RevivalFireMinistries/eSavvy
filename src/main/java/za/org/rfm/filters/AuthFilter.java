@@ -36,7 +36,7 @@ public class AuthFilter implements Filter {
             HttpSession ses = req.getSession(false);
             //  allow user to proceed if url is login.xhtml or user logged in or user is accessing any page in //public folder
             String reqURI = req.getRequestURI();
-            if ( reqURI.indexOf("/login.xhtml") >= 0 ||reqURI.indexOf("/resetPassword.xhtml") >= 0|| (ses != null && ses.getAttribute("username") != null)
+            if (reqURI.indexOf(".css") >= 0 || reqURI.indexOf("/login.xhtml") >= 0 ||reqURI.indexOf("/resetPassword.xhtml") >= 0|| (ses != null && ses.getAttribute("username") != null)
                     || reqURI.indexOf("/public/") >= 0 || reqURI.contains("javax.faces.resource") || reqURI.indexOf("/ws/") >= 0 ) {
                 //System.out.println("Request allowed...."+reqURI);
                 chain.doFilter(request, response);

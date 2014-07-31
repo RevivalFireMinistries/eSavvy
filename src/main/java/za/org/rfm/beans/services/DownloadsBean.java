@@ -129,6 +129,11 @@ public class DownloadsBean {
             setFile(new DefaultStreamedContent(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),"application/pdf",getSelected()+"-LogSheet.pdf"));
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Log Sheet created successfully and ready for download",""));
         }
+        else if(Constants.REPORT_TEMPLATE_FINANCE.equals(getSelected())){
+            byteArrayOutputStream =  pdfService.createFinanceTemplate(assembly,getSelected(),getDate());
+            setFile(new DefaultStreamedContent(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),"application/pdf",getSelected()+".pdf"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Template created successfully and ready for download",""));
+        }
 
     }
 

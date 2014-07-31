@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Member;
 import za.org.rfm.model.MemberGroup;
+import za.org.rfm.pdf.UnderlinedCell;
 import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Style;
 import za.org.rfm.utils.Utils;
@@ -149,6 +150,30 @@ public class PDFService {
         Style.labelCellStyle(cell);
         return cell;
     }
+    private static PdfPCell createNarrationCell(String text){
+        // font
+        Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.NORMAL);
+
+        // create cell
+        PdfPCell cell = new PdfPCell(new Phrase(text,font));
+
+        // set style
+        Style.narrationCellStyle(cell);
+        return cell;
+    }
+    private static PdfPCell createTotalCell(String text){
+        // font
+        Font font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+
+        // create cell
+        PdfPCell cell = new PdfPCell(new Phrase(text,font));
+         //add double line
+        UnderlinedCell underlinedCell = new UnderlinedCell();
+        cell.setCellEvent(underlinedCell);
+        // set style
+        Style.labelCellStyle(cell);
+        return cell;
+    }
 
     // create cells
     private static PdfPCell createValueCell(String text){
@@ -161,5 +186,108 @@ public class PDFService {
         // set style
         Style.valueCellStyle(cell);
         return cell;
+    }
+
+    public ByteArrayOutputStream createFinanceTemplate(Assembly assembly,String type,Date date){
+        try {
+            ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+            PdfWriter docWriter = null;
+            Document doc = new Document(PageSize.A4);
+            docWriter = PdfWriter.getInstance(doc, baosPDF);
+            doc.open();
+           //Table header
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(95);
+
+            Font font = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+            PdfPCell c1 = new PdfPCell(new Phrase(assembly.getName()+" - "+type,font));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setColspan(4);
+            Style.headerCellStyle(c1);
+            table.addCell(c1);
+            table.setHeaderRows(1);
+
+            table.addCell(createLabelCell("Date :"));
+            table.addCell(createValueCell(Utils.dateFormatter(date)));
+            table.addCell(createLabelCell("Service Type :"));
+            table.addCell(createValueCell(type));
+            table.addCell(createLabelCell("Compiled By:"));
+            PdfPCell cell = createValueCell("");
+            cell.setColspan(3);
+            table.addCell(cell);
+            doc.add(table);
+            //Revenue table
+            PdfPTable revenueTable = new PdfPTable(2);
+            revenueTable.setWidthPercentage(95);
+            float[] columnWidths = {2f, 1f};
+            revenueTable.setWidths(columnWidths);
+            font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+            c1 = new PdfPCell(new Phrase("Revenue",font));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setColspan(2);
+            Style.headerCellStyle(c1);
+            revenueTable.addCell(c1);
+            revenueTable.setHeaderRows(1);
+
+            revenueTable.addCell(createNarrationCell("Total Tithes"));
+            revenueTable.addCell(createValueCell(""));
+            revenueTable.addCell(createNarrationCell("Total Offerings"));
+            revenueTable.addCell(createValueCell(""));
+            revenueTable.addCell(createNarrationCell("Other(specify)"));
+            revenueTable.addCell(createValueCell(""));
+            revenueTable.addCell(createNarrationCell("Other(specify)"));
+            revenueTable.addCell(createValueCell(""));
+            //add totals column
+            PdfPCell total = createTotalCell("Total Revenue");
+            revenueTable.addCell(total);
+            total = createTotalCell("");
+            revenueTable.addCell(total);
+            doc.add(revenueTable);
+
+            //expenses table
+            PdfPTable expenseTable = new PdfPTable(2);
+            expenseTable.setWidthPercentage(95);
+            float[] columnWidths1 = {2f, 1f};
+            expenseTable.setWidths(columnWidths1);
+            font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+            c1 = new PdfPCell(new Phrase("Expenses",font));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setColspan(2);
+            Style.headerCellStyle(c1);
+            expenseTable.addCell(c1);
+            expenseTable.setHeaderRows(1);
+
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            expenseTable.addCell(createNarrationCell(""));
+            expenseTable.addCell(createValueCell(""));
+            //total expenses column
+            total = createTotalCell("Total Expenses");
+            expenseTable.addCell(total);
+            total = createTotalCell("");
+            expenseTable.addCell(total);
+            doc.add(expenseTable);
+            doc.close();
+          return baosPDF;
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
