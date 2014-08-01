@@ -39,6 +39,10 @@ public class AssemblyBean {
     List<Member> memberList;
     Map<String,String> countries;
 
+    /**
+     * Get countries map
+     * @return
+     */
     public Map<String, String> getCountries() {
         return countries;
     }
