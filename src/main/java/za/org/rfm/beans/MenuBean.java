@@ -42,7 +42,19 @@ public class MenuBean {
     }
     @PostConstruct
     public void init(){
-        currentUser = userService.getUser(WebUtil.getUserName());
+        String userName = WebUtil.getUserName();
+        if(userName == null){
+            try {
+                //no user in context - go out!
+                logger.error("No user found - failed to load menu!");
+                String url = "login.faces";
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        currentUser = userService.getUser(userName);
         if(currentUser == null){
             try {
                 //no user in context - go out!

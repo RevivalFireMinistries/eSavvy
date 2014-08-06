@@ -1,10 +1,13 @@
 package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.User;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.service.SystemVarService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.WebUtil;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -34,6 +38,15 @@ public class LoginBean implements Serializable {
     private String message, uname;
     private User user;
     private Assembly assembly;
+    private String churchName;
+
+    public String getChurchName() {
+        return churchName;
+    }
+
+    public void setChurchName(String churchName) {
+        this.churchName = churchName;
+    }
 
     public Assembly getAssembly() {
         return assembly;
@@ -57,6 +70,16 @@ public class LoginBean implements Serializable {
     MemberService memberService;
     @ManagedProperty(value="#{mailService}")
     EmailService emailService;
+    @ManagedProperty(value="#{SystemVarService}")
+    private SystemVarService systemVarService;
+
+    public SystemVarService getSystemVarService() {
+        return systemVarService;
+    }
+
+    public void setSystemVarService(SystemVarService systemVarService) {
+        this.systemVarService = systemVarService;
+    }
 
     public MemberService getMemberService() {
         return memberService;
@@ -75,8 +98,13 @@ public class LoginBean implements Serializable {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-    public String changePassword(){
-        return "changePassword";
+    public void changePassword(){
+        try {
+            String url = "/users/changePassword.faces";
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public String getMessage() {
@@ -115,6 +143,14 @@ public class LoginBean implements Serializable {
 
         try {
             boolean result = getUserService().login(uname, password);
+            User temp = new User();
+            temp.setUsername(uname);
+            System.out.println("exists   :"+userService.checkUserNameExists(temp));
+            List<User> users  = userService.getUsersByAssembly(1L);
+            System.out.println("size--------"+users.size());
+            for(User user1 : users){
+                System.out.println("username : "+user1.getUsername());
+            }
             //boolean result = true;
             if (result) {
                 // get Http Session and store username
@@ -137,6 +173,13 @@ public class LoginBean implements Serializable {
                 //now set the lastlogin to now
                 user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
                 userService.saveUser(user);
+                String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+                if(StringUtils.isEmpty(churchName)){
+                    setChurchName("eSavvy");
+                    logger.error("Error : variable church name not set!");
+                }else{
+                    setChurchName(churchName);
+                }
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Invalid login details!",null));

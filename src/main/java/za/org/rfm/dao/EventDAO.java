@@ -59,6 +59,7 @@ public class EventDAO {
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setLong("assemblyid", assemblyid);
         query.setString("eventtype",type);
+        query.setMaxResults(limit);
         List<Event> eventList = (List<Event>)query.list();
         return eventList;
     }

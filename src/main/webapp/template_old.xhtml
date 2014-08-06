@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>eSavvy | Intelligent church management</title>
+    </f:facet>
+    <link rel="shortcut icon" href="#{request.contextPath}/images/favicon.ico"/>
+    <link href="#{request.contextPath}/css/styles.css" rel="stylesheet" type="text/css" media="all" />
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/default.css" />
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/syntaxhighlighter/syntaxhighlighter.css" />
+
+    <style type="text/css">
+
+        .ui-growl {
+            position:absolute;
+            top:10%;
+            left:50%;
+            z-index:9999;
+        }
+        .ui-layout-north {
+            z-index:20 !important;
+            overflow:visible !important;;
+        }
+
+        .ui-layout-north .ui-layout-unit-content {
+            overflow:visible !important;
+        }
+        .ui-widget,.ui-widget .ui-widget {
+            font-size: 87% !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form>
+        <p:growl id="messages"/>
+
+        <p:menubar>
+            <p:submenu label="File" icon="ui-icon-document">
+                <p:submenu label="New" icon="ui-icon-contact">
+                    <p:menuitem value="Member" url="#" />
+                    <p:menuitem value="Service Report" url="#" />
+
+                </p:submenu>
+                <p:menuitem value="Open" url="#" />
+                <p:separator />
+                <p:menuitem value="Quit" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Members" icon="ui-icon-pencil">
+                <p:menuitem value="Undo" url="#" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" />
+            </p:submenu>
+
+            <p:submenu label="Tithes" icon="ui-icon-help">
+                <p:menuitem value="Contents" url="#" />
+                <p:submenu label="Search" icon="ui-icon-search">
+                    <p:submenu label="Text">
+                        <p:menuitem value="Workspace" url="#" />
+                    </p:submenu>
+                    <p:menuitem value="File" url="#" />
+                </p:submenu>
+            </p:submenu>
+
+            <p:submenu label="Actions" icon="ui-icon-gear">
+                <p:submenu label="Ajax" icon="ui-icon-refresh">
+                    <p:menuitem value="Save" actionListener="#{menuView.save}" icon="ui-icon-disk" />
+                    <p:menuitem value="Update" actionListener="#{menuView.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>
+                </p:submenu>
+                <p:submenu label="Non-Ajax" icon="ui-icon-newwin">
+                    <p:menuitem value="Delete" actionListener="#{menuView.delete}" icon="ui-icon-close" update="messages" ajax="false"/>
+                </p:submenu>
+            </p:submenu>
+
+            <p:menuitem value="My Profile"  icon="ui-icon-close"  actionListener="#{menuView.logout}"   />
+
+            <f:facet name="options">
+              <div>
+                <p:panelGrid style="background-color: black;color: white;">
+
+                <p:row >
+                    <p:column><b>Logged in as :</b>  <i>#{loginBean.user.fullname}</i></p:column>
+                    <p:column ><b>Assembly :</b> <i>#{loginBean.user.assembly.name}</i></p:column>
+                    <p:column ><b>Role(s) : </b><i>#{loginBean.user.roleToString}</i></p:column>
+                    <!--<p:column><b>Last Login :</b> <i><h:outputText value="#{loginBean.user.lastLoginDate}" ><f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputText></i></p:column>-->
+                             <p:column ><h:commandButton value="Change Password" style="background-color: #000000;color: #ffffff;font-family: Arial,Helvetica,sans-serif;" action="/users/changePassword"></h:commandButton></p:column>
+                    <p:column ><h:commandButton value="Logout" style="background-color: #000000;color: #ffffff;font-family: Arial,Helvetica,sans-serif;" action="#{loginBean.logout}"></h:commandButton></p:column>
+                </p:row>
+
+                </p:panelGrid>
+              </div>
+            </f:facet>
+        </p:menubar>
+    </h:form>
+<div id="head">
+ <div id="head_cen">
+  <div id="head_sup" class="head_height">
+<h1 class="logo"></h1>
+
+  </div>
+
+ </div>
+</div>
+<div id="content">
+ <div id="content_cen">
+  <div id="content_sup">
+
+      <p:layout style="border: 1px; min-width:200px;min-height:500px; " id="layout" >
+          <p:layoutUnit id="left" position="west"  resizable="true" closable="true" collapsible="true" header="Options" minSize="200">
+              <h:form>
+                  <p:menu model="#{menuBean.model}"/>
+              </h:form>
+          </p:layoutUnit>
+
+          <p:layoutUnit position="center">
+              <ui:insert name="content" />
+          </p:layoutUnit>
+      </p:layout>
+  
+   
+  </div>
+ </div>
+</div>
+
+<div id="foot">
+ <div id="foot_cen">
+ 
+ <ul>
+     <li><a href="#">Home</a></li>
+     <li class="space">|</li>
+     <li><a href="#">ABOUT</a></li>
+     <li class="space">|</li>
+     <li><a href="#">HELP</a></li>
+     <li class="space">|</li>
+     <li><a class="active" href="#">CONTACT</a></li>
+     <li class="space">|</li>
+  	
+   </ul>
+    <p>© 2014 RFM. Designed by: ECYOD</p>
+ </div>
+</div>
+
+</h:body>
+
+</f:view>
+</html>

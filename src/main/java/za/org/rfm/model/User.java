@@ -42,7 +42,7 @@ public final class User extends ChurchManagerEntity {
     }
 
     public String getFullname() {
-       return this.firstName+" "+getLastName();
+       return getFirstName()+" "+getLastName();
     }
 
     public boolean isBlocked(){

@@ -24,7 +24,10 @@ public class WebUtil {
     public static String getUserName()
     {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        return  session.getAttribute("username").toString();
+        Object obj = session.getAttribute("username");
+        if(obj != null)
+            return obj.toString();
+        return null;
     }
       //FIXME:This doesn't make sense!!!
   /*  public static String getUserId()

@@ -34,7 +34,11 @@ public class UserDAO {
     }
 
     public User getUser(String username){
-        User user = (User) sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.idEq(username)).uniqueResult();
+        //User user = (User) sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.idEq(username)).uniqueResult();
+        Query query = sessionFactory.getCurrentSession().createQuery("from User where username =:username");
+        query.setString("username",username);
+        query.setMaxResults(1);
+        User user = (User) query.uniqueResult();
         return user;
 
     }

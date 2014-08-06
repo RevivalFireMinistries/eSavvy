@@ -56,7 +56,7 @@
         <welcome-file>login.xhtml</welcome-file>
     </welcome-file-list>
 <listener> <listener-class>com.sun.faces.config.ConfigureListener</listener-class> </listener>
-    <servlet>
+    <!--<servlet>
         <servlet-name>rest</servlet-name>
         <servlet-class>
             org.springframework.web.servlet.DispatcherServlet
@@ -68,7 +68,7 @@
     <servlet-mapping>
         <servlet-name>rest</servlet-name>
         <url-pattern>/</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
     <error-page>
         <error-code>401</error-code>
         <location>/errors/401.xhtml</location>

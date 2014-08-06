@@ -204,7 +204,7 @@ public class HomeBean {
             setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
             DateRange dateRange = initializeDateRange();
             logger.debug("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
-            events = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), Constants.SERVICE_TYPE_SUNDAY, dateRange);
+            events = eventService.getEventsByAssemblyAndType( Constants.SERVICE_TYPE_SUNDAY,WebUtil.getUserAssemblyId(), 4);
             logger.debug("Number of events retrieved---"+events.size());
             if(events.isEmpty()){
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"No events found for the default period :",null));

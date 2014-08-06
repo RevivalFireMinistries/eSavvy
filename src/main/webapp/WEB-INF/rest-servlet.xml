@@ -13,5 +13,5 @@
     <context:component-scan base-package="za.org.rfm.controllers" />
     <context:annotation-config />
     <mvc:annotation-driven />
-    <mvc:default-servlet-handler/>
+
 </beans>
