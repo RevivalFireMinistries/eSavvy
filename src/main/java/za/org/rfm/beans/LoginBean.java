@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.SystemVar;
 import za.org.rfm.model.User;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
@@ -173,12 +174,13 @@ public class LoginBean implements Serializable {
                 //now set the lastlogin to now
                 user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
                 userService.saveUser(user);
-                String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
-                if(StringUtils.isEmpty(churchName)){
+                SystemVar var = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME));
+                if(var != null && StringUtils.isEmpty(var.getValue())){
+                    setChurchName(var.getValue());
+                }
+                else{
                     setChurchName("eSavvy");
                     logger.error("Error : variable church name not set!");
-                }else{
-                    setChurchName(churchName);
                 }
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
