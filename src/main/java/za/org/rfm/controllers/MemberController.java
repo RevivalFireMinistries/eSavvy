@@ -25,7 +25,7 @@ import java.util.List;
  * Time: 8:48 PM
  */
 @RestController
-@RequestMapping("/ws/member")
+@RequestMapping("/member")
 public class MemberController {
     private static final Logger logger = Logger.getLogger(MemberController.class);
     @Autowired

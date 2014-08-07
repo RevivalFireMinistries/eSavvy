@@ -97,9 +97,9 @@ public class Utils {
         Locale[] locales = Locale.getAvailableLocales();
         for (Locale locale : locales) {
             try{
-                System.out.println(locale.getCountry()+" : "+code);
+                logger.debug(locale.getCountry()+" : "+code);
               if(locale.getCountry().equalsIgnoreCase(code)){
-                  logger.info("Locale found..."+locale.getDisplayCountry());
+                  logger.debug("Locale found..."+locale.getDisplayCountry());
                   return locale;
               }
             }catch (Exception e){
