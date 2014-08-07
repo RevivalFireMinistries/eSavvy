@@ -175,7 +175,7 @@ public class LoginBean implements Serializable {
                 user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
                 userService.saveUser(user);
                 SystemVar var = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME));
-                if(var != null && StringUtils.isEmpty(var.getValue())){
+                if(var != null && !StringUtils.isEmpty(var.getValue())){
                     setChurchName(var.getValue());
                 }
                 else{
