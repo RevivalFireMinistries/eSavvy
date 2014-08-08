@@ -154,6 +154,14 @@ public class Utils {
         return new DateRange(lastMonth.dayOfMonth().withMinimumValue().toDate(),lastMonth.dayOfMonth().withMaximumValue().toDate());
 
     }
+    public static DateRange goBackXWeeks(Date day,int x) {
+        LocalDate date = new LocalDate(day);
+        //first go back x weeks
+        LocalDate theWeek = date.minusWeeks(x);
+        //now return both dates
+        return new DateRange(theWeek.toDate(),date.toDate());
+
+    }
     public static Date calcLastSunday(Date date) {
         LocalDate lastSunday = calcNextDay(LocalDate.fromDateFields(date), DateTimeConstants.SUNDAY);
         return lastSunday.toDate();

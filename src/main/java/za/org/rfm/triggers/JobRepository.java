@@ -1,9 +1,10 @@
 package za.org.rfm.triggers;
 
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
 import za.org.rfm.jobs.ApostolicWeeklyReport;
+import za.org.rfm.jobs.MemberInActivityChecker;
 
 import javax.annotation.PostConstruct;
 
@@ -18,8 +19,8 @@ public class JobRepository {
     public void init() {
 
         try {
-          JobDetail job = JobBuilder.newJob(ApostolicWeeklyReport.class)
-                    .withIdentity("apostolicWeeklyEmail")
+          JobDetail job = JobBuilder.newJob(MemberInActivityChecker.class)
+                    .withIdentity("memberInActivityChecker")
                     .build();
             //Trigger the job to run on the next round minute
            /* Trigger trigger = TriggerBuilder.newTrigger()
@@ -28,11 +29,11 @@ public class JobRepository {
                                     .withIntervalInSeconds(Integer.parseInt(Utils.getResource("report.frequency.apostolic")))
                                     .repeatForever())
                     .build();*/
-           /* Trigger triggerCron = TriggerBuilder
+            Trigger triggerCron = TriggerBuilder
                     .newTrigger()
-                    .withIdentity("apostolicWeeklyEmail")
+                    .withIdentity("memberInActivityChecker")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("20 0 * * * ?"))
+                            CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? *"))
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
@@ -40,7 +41,7 @@ public class JobRepository {
             sch.start();
 
             // Tell quartz to schedule the job using the trigger
-            sch.scheduleJob(job, triggerCron);*/
+            sch.scheduleJob(job, triggerCron);
         } catch (Exception e) {
             e.printStackTrace();
         }

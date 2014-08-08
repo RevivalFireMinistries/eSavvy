@@ -9,10 +9,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import za.org.rfm.model.Event;
-import za.org.rfm.model.EventFollowUp;
-import za.org.rfm.model.User;
+import za.org.rfm.model.*;
 import za.org.rfm.utils.*;
+import za.org.rfm.utils.Role;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -270,6 +269,7 @@ public class EmailService {
                 final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
                 final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
                 ctx.setVariable("header",getResource("email.subject.follow.up.report",event.getAssembly().getName(),date));
+                message.setSubject(getResource("email.subject.follow.up.report",event.getAssembly().getName(),date));
                 message.setFrom(getResource("email.system.from"));
                 message.setTo(pastor.getEmail());
 
@@ -285,6 +285,59 @@ public class EmailService {
             } else {
                 logger.error("No events found for the specified criteria...abort!");
             }
+            }else{
+                logger.error("No Pastor found for this assembly or email is invalid...abort!");
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            logger.error("Email sending error: "+e.getMessage());
+        }
+    }
+    public void memberActivityReport(List<Member> members,Assembly assembly,String inActivityStatus){
+
+        try {
+            assembly.setUsers(assemblyService.getAssemblyUsers(assembly.getAssemblyid()));
+            User pastor = assembly.getUserWithRole(Role.Pastor);
+            if(pastor != null && pastor.getEmail() != null){
+
+                if(members != null && !members.isEmpty()){
+                    //we have something to report on - @ least
+                    String subjectLine = "";
+                    if(Constants.MEMBERS_INACTIVE.equalsIgnoreCase(inActivityStatus)){
+                        subjectLine = getResource("email.subject.activity.report.backslide",assembly.getName(),Utils.dateFormatter(new Date()));
+                    }else{
+                        subjectLine = getResource("email.subject.activity.report.rejuvenated",assembly.getName(),Utils.dateFormatter(new Date()));
+                    }
+                    String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                    String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+
+                    final Context ctx = new Context(Locale.ENGLISH);
+
+                    ctx.setVariable("eSavvyLink", eSavvyLink);
+                    ctx.setVariable("churchName",churchName);
+                    ctx.setVariable("name",pastor.getFullname());
+                    ctx.setVariable("people",members);
+                    ctx.setVariable("header",subjectLine);
+
+
+                    final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                    final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                    ctx.setVariable("header",subjectLine);
+                    message.setFrom(getResource("email.system.from"));
+                    message.setTo(pastor.getEmail());
+                    message.setSubject(subjectLine);
+                    // Create the HTML body using Thymeleaf
+                    final String htmlContent = this.templateEngine.process("../email/activity-report", ctx);
+                    message.setText(htmlContent, true); // true = isHtml
+
+                    logger.debug("Email setup complete...now send!");
+                    // Send mail
+                    this.mailSender.send(mimeMessage);
+                    logger.debug("Email sent!");
+
+                } else {
+                    logger.error("No events found for the specified criteria...abort!");
+                }
             }else{
                 logger.error("No Pastor found for this assembly or email is invalid...abort!");
             }

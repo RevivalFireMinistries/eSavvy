@@ -7,6 +7,7 @@ import za.org.rfm.dao.EventDAO;
 import za.org.rfm.model.EventFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
+import za.org.rfm.model.Member;
 import za.org.rfm.utils.DateRange;
 
 import java.util.Date;
@@ -63,6 +64,10 @@ public class EventService {
 
     public List<EventLog> getEventLogsByEventId(Long eventId) {
         return  eventDAO.getEventLogsByEventId(eventId);
+    }
+
+    public List<EventLog> getEventLogsByMemberandDateRange(Member member,DateRange dateRange){
+        return eventDAO.getEventLogsByMemberandDateRange(member,dateRange);
     }
 
 }

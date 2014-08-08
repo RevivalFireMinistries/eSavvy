@@ -1,5 +1,6 @@
 package za.org.rfm.dao;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,11 @@ import org.springframework.stereotype.Repository;
 import za.org.rfm.model.EventFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
+import za.org.rfm.model.Member;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
  */
 @Repository
 public class EventDAO {
+    Logger logger = Logger.getLogger(EventDAO.class);
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -133,4 +137,19 @@ public List<Event> getEventsByTypeAndDateRange(String eventtype, DateRange dateR
 
     }
 
+    public List<EventLog> getEventLogsByMemberandDateRange(Member member,DateRange dateRange){
+        List<EventLog> eventLogs = new ArrayList<EventLog>();
+        Query query = sessionFactory.getCurrentSession().createQuery("from EventLog el where el.member =:memberid and el.event.eventDate between :from and :to");
+        query.setLong("memberid",member.getId());
+        query.setDate("from",dateRange.getStartDate());
+        query.setDate("to",dateRange.getEndDate());
+        List<EventLog> logs = (List<EventLog>)query.list();
+       logger.debug("got events between "+dateRange.getStartDate()+" and "+dateRange.getEndDate()+" size = "+logs.size());
+        for(EventLog eventLog : logs){
+            if (eventLog.getEvent().getEventDate().after(dateRange.getStartDate())){
+                eventLogs.add(eventLog);
+            }
+        }
+        return eventLogs;
+    }
 }
