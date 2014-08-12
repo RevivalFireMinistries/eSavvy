@@ -144,14 +144,7 @@ public class LoginBean implements Serializable {
 
         try {
             boolean result = getUserService().login(uname, password);
-            User temp = new User();
-            temp.setUsername(uname);
-            System.out.println("exists   :"+userService.checkUserNameExists(temp));
-            List<User> users  = userService.getUsersByAssembly(1L);
-            System.out.println("size--------"+users.size());
-            for(User user1 : users){
-                System.out.println("username : "+user1.getUsername());
-            }
+
             //boolean result = true;
             if (result) {
                 // get Http Session and store username

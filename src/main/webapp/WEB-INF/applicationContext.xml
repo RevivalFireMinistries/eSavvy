@@ -107,6 +107,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
                 <value>za.org.rfm.model.Role</value>
                 <value>za.org.rfm.model.UserRole</value>
                 <value>za.org.rfm.model.EventFollowUpAction</value>
+                <value>za.org.rfm.model.RFMScheduleEvent</value>
 
             </list>
         </property>

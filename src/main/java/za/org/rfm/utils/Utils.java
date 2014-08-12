@@ -88,7 +88,12 @@ public class Utils {
                 continue;
             }
         }
-
+        //TODO: hacking for zim because its not available
+        String iso = "US";
+        String code = "Zimbabwe";
+        String name = "Zimbabwe";
+        String lang = "Shona";
+        countries.add(new Country(iso,code,name,lang));
         Collections.sort(countries, new CountryComparator());
         return  countries;
     }

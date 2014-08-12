@@ -98,8 +98,7 @@ public class MemberBean implements Serializable{
     public void save(ActionEvent actionEvent){
         getMember().setDateCreated(new Date(System.currentTimeMillis()));
         getMember().setStatus(Constants.STATUS_ACTIVE);
-        HttpSession session = WebUtil.getSession();
-        Long id = (Long)session.getAttribute("assembyid");
+        Long id  = WebUtil.getUserAssemblyId();
         Assembly assembly1 = assemblyService.getAssemblyById(id);
         getMember().setAssembly(assembly1);
         Account account = new Account();
