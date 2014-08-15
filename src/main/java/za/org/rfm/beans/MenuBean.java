@@ -69,7 +69,7 @@ public class MenuBean {
         }
         model = new DefaultMenuModel();
         DefaultSubMenu home = new DefaultSubMenu("Home");
-        DefaultMenuItem itemhome = new DefaultMenuItem("Dashboard");
+        DefaultMenuItem itemhome = new DefaultMenuItem("Home");
         itemhome.setUrl("/home.faces");
         itemhome.setIcon("ui-icon-home");
         home.addElement(itemhome);
@@ -177,8 +177,10 @@ public class MenuBean {
         downloads.setUrl("/other/downloads.faces");
         downloads.setIcon("ui-icon-home");
         other.addElement(downloads);
-        model.addElement(other);
+
+
         if(Utils.isAuthorised(currentUser, Role.SuperAdmin) ){
+
             //System mgt
             DefaultSubMenu secondSubmenu = new DefaultSubMenu("System Config");
             DefaultMenuItem item = new DefaultMenuItem();
@@ -192,8 +194,14 @@ public class MenuBean {
             item.setUrl("/system/roles.faces");
             item.setIcon("ui-icon-home");
             secondSubmenu.addElement(item);
-            model.addElement(secondSubmenu);
+
             /////////////////////////////////////
+
+            downloads = new DefaultMenuItem("Bulletins");
+            downloads.setUrl("/system/manageBulletins.faces");
+            downloads.setIcon("ui-icon-home");
+            secondSubmenu.addElement(downloads);
+            model.addElement(secondSubmenu);
         }
 
     }

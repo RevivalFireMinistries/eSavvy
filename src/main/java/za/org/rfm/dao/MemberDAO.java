@@ -64,4 +64,18 @@ public class MemberDAO {
         Member member = (Member)query.list().get(0);
         return member;
     }
+    public boolean memberExists(Member member) {
+        Query qry = sessionFactory.getCurrentSession().createQuery("From Member  where firstName  like ? and lastName like ?");
+        qry.setString(0, "%"+member.getFirstName()+"%");
+        qry.setString(1, "%"+member.getLastName()+"%");
+        List<Member> members = (List<Member>)qry.list();
+
+        for(Member member1 : members){
+            if(member.equals(member1)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

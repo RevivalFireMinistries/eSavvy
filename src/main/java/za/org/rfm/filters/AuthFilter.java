@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * User: Russel.Mupfumira
@@ -43,8 +44,11 @@ public class AuthFilter implements Filter {
 
             }
 
-            else   // user didn't log in but asking for a page that is not allowed so take user to login page
-                res.sendRedirect(req.getContextPath() + "/login.xhtml");  // Anonymous user. Redirect to login page
+            else {
+                            // user didn't log in but asking for a page that is not allowed so take user to login page but preserve url
+                res.sendRedirect(req.getContextPath() + "/login.xhtml?from=" + URLEncoder.encode(reqURI, "UTF-8"));  // Anonymous user. Redirect to login page
+            }
+
         }
         catch(Throwable t) {
             logger.error(t.getMessage());

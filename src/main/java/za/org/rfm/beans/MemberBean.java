@@ -5,9 +5,11 @@ import org.primefaces.event.FlowEvent;
 import za.org.rfm.model.Account;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.MemberGroup;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -15,6 +17,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
@@ -105,6 +108,13 @@ public class MemberBean implements Serializable{
         account.setMember(getMember());
         getMember().setAccount(account);
         Utils.capitaliseMember(getMember());
+        //Add him to the general group - for everyone
+        MemberGroup memberGroup = new MemberGroup();
+        memberGroup.setStatus(Constants.STATUS_ACTIVE);
+        memberGroup.setDateCreated(new Date());
+        memberGroup.setGroupName(Group.EVERYONE.name());
+        memberGroup.setMember(this.member);
+        getMemberService().saveMemberGroup(memberGroup);
         getMemberService().saveMember(getMember());
         Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved", FacesMessage.SEVERITY_INFO);
     }
@@ -119,7 +129,13 @@ public class MemberBean implements Serializable{
     public String onFlowProcess(FlowEvent event) {
         logger.info("Current wizard step:" + event.getOldStep());
         logger.info("Next step:" + event.getNewStep());
-
+        if(event.getOldStep().equals("contact") && event.getNewStep().equals("ministry")){
+            if(memberService.memberExists(this.member)){
+                logger.error("Member already exists on the system : "+member.getFullName());
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Member with this name and phone number already exists !"+member.getFullName()+" "+member.getPhone(),null));
+                return "personal";
+            }
+        }
         if(skip) {
             skip = false;	//reset in case user goes back
             return "confirm";

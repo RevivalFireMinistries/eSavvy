@@ -56,7 +56,7 @@ public class Utils {
     }
     public static String dateFormatter(Date date){
         SimpleDateFormat ft =
-                new SimpleDateFormat ("E dd.MM.yyyy ");
+                new SimpleDateFormat ("dd-MM-yyyy");
 
         return ft.format(date);
     }

@@ -10,6 +10,7 @@ import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,9 @@ public class Member extends ChurchManagerEntity{
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "member")
     private Set<MemberGroup> memberGroupList;
 
+    public transient List<Transaction> transactionList = new ArrayList<Transaction>();
+
+
 
 
 
@@ -82,6 +86,7 @@ public class Member extends ChurchManagerEntity{
           return smsLog;
 
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,18 +94,16 @@ public class Member extends ChurchManagerEntity{
 
         Member member = (Member) o;
 
-        if (id != null ? !id.equals(member.id) : member.id != null) return false;
         if (firstName != null ? !firstName.equals(member.firstName) : member.firstName != null) return false;
+        if (gender != null ? !gender.equals(member.gender) : member.gender != null) return false;
+        if (lastName != null ? !lastName.equals(member.lastName) : member.lastName != null) return false;
+        if (phone != null ? !phone.equals(member.phone) : member.phone != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (this.firstName != null ? this.firstName.hashCode() : 0);
-        return result;
+        return 0;
     }
-
-
 }

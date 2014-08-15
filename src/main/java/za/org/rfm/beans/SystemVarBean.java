@@ -50,7 +50,7 @@ public class SystemVarBean extends SuperBean {
     }
     public void save(){
         systemVarService.saveSystemVar(systemVar);
-        FacesMessage msg = new FacesMessage("Variable Created Successfully :", systemVar.getName());
+        FacesMessage msg = new FacesMessage("Variable Created Successfully :"+systemVar.getName() );
         FacesContext.getCurrentInstance().addMessage(null, msg);
         systemVar = new SystemVar(); //reset model
         vars = systemVarService.getAllVars();

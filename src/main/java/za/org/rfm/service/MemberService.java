@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import za.org.rfm.dao.MemberDAO;
-import za.org.rfm.model.EventLog;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.MemberGroup;
-import za.org.rfm.model.SystemVar;
+import za.org.rfm.model.*;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
@@ -32,6 +29,8 @@ public class MemberService {
     private SystemVarService systemVarService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private TxnService txnService;
 
     @Transactional(readOnly = false)
     public void saveMember(Member member){
@@ -53,7 +52,9 @@ public class MemberService {
         memberDAO.saveMemberGroup(memberGroup);
         logger.debug("Group saved successfully : "+memberGroup.getMember().getFullName()+" - "+memberGroup.getGroupName());
     }
-
+    public boolean memberExists(Member member){
+        return memberDAO.memberExists(member);
+    }
     public boolean isInActive(Member member){
         //get the number of services to look at sunday services
         int weekCounter = 4; //the default
@@ -66,7 +67,10 @@ public class MemberService {
         //now check if this member has any event logs for him during this period
          List<EventLog> logs = eventService.getEventLogsByMemberandDateRange(member,dateRange);
         logger.debug("found "+logs.size()+" event logs for "+member.getFullName());
-        if(logs.isEmpty())
+        //Now look for financial transactions for the specified period
+        List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(member,dateRange);
+
+        if(logs.isEmpty() && transactions.isEmpty())
             return true;
         return false;
 

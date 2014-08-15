@@ -8,11 +8,39 @@
 
         <h3>Welcome <span style="font-family: Helvetica; font-style: italic">#{loginBean.user.fullname}</span></h3>
         <p:tabView dynamic="true" cache="true">
-            <p:tab title="Home">
+            <p:tab title="Bulletin">
                 <h:panelGrid columns="2" cellpadding="10">
+                    <h:form>
+                        <p:dataScroller value="#{bulletinScroller.bulletinList}" var="bulletin" chunkSize="10">
+                            <f:facet name="header">
+                                System  Bulletins
+                            </f:facet>
+                            <f:facet name="loader">
+                                <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s"/>
+                            </f:facet>
 
+                            <h:panelGrid columns="2" style="width:100%" columnClasses="logo,detail">
+
+                                <p:outputPanel>
+                                    <h:panelGrid columns="2" cellpadding="5">
+                                        <h:outputText value="Title:" />
+                                        <h:outputText value="#{bulletin.title}" style="font-weight: bold"/>
+
+                                        <h:outputText value="Message:" />
+                                        <h:outputText value="#{bulletin.message}" style="font-weight: normal; font-family: Times New Roman"/>
+
+                                        <h:outputText value="Date Posted:" />
+                                        <h:outputText value="#{bulletin.startDate}" style="font-family: Helvetica "/>
+
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                            <p:separator />
+                        </p:dataScroller>
+                    </h:form>
                 </h:panelGrid>
             </p:tab>
+
             <p:tab title="DashBoard">
                 <h:panelGrid columns="2" cellpadding="10">
                     <h:form id="form">
@@ -61,11 +89,7 @@
                     </h:form>
                 </h:panelGrid>
             </p:tab>
-            <p:tab title="Bulletin">
-                <h:panelGrid columns="2" cellpadding="10">
 
-                </h:panelGrid>
-            </p:tab>
             <p:tab title="Calendar">
                 <h:form>
                     <p:growl id="messages" showDetail="true" />

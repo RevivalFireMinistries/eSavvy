@@ -62,11 +62,13 @@ public class MemberController {
     public
     String getMembersByAssembly(@PathVariable String assemblyId) {
         try {
+            logger.info("REST Call to get members for assembly with id :"+assemblyId);
             mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
             List<Member> members = memberService.getMembersByAssembly(Long.parseLong(assemblyId));
             AnnotationIntrospector introspector
                     = new JaxbAnnotationIntrospector();
             mapper.setAnnotationIntrospector(introspector);
+            logger.info("Returning a list of members : "+members.size());
             return mapper.writeValueAsString(members);
         } catch (Exception e) {
             e.printStackTrace();

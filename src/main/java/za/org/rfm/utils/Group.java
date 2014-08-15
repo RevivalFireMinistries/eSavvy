@@ -6,6 +6,6 @@ package za.org.rfm.utils;
  * Time: 7:21 PM
  */
 public enum Group {
-    DEACONS, ELDERS, USHERING, MUSIC;
+    DEACONS, ELDERS, USHERING, MUSIC,EVERYONE;
 
 }

@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="#{request.contextPath}/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+
+
+        <h:form>
+
+            <p:panel id="panel" header="New Bulletin ">
+                <p:messages id="msgs" />
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="title" value="Title:" />
+                    <p:inputText id="title" value="#{manageBulletins.bulletin.title}" required="true" label="Title">
+                        <f:validateLength minimum="2" />
+                    </p:inputText>
+
+
+                    <p:outputLabel for="message" value="Message:" />
+                    <p:inputTextarea id="message" autoResize= "true" value="#{manageBulletins.bulletin.message}">
+                        <f:validateLength minimum="2" />
+                    </p:inputTextarea>
+                    <p:outputLabel for="startDate" value="Bulletin Start Date:" />
+                    <p:calendar id="startDate" mindate="#{manageBulletins.today}" value="#{manageBulletins.bulletin.startDate}" />
+
+                    <p:outputLabel for="endDate" value="Bulletin End Date:" />
+                    <p:calendar id="endDate" mindate="#{manageBulletins.bulletin.startDate}" value="#{manageBulletins.bulletin.endDate}" />
+
+                </h:panelGrid>
+
+                <p:commandButton value="Save" update="panel :form:vars" actionListener="#{manageBulletins.save}" icon="ui-icon-check" />
+            </p:panel>
+        </h:form>
+        <h:form id="form" >
+            <p:messages id="msgs" />
+            <p:dataTable id="vars" var="b" value="#{manageBulletins.bulletinList}" editable="true" style="margin-bottom:20px" paginator="true"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15" widgetVar="varsTable">
+                <f:facet name="header">
+                   Bulletins
+                </f:facet>
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('varsTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+                <p:ajax event="rowEdit" listener="#{manageBulletins.onRowEdit}" update=":form:vars :form:msgs" />
+                <p:ajax event="rowEditCancel" listener="#{manageBulletins.onRowCancel}" update=":form:vars :form:msgs" />
+
+                <p:column headerText="Title" sortBy="#{b.title}" filterBy="#{b.title}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{b.title}" /></f:facet>
+                        <f:facet name="input"><p:inputText id="modelInput" value="#{b.title}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Message" sortBy="#{b.message}"  filterBy="#{b.message}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{b.message}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{b.message}" style="width:100%" label="Message"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

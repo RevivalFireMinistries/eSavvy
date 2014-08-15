@@ -8,6 +8,7 @@ import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.PDFService;
 import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
 import javax.annotation.PostConstruct;
@@ -126,8 +127,8 @@ public class DownloadsBean {
         logger.debug("Now creating logsheet for assembly "+assembly.getName());
         if(Constants.SERVICE_TYPE_SUNDAY.equals(getSelected()) || Constants.SERVICE_TYPE_MIDWEEK.equals(getSelected())){
           byteArrayOutputStream =  pdfService.createLogSheet(assembly,getSelected(),getDate());
-            setFile(new DefaultStreamedContent(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),"application/pdf",getSelected()+"-LogSheet.pdf"));
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Log Sheet created successfully and ready for download",""));
+            setFile(new DefaultStreamedContent(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),"application/pdf",getSelected()+"-LogSheet-"+ Utils.dateFormatter(getDate())+".pdf"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Log Sheet created successfully and ready for download", ""));
         }
         else if(Constants.REPORT_TEMPLATE_FINANCE.equals(getSelected())){
             byteArrayOutputStream =  pdfService.createFinanceTemplate(assembly,getSelected(),getDate());

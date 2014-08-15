@@ -40,6 +40,7 @@ public class LoginBean implements Serializable {
     private User user;
     private Assembly assembly;
     private String churchName;
+    private String fromUrl;
 
     public String getChurchName() {
         return churchName;
@@ -164,6 +165,10 @@ public class LoginBean implements Serializable {
                 //sendEmail(members);
                 logger.info("Login successful for user : "+user.getFullname());
                 String url = "home.faces";
+                //now find out the page they were requesting
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                String from = facesContext.getExternalContext().getRequestParameterMap().get("from");
+                fromUrl = facesContext.getExternalContext().encodeResourceURL(from);
                 //now set the lastlogin to now
                 user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
                 userService.saveUser(user);
@@ -175,6 +180,9 @@ public class LoginBean implements Serializable {
                     setChurchName("eSavvy");
                     logger.error("Error : variable church name not set!");
                 }
+                if(!StringUtils.isEmpty(fromUrl)){
+                  url = fromUrl;
+                } //otherwise just take them to the homepage
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Invalid login details!",null));
