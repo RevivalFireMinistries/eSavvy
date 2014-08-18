@@ -117,6 +117,7 @@ public class MemberBean implements Serializable{
         getMemberService().saveMember(getMember());
         getMemberService().saveMemberGroup(memberGroup);
         Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved", FacesMessage.SEVERITY_INFO);
+        setMember(new Member());
     }
     public boolean isSkip() {
         return skip;

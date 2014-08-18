@@ -5,12 +5,11 @@
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
+        <p:panel id="basic" header="New Member Form" footer="" style="margin-bottom:20px">
 
     <h:form>
-
-        <p:growl id="growl" sticky="true" showDetail="true"/>
-
-        <p:wizard flowListener="#{memberBean.onFlowProcess}"  style="width:600px;" >
+        <p:messages id="messages" showDetail="true" autoUpdate="true" />
+        <p:wizard widgetVar="wiz" flowListener="#{memberBean.onFlowProcess}"  style="width:600px;" >
 
             <p:tab id="personal" title="Personal">
 
@@ -113,8 +112,8 @@
                         <h:outputText />
                     </h:panelGrid>
 
-                    <p:commandButton value="Submit" update="growl"
-                                     actionListener="#{memberBean.save}" oncomplete="wiz.loadStep(wiz.cfg.steps[0], true)"/>
+                    <p:commandButton value="Submit" update="messages"
+                                     actionListener="#{memberBean.save}" oncomplete="PF('wiz').loadStep (PF('wiz').cfg.steps [0], true)"/>
 
                 </p:panel>
             </p:tab>
@@ -122,5 +121,6 @@
         </p:wizard>
 
     </h:form>
+        </p:panel>
 </ui:define>
     </ui:composition>
