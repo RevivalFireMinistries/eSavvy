@@ -37,7 +37,20 @@ public class Utils {
                 Constants.GENDER_FEMALE);
         return genders;
     }
+    public static void setAssemblyRankingSortCriteria(List<Assembly> assemblyList,String criteria){
+        for(Assembly assembly : assemblyList){
+            if(Constants.ASSEMBLY_RANKING_SORT_CRITERIA_ATTENDANCE.equalsIgnoreCase(criteria)){
+                assembly.setAttendanceCompare(true);
+            }
+            if(Constants.ASSEMBLY_RANKING_SORT_CRITERIA_TITHE.equalsIgnoreCase(criteria)){
+                assembly.setTitheCompare(true);
+            }
+            if(Constants.ASSEMBLY_RANKING_SORT_CRITERIA_OFFERING.equalsIgnoreCase(criteria)){
+                assembly.setOfferingCompare(true);
+            }
+        }
 
+    }
     public static String moneyFormatter(double money,Locale locale){
         NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
         String moneyString = formatter.format(money);

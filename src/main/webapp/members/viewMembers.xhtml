@@ -2,6 +2,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       template="#{request.contextPath}/template.xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
@@ -48,6 +49,9 @@
             <p:column headerText="Assembly" sortBy="assemblyName" filterBy="assemblyName" id="assemblyName">
                 #{member.assemblyName}
             </p:column>
+            <f:facet name="footer">
+                In total there are #{fn:length(viewMembersBean.members)} Members.
+            </f:facet>
         </p:dataTable>
 
         <p:dialog header="Member Detail" widgetVar="memberDialog" resizable="false"

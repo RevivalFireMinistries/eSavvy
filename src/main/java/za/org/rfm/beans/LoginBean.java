@@ -203,9 +203,6 @@ public class LoginBean implements Serializable {
             String user = WebUtil.getUserName();
             session.invalidate();
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            Flash flash = facesContext.getExternalContext().getFlash();
-            flash.setKeepMessages(true);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Logout successful", "Logout successful"));
             String url = "login.faces";
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             logger.info("Logout user : "+user);

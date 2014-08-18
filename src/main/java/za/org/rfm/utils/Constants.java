@@ -50,6 +50,10 @@ public class Constants {
     public static final String REPORT_TEMPLATE_FINANCE = "Finance";
     public static final String REPORT_TEMPLATE_SERVICE = "Service";
     public static final String SERVICE_TYPE_MIDWEEK = "Midweek Service";
+    public static final String ASSEMBLY_RANKING_SORT_CRITERIA_ATTENDANCE = "Attendance";
+    public static final String ASSEMBLY_RANKING_SORT_CRITERIA_TITHE = "Tithe";
+    public static final String ASSEMBLY_RANKING_SORT_CRITERIA_OFFERING = "Offering";
+
 
 
     public static final String WINSMS_USERNAME = "churchmanager";

@@ -112,8 +112,7 @@ public class ViewAssembly {
     }
     public void newUser(){
         try {
-            System.out.println("now starting the new user form...");
-            String url = "newUser.faces";
+            String url = "users/newUser.faces";
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
         } catch (IOException e) {
             e.printStackTrace();

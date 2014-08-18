@@ -3,6 +3,7 @@ package za.org.rfm.triggers;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
+import za.org.rfm.jobs.ApostolicMonthlyReport;
 import za.org.rfm.jobs.ApostolicWeeklyReport;
 import za.org.rfm.jobs.MemberInActivityChecker;
 
@@ -19,21 +20,44 @@ public class JobRepository {
     public void init() {
 
         try {
-          JobDetail job = JobBuilder.newJob(MemberInActivityChecker.class)
+          JobDetail memberInActivityChecker = JobBuilder.newJob(MemberInActivityChecker.class)
                     .withIdentity("memberInActivityChecker")
                     .build();
-            //Trigger the job to run on the next round minute
-           /* Trigger trigger = TriggerBuilder.newTrigger()
-                    .withSchedule(
-                            SimpleScheduleBuilder.simpleSchedule()
-                                    .withIntervalInSeconds(Integer.parseInt(Utils.getResource("report.frequency.apostolic")))
-                                    .repeatForever())
-                    .build();*/
-            Trigger triggerCron = TriggerBuilder
+            JobKey jobKeyA = new JobKey("ApostolicWeeklyReport", "apostolic");
+            JobDetail apostolicWeekly = JobBuilder.newJob(ApostolicWeeklyReport.class)
+                    .withIdentity(jobKeyA).build();
+
+            JobKey jobKeyB = new JobKey("ApostolicMonthlyReport", "apostolic");
+            JobDetail apostolicMonthly = JobBuilder.newJob(ApostolicMonthlyReport.class)
+                    .withIdentity(jobKeyB).build();
+
+
+
+            Trigger everyDayMidnight = TriggerBuilder
                     .newTrigger()
-                    .withIdentity("memberInActivityChecker")
+                    .withIdentity("everyDayMidnight")
                     .withSchedule(
                             CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? *"))
+                    .build();
+
+            Trigger everyFirstDayOfMonth = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyFirstDayOfMonth")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0 0 1 1/1 ? *"))
+                    .build();
+
+            Trigger everyTuesdayMidnight = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyTuesdayMidnight")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0 0 ? * WED *"))
+                    .build();
+            Trigger everyFiveMinutes = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyFiveMinutes")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *"))
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
@@ -41,7 +65,9 @@ public class JobRepository {
             sch.start();
 
             // Tell quartz to schedule the job using the trigger
-            sch.scheduleJob(job, triggerCron);
+            sch.scheduleJob(memberInActivityChecker, everyDayMidnight);
+            sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
+            sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
         } catch (Exception e) {
             e.printStackTrace();
         }

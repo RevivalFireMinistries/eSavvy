@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
@@ -41,53 +41,62 @@
                 </h:panelGrid>
             </p:tab>
 
-            <p:tab title="DashBoard">
-                <h:panelGrid columns="2" cellpadding="10">
-                    <h:form id="form">
+            <p:tab title="Perfomance DashBoard">
 
-                        <p:growl id="growl" showDetail="true" />
-                        <p:panelGrid columns="1">
-
-                            <p:row>
-                                <p:column><p:lineChart  id="category" value="#{homeBean.categoryModel}" legendPosition="e"
-                                                        title="Last 4 Weeks Sunday Service Attendance Trends" minY="0" maxY="200" style="height:250px;width: 800px; margin-top:20px; font-weight: bolder"/>
+                        <h:form id="myform">
+                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestAttendance}" sortOrder="descending">
+                                <f:facet name="header">
+                                    Assembly Perfomance - Latest Statistics
+                                </f:facet>
+                                <p:column headerText="#">
+                                    #{rowIndex+1}
                                 </p:column>
-                            </p:row>
-                            <p:row>
-                                <p:column style="font-weight: bold; height:100px; "> <p:dashboard id="board" model="#{dashboardBean.model}" >
+                                <p:column headerText="Assembly" >
+                                    <h:outputText value="#{as.name}" />
+                                </p:column>
 
-                                    <p:ajax event="reorder" listener="#{dashboardBean.handleReorder}" update="growl" />
+                                <p:column headerText="Attendance" sortBy="#{as.latestAttendance}">
+                                    <h:outputText value="#{as.latestAttendance}" />
+                                </p:column>
 
-                                    <p:panel id="sports" header="Average Attendance for #{homeBean.currentMonth}">
-                                        <h:outputText value="#{homeBean.avgAttendance}" />
-                                    </p:panel>
+                            </p:dataTable>
+                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestTithe}" sortOrder="descending">
+                                <f:facet name="header">
+                                    Assembly Perfomance - Latest Tithe
+                                </f:facet>
+                                <p:column headerText="#">
+                                    #{rowIndex+1}
+                                </p:column>
+                                <p:column headerText="Assembly" >
+                                    <h:outputText value="#{as.name}" />
+                                </p:column>
 
-                                    <p:panel id="finance" header="Members in ICU">
-                                        <h:outputText value="#{homeBean.icu}" />
-                                    </p:panel>
+                                <p:column headerText="Tithe" sortBy="#{as.latestTithe}">
+                                    <h:outputText value="#{as.latestTithe}" />
+                                </p:column>
 
-                                    <p:panel id="lifestyle" header="Apostolic for #{homeBean.currentMonth}">
-                                        <h:outputText value="#{homeBean.apostolic}"  />
-                                    </p:panel>
+                            </p:dataTable>
+                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestOffering}" sortOrder="descending">
+                                <f:facet name="header">
+                                    Assembly Perfomance - Latest Offering
+                                </f:facet>
+                                <p:column headerText="#">
+                                    #{rowIndex+1}
+                                </p:column>
+                                <p:column headerText="Assembly" >
+                                    <h:outputText value="#{as.name}" />
+                                </p:column>
 
-                                    <p:panel id="weather" header="Total income for #{homeBean.currentMonth}">
-                                        <h:outputText value="#{homeBean.totalIncome}" />
-                                    </p:panel>
+                                <p:column headerText="Offering" sortBy="#{as.latestOffering}">
+                                    <h:outputText value="#{as.latestOffering}" />
+                                </p:column>
 
-                                    <p:panel id="politics" header="Tithers (%)">
-                                        <h:outputText value="#{homeBean.percentageOfTithers}" />
-                                    </p:panel>
-                                </p:dashboard>  </p:column>
+                            </p:dataTable>
+                        </h:form>
 
-                            </p:row>
 
-                            <f:facet name="footer">
 
-                            </f:facet>
-                        </p:panelGrid>
 
-                    </h:form>
-                </h:panelGrid>
             </p:tab>
 
             <p:tab title="Calendar">

@@ -5,7 +5,6 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Event;
 import za.org.rfm.service.AssemblyService;
@@ -20,12 +19,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: Russel.Mupfumira
- * Date: 2014/04/23
- * Time: 11:47 AM
+ * Created with IntelliJ IDEA.
+ * User: Russel
+ * Date: 8/18/14
+ * Time: 2:50 PM
+ * To change this template use File | Settings | File Templates.
  */
-@Component
-public class ApostolicWeeklyReport implements Job {
+public class ApostolicMonthlyReport implements Job{
     private static Logger logger = Logger.getLogger(ApostolicWeeklyReport.class);
 
     private static EmailService emailService;
@@ -45,27 +45,10 @@ public class ApostolicWeeklyReport implements Job {
     private AssemblyService tmpAssemblyService;
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
-       logger.info("Now running job : generate sunday service weekly report");
-      //execute the job here
+        logger.info("Now running job : generate sunday service monthly report");
+        //execute the job here
 
-      emailService.apostolicReport(Constants.REPORT_FREQUENCY_WEEKLY);
-      //now update assembly latest event info
+        emailService.apostolicReport(Constants.REPORT_FREQUENCY_MONTHLY);
 
-       List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
-        for(Assembly a : assemblyList){
-             List<Event> events = eventService.getEventsByAssemblyAndTypeAndDateRange(a.getAssemblyid(),Constants.SERVICE_TYPE_SUNDAY,new DateRange(Utils.calcLastSunday(new Date()),Utils.calcLastSunday(new Date())));
-            if(events != null && !events.isEmpty()){
-                Event event = events.get(0);
-                a.setLatestAttendance(event.getAttendance());
-                a.setLatestOffering(event.getOfferings());
-                a.setLatestTithe(event.getTithes());
-            }
-            else{      //no event report so set all to zero
-                a.setLatestTithe(0);
-                a.setLatestAttendance(0);
-                a.setLatestOffering(0);
-            }
-            assemblyService.saveAssembly(a);
-        }
     }
 }

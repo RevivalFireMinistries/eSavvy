@@ -21,7 +21,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @Entity
 @Table(name = "rfm_assembly")
-public class Assembly extends ChurchManagerEntity {
+public class Assembly extends ChurchManagerEntity implements Comparable<Assembly> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assemblyid", unique = true, nullable = false)
@@ -37,6 +37,9 @@ public class Assembly extends ChurchManagerEntity {
     private List<Event> events;
     private int targetAttendance;
     private int membersRegistered;
+    private transient boolean attendanceCompare,titheCompare,offeringCompare;
+    private int latestAttendance;
+    private double latestTithe,latestOffering;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,5 +79,17 @@ public class Assembly extends ChurchManagerEntity {
         }
         }
         return null;
+    }
+    public int compareTo(Assembly anotherAssembly){
+      if(attendanceCompare){
+         return this.latestAttendance - anotherAssembly.getLatestAttendance();
+      }
+      if(titheCompare){
+          return  (int)(this.latestTithe - anotherAssembly.getLatestTithe());
+      }
+      if(offeringCompare){
+          return (int)(this.getLatestOffering() - anotherAssembly.getLatestOffering());
+      }
+        return 0;
     }
 }

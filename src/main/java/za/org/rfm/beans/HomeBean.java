@@ -10,10 +10,7 @@ import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Event;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EventService;
-import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.DateRange;
-import za.org.rfm.utils.Utils;
-import za.org.rfm.utils.WebUtil;
+import za.org.rfm.utils.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -23,6 +20,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +39,24 @@ public class HomeBean {
         private String currentMonth;
         private int lastAttendance;
         private double percentageOfAttendance;
+        private boolean isApostolic = false;
+        private List<Assembly> assemblyList;
+
+    public List<Assembly> getAssemblyList() {
+        return assemblyList;
+    }
+
+    public void setAssemblyList(List<Assembly> assemblyList) {
+        this.assemblyList = assemblyList;
+    }
+
+    public boolean isApostolic() {
+        return isApostolic;
+    }
+
+    public void setApostolic(boolean apostolic) {
+        isApostolic = apostolic;
+    }
 
     public String getApostolic() {
         return Utils.moneyFormatter(apostolic,getAssembly().getLocaleObject());
@@ -200,23 +217,8 @@ public class HomeBean {
 
         @PostConstruct
         public void init(){
-            System.out.println("");
-            setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
-            DateRange dateRange = initializeDateRange();
-            logger.debug("daterange : start "+dateRange.getStartDate()+"  end date : "+dateRange.getEndDate());
-            events = eventService.getEventsByAssemblyAndType( Constants.SERVICE_TYPE_SUNDAY,WebUtil.getUserAssemblyId(), 4);
-            logger.debug("Number of events retrieved---"+events.size());
-            if(events.isEmpty()){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"No events found for the default period :",null));
-            }
-            //setEvents(events);
-            lazyModel = new LazyEventDataModel(events);
-            createCategoryModel();
-            setCurrentMonth(new SimpleDateFormat("MMMM").format(new Date()));
-            setAvgAttendance(getEvents());
-            setTotalIncome(getEvents());
-            setApostolic(getEvents());
 
+            assemblyList= assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
         }
 
 
