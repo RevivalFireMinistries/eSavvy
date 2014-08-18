@@ -7,5 +7,8 @@ import java.io.Serializable;
  * Date: 2013/12/13
  * Time: 3:09 PM
  */
+
+
 public abstract class ChurchManagerEntity implements Serializable {
+
 }

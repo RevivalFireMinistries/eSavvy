@@ -36,6 +36,8 @@ public final class User extends ChurchManagerEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     private List<UserRole> userRoles;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<AuditTrail> auditTrailList;
 
     public User(String username){
         this.username = username;
