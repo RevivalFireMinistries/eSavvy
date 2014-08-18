@@ -77,5 +77,11 @@ public class MemberDAO {
         }
         return false;
     }
+    public List<Member> getALLMembers() {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Member");
+
+        List<Member> memberList = (List<Member>)query.list();
+        return memberList;
+    }
 
 }

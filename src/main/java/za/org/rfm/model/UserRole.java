@@ -29,6 +29,14 @@ public class UserRole {
     Role role;
     String status;
 
+    public za.org.rfm.utils.Role getRoleAsEnum(){
+        for(za.org.rfm.utils.Role rl : za.org.rfm.utils.Role.values()){
+            if(rl.name().equalsIgnoreCase(role.getName())){
+                return rl;
+            }
+        }
+        return null;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

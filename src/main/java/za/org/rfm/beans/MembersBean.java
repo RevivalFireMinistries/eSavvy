@@ -2,6 +2,7 @@ package za.org.rfm.beans;
 
 import za.org.rfm.model.Member;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.utils.WebUtil;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -42,7 +43,6 @@ public class MembersBean implements Serializable {
 
     private void populateMembers(List<Member> list, long assemblyid) {
         list = memberService.getMembersByAssembly(assemblyid);
-
     }
 
 

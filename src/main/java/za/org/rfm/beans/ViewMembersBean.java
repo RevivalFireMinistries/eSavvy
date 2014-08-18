@@ -5,6 +5,7 @@ import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Member;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.utils.Role;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -98,7 +99,12 @@ public class ViewMembersBean implements Serializable {
     }
 
     private void populateMembers(List<Member> list, long assemblyid) {
-         list = getMemberService().getMembersByAssembly(assemblyid);
+        if(WebUtil.getCurrentUserRoles().contains(Role.Apostle)) {
+             list = getMemberService().getALLMembers();
+        }else{
+            list = getMemberService().getMembersByAssembly(assemblyid);
+        }
+
         setMembers(list);
     }
 

@@ -75,4 +75,7 @@ public class MemberService {
         return false;
 
     }
+    public java.util.List<za.org.rfm.model.Member> getALLMembers() {
+        return memberDAO.getALLMembers();
+    }
 }

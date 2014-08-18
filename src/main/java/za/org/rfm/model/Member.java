@@ -86,7 +86,9 @@ public class Member extends ChurchManagerEntity{
           return smsLog;
 
     }
-
+     public String getAssemblyName(){
+        return getAssembly().getName();
+     }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

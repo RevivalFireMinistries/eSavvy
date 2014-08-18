@@ -45,6 +45,9 @@
             <p:column headerText="Membership Type"  id="type">
                 #{member.type}
             </p:column>
+            <p:column headerText="Assembly" sortBy="assemblyName" filterBy="assemblyName" id="assemblyName">
+                #{member.assemblyName}
+            </p:column>
         </p:dataTable>
 
         <p:dialog header="Member Detail" widgetVar="memberDialog" resizable="false"
