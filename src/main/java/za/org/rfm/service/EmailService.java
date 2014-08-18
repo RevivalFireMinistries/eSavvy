@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import za.org.rfm.model.*;
@@ -34,6 +35,8 @@ public class EmailService {
     private TemplateEngine templateEngine;
     @Autowired
     private SystemVarService systemVarService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private AssemblyService assemblyService;
     @Autowired
@@ -210,6 +213,16 @@ public class EmailService {
                 }
                 String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
                 String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+                String apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
+                logger.info("Got the apostolic email : "+apostolicEmail);
+                if(StringUtils.isEmpty(apostolicEmail)){ //try looking for this in a user with apostolic role
+                    User apostle = userService.getApostle();
+                    if(apostle == null){
+                        logger.error("Fialed to send apostolic email --- Please set up a user with Apostolic ROLE!");
+                        return;
+                    }
+                    apostolicEmail = apostle.getEmail();
+                }
 
                 final Context ctx = new Context(Locale.ENGLISH);
 
@@ -224,7 +237,7 @@ public class EmailService {
                 final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
                 message.setSubject(getResource("email.subject.apostolic.report",frequency,dateRange));
                 message.setFrom(getResource("email.system.from"));
-                message.setTo(getResource("email.apostolic"));
+                message.setTo(apostolicEmail);
 
                 // Create the HTML body using Thymeleaf
                     final String htmlContent = this.templateEngine.process("../email/apostolic-report", ctx);

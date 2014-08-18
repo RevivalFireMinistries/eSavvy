@@ -88,4 +88,15 @@ public class UserService {
     public void saveRole(Role role1) {
         userDAO.saveRole(role1);
     }
+    public List<User> getUsersByRole(za.org.rfm.utils.Role role){
+        return userDAO.getUsersByRole(role);
+    }
+
+    public User getApostle(){
+        List<User> users = getUsersByRole(za.org.rfm.utils.Role.Apostle);
+        if(!users.isEmpty()){
+            return users.get(0);   //FIXME: make sure only one apostle exists in the system
+        }
+        return null;
+    }
 }

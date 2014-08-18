@@ -56,7 +56,13 @@ public class UserDAO {
     public void saveUser(User user) {
         sessionFactory.getCurrentSession().saveOrUpdate(user);
     }
+    public Role getRoleByName(za.org.rfm.utils.Role role){
 
+        Query query = sessionFactory.getCurrentSession().createQuery("from Role where name =:name");
+        query.setString("name", role.name());
+        query.setMaxResults(1);
+        return (Role) query.uniqueResult();
+    }
     public List<Role> getRoles(){
         return (List<Role>)sessionFactory.getCurrentSession().createQuery("from Role ").list();
     }
@@ -110,5 +116,17 @@ public class UserDAO {
     public void saveRole(Role role1) {
         getSessionFactory().getCurrentSession().saveOrUpdate(role1);
     }
-
+   public List<User> getUsersByRole(za.org.rfm.utils.Role enumRole){
+       List<User> users = new ArrayList<User>();
+       Role modelRole = getRoleByName(enumRole);
+      if(modelRole != null){
+          Query query = sessionFactory.getCurrentSession().createQuery("from UserRole where role =:role");
+          query.setLong("role",modelRole.getId());
+          List<UserRole> userRoles = (List<UserRole>)query.list();
+          for(UserRole userRole : userRoles){
+              users.add(userRole.getUser());
+          }
+      }
+       return users;
+   }
 }

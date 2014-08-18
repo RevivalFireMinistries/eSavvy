@@ -71,6 +71,7 @@ public class Constants {
     public static final String[]followUpActions = {ACTION_NO_ACTION_REQUIRED,ACTION_REFER_TO_PASTOR,ACTION_SEND_MOTIVATIONAL_SMS};
     public static final  String SYSTEM_DEFAULT_EMAIL = "esavvy@rfm.org.za" ;
     public static final  String CHURCH_NAME = "church-name";
+    public static final  String APOSTOLIC_EMAIL = "Apostolic Email";
     public static final  String ESAVVY_LINK = "esavvy-link";
     public static final String NUMBER_OF_WEEKS_TO_RENDER_INACTIVE = "NUMBER OF WEEKS TO RENDER INACTIVE";
     public static final  String MEMBERS_INACTIVE = "No Longer Active";
