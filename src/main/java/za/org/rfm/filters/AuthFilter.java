@@ -40,6 +40,11 @@ public class AuthFilter implements Filter {
             if ( reqURI.indexOf("/login.xhtml") >= 0 ||reqURI.indexOf("/resetPassword.xhtml") >= 0|| (ses != null && ses.getAttribute("username") != null)
                     || reqURI.indexOf("/public/") >= 0 || reqURI.contains("javax.faces.resource") || reqURI.indexOf("/ws/") >= 0 ) {
                 //System.out.println("Request allowed...."+reqURI);
+                ((HttpServletResponse) response).addHeader("Access-Control-Allow-Origin", "*");
+                ((HttpServletResponse) response).addHeader("Access-Control-Allow-Methods",
+                        "GET, POST, PUT, DELETE, OPTIONS");
+                ((HttpServletResponse) response).addHeader("Access-Control-Allow-Headers",
+                        "origin, content-type, accept, x-requested-with, sid, mycustom, smuser");
                 chain.doFilter(request, response);
 
             }

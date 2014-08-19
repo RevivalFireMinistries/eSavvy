@@ -138,7 +138,7 @@ public class NewReportBean {
     public String onFlowProcess(FlowEvent event) {
         logger.info("Current wizard step:" + event.getOldStep());
         logger.info("Next step:" + event.getNewStep());
-        if("followUp".equalsIgnoreCase(event.getOldStep()) && event.getNewStep().equalsIgnoreCase("confirm")){
+        if("register".equalsIgnoreCase(event.getOldStep()) && event.getNewStep().equalsIgnoreCase("confirm")){
             logger.debug("now processing the followUp...");
             //first check if user selected at least one person
             if(getSelectedMembers().isEmpty()){
@@ -147,7 +147,7 @@ public class NewReportBean {
                 return event.getOldStep();
             }
             if(getSelectedMembers().size() != this.getEvent().getAttendance()){
-                logger.debug("The attendance figures do not correspond to total in followUp");
+                logger.debug("The attendance figures do not correspond to total in ticked in the register!");
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Total entered in attendance "+getEvent().getAttendance()+" doesn't correspond to total captured in registered "+getSelectedMembers().size(),null));
                 return event.getOldStep();
             }
