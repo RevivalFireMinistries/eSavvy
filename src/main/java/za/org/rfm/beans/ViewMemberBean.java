@@ -273,7 +273,8 @@ public class ViewMemberBean {
             //there are groups existing - first check what happened to them after selection
             for(MemberGroup memberGroup1 : oldGroups){
                 if(!getGroups().getTarget().contains(Group.valueOf(memberGroup1.getGroupName()))){
-                   memberGroup1.setStatus(Constants.STATUS_DELETED);//mark as deleted and save
+                   if(!memberGroup1.getGroupName().equalsIgnoreCase(Group.EVERYONE.name()))
+                      memberGroup1.setStatus(Constants.STATUS_DELETED);//mark as deleted and save
                     memberService.saveMemberGroup(memberGroup1);
                 } else{
                     //they were not changed - so put into final

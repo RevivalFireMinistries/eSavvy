@@ -13,6 +13,7 @@ import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -40,6 +41,25 @@ public class MemberBean implements Serializable{
     private Assembly assembly;
     private boolean skip;
     private List<Assembly> assemblyList;
+    Group[] selectedGroups;
+    List<Group> groupList;
+
+    public Group[] getSelectedGroups() {
+        return selectedGroups;
+    }
+
+    public void setSelectedGroups(Group[] selectedGroups) {
+        this.selectedGroups = selectedGroups;
+    }
+
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<Group> groupList) {
+        groupList.remove(Group.EVERYONE);
+        this.groupList = groupList;
+    }
 
     public Assembly getAssembly() {
         return assembly;
@@ -97,7 +117,10 @@ public class MemberBean implements Serializable{
     public void setMember(Member member) {
         this.member = member;
     }
-
+    @PostConstruct
+    public void init(){
+        setGroupList(Utils.getGroupsAsList());
+    }
     public void save(ActionEvent actionEvent){
         getMember().setDateCreated(new Date(System.currentTimeMillis()));
         getMember().setStatus(Constants.STATUS_ACTIVE);
@@ -108,15 +131,24 @@ public class MemberBean implements Serializable{
         account.setMember(getMember());
         getMember().setAccount(account);
         Utils.capitaliseMember(getMember());
+
         //Add him to the general group - for everyone
         MemberGroup memberGroup = new MemberGroup();
         memberGroup.setStatus(Constants.STATUS_ACTIVE);
         memberGroup.setDateCreated(new Date());
-        memberGroup.setGroupName(Group.EVERYONE.name());
+        memberGroup.setGroupName(Group.EVERYONE.name());//default group
         memberGroup.setMember(this.member);
         getMemberService().saveMember(getMember());
         getMemberService().saveMemberGroup(memberGroup);
-        Utils.addFacesMessage("Member :"+getMember().getFullName()+" has been saved", FacesMessage.SEVERITY_INFO);
+        for(Group grp : getSelectedGroups()){
+            memberGroup = new MemberGroup();
+            memberGroup.setMember(member);
+            memberGroup.setDateCreated(new Date());
+            memberGroup.setGroupName(grp.name());
+            memberGroup.setStatus(Constants.STATUS_ACTIVE);
+            memberService.saveMemberGroup(memberGroup);
+        }
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Member :"+getMember().getFullName()+" has been saved",null));
         setMember(new Member());
     }
     public boolean isSkip() {

@@ -177,6 +177,7 @@ public class MenuBean {
         downloads.setUrl("/other/downloads.faces");
         downloads.setIcon("ui-icon-home");
         other.addElement(downloads);
+        model.addElement(other);
 
 
         if(Utils.isAuthorised(currentUser, Role.SuperAdmin) ){

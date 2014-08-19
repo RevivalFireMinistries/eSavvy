@@ -8,9 +8,9 @@
         <p:panel id="basic" header="New Member Form" footer="" style="margin-bottom:20px">
 
     <h:form>
-        <p:messages id="messages" showDetail="true" autoUpdate="true" />
-        <p:wizard widgetVar="wiz" flowListener="#{memberBean.onFlowProcess}"  style="width:600px;" >
 
+        <p:wizard widgetVar="wiz" flowListener="#{memberBean.onFlowProcess}"  style="width:600px;" >
+            <p:messages id="messages" showDetail="true" autoUpdate="true" />
             <p:tab id="personal" title="Personal">
 
                 <p:panel header="Personal Details">
@@ -67,6 +67,12 @@
                             <f:selectItem itemLabel="Select One" itemValue="" />
                             <f:selectItems value="#{memberBean.memberTypes}" />
                         </p:selectOneMenu>
+
+                            <h:outputText value="Select Group(s):" />
+                            <p:selectManyCheckbox id="group" value="#{memberBean.selectedGroups}" layout="grid" columns="2" converter="groupConverter" required="true" requiredMessage="Please select at least one group">
+                                <f:selectItems value="#{memberBean.groupList}" var="group" itemLabel="#{group}" itemValue="#{group}" />
+                            </p:selectManyCheckbox>
+
                         <h:outputText value="Skip to last: " />
                         <h:selectBooleanCheckbox value="#{memberBean.skip}" />
                     </h:panelGrid>
