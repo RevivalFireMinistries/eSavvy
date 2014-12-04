@@ -69,7 +69,7 @@
                         </p:selectOneMenu>
 
                             <h:outputText value="Select Group(s):" />
-                            <p:selectManyCheckbox id="group" value="#{memberBean.selectedGroups}" layout="grid" columns="2" converter="groupConverter" required="true" requiredMessage="Please select at least one group">
+                            <p:selectManyCheckbox id="group" value="#{memberBean.selectedGroups}" layout="grid" columns="2" converter="groupConverter" requiredMessage="Please select at least one group">
                                 <f:selectItems value="#{memberBean.groupList}" var="group" itemLabel="#{group}" itemValue="#{group}" />
                             </p:selectManyCheckbox>
 

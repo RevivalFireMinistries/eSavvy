@@ -29,7 +29,8 @@ public class AssemblyService {
         return assemblyList;
     }
 
-    public Assembly getAssemblyById(long l) {
+    public Assembly getAssemblyById(long l)
+    {
         return assemblyDAO.getAssemblyById(l);
     }
     @Transactional(readOnly = false)

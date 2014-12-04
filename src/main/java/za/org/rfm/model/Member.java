@@ -36,7 +36,7 @@ public class Member extends ChurchManagerEntity{
     /*@XmlElement(name = "firstName", required = true, nillable = false)*/
     public String firstName;
     /*@XmlElement(name = "lastName", required = true, nillable = false)*/
-    public String lastName,gender,phone,email,homeAddress,status,type;
+    public String lastName,gender,phone,email,homeAddress,status,type,assemblyId;
     public Date dateCreated;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)

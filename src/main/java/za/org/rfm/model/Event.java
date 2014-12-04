@@ -3,6 +3,7 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -30,9 +31,11 @@ public class Event extends ChurchManagerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public Long id;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assembly")
     private Assembly assembly;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     private List<EventLog> eventLogList;
@@ -48,6 +51,7 @@ public class Event extends ChurchManagerEntity {
     private boolean followUp;
     private int targetAttendance;
     private transient double totalIncome,percentageOfAttendance,percentageOfAbsent;
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})

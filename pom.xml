@@ -35,10 +35,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
-
+                <version>9.2.3.v20140905</version>
             </plugin>
         </plugins>
 
@@ -255,7 +254,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.12.2</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Hibernate -->

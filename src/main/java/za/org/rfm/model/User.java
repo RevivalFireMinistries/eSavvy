@@ -4,6 +4,7 @@ package za.org.rfm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import za.org.rfm.utils.Constants;
 
@@ -30,12 +31,15 @@ public final class User extends ChurchManagerEntity {
     private String firstName,lastName,phone,email,password,status;
     private Date dateCreated;
     private Timestamp lastLoginDate;
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assembly")
     private Assembly assembly;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     private List<UserRole> userRoles;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<AuditTrail> auditTrailList;
 

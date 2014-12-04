@@ -100,7 +100,7 @@ public class MemberController {
                     }
                    return "message:Error - Last Name is  empty";
                 }
-                return "message:Error - Phone number is null empty";
+                return "message:Error - Member object is null";
 
             }
 

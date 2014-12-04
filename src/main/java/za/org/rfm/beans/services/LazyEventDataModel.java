@@ -39,7 +39,7 @@ public class LazyEventDataModel extends LazyDataModel<Event> {
     }
 
     @Override
-    public List<Event> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,String> filters) {
+    public List<Event> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         List<Event> data = new ArrayList<Event>();
 
         //filter
@@ -49,7 +49,7 @@ public class LazyEventDataModel extends LazyDataModel<Event> {
             for(Iterator<String> it = filters.keySet().iterator(); it.hasNext();) {
                 try {
                     String filterProperty = it.next();
-                    String filterValue = filters.get(filterProperty);
+                    String filterValue = (String)filters.get(filterProperty);
                     String fieldValue = String.valueOf(event.getClass().getField(filterProperty).get(event));
 
                     if(filterValue == null || fieldValue.startsWith(filterValue)) {
