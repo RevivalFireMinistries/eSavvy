@@ -36,7 +36,7 @@ public class Member extends ChurchManagerEntity{
     /*@XmlElement(name = "firstName", required = true, nillable = false)*/
     public String firstName;
     /*@XmlElement(name = "lastName", required = true, nillable = false)*/
-    public String lastName,gender,phone,email,homeAddress,status,type,assemblyId;
+    public String lastName,gender,phone,email,homeAddress,status,type;
     public Date dateCreated;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
@@ -52,6 +52,7 @@ public class Member extends ChurchManagerEntity{
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "member")
     private Set<MemberGroup> memberGroupList;
+    private transient String assemblyId;
 
     public transient List<Transaction> transactionList = new ArrayList<Transaction>();
 

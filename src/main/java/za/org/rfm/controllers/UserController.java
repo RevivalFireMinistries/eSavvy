@@ -30,10 +30,14 @@ public class UserController {
         User dbUser = null;
         try {
             User user = mapper.readValue(json.toString(),User.class);
+            System.out.println("REST login request username :"+user.getUsername()+" pswd : "+user.getPassword());
             if(user != null){
               boolean  success = userService.login(user.getUsername(),user.getPassword());
+                System.out.println("Results : "+success);
                 if(success){
                     dbUser = userService.getUser(user.getUsername());
+                    dbUser.setAssemblyId(""+dbUser.getAssembly().getAssemblyid());
+                    dbUser.setAssemblyName(dbUser.getAssembly().getName());
                     logger.info("Login status : "+dbUser.getFullname());
                 }
             }

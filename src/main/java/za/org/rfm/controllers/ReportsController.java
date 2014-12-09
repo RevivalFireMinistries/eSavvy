@@ -2,7 +2,10 @@ package za.org.rfm.controllers;
 
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -29,47 +32,17 @@ public class ReportsController {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public @ResponseBody String getMovie(@PathVariable String name) {
-             String result = "Hello "+name;
-        System.out.println("i got to the web service hey!");
-        return result;
-
-    }
-    @RequestMapping(value = "/report/add", method = RequestMethod.POST)
-    public @ResponseBody
-    Event createEvent(@RequestBody Event event) {
-        System.out.println("Start createEvent.");
-        event.setEventDate(new Timestamp(System.currentTimeMillis()));
-        System.out.println(" Event type:"+event.getEventType()+" tithes " +
-                ":"+event.getTithes()+" offering :"+event.getOfferings()+" attendance "+event.getAttendance());
-        return event;
-    }
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String createEvent(@RequestBody JSONObject json) {
         try {
-            logger.info("Now creating the member object...."+json);
+            logger.info("Now creating the event object...."+json);
             Event event = mapper.readValue(json.toString(),Event.class);
             if(event != null){
                 if(!StringUtils.isEmpty(event.getEventType())) {
-                   /* if(!StringUtils.isEmpty(member.getLastName())){
-                        if(!StringUtils.isEmpty(member.getPhone())){
-                          *//*  member.setDateCreated(new Date());
-                            member.setStatus(Constants.STATUS_ACTIVE);
-                            Account account = new Account();
-                            account.setMember(member);
-                            member.setAccount(account);
-                            Utils.capitaliseMember(member);
-                            memberService.saveMember(member);*//*
-                            logger.info("Member added successfully into db");
-                        }
-                        return "message:Error - Phone number is  empty";
-                    }*/
-                    return "message:Error - Last Name is  empty";
+                  eventService.saveEvent(event);
+                  logger.info("Event saved successfully");
                 }
-                return "message:Error - event type is null";
-
+                return "message:Error - event is null";
             }
 
         } catch (IOException e) {
@@ -78,6 +51,24 @@ public class ReportsController {
             return "Encountered during processing ";
         }
 
+        return "";
+    }
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public
+    String getEvent(@PathVariable String id) {
+        try {
+            logger.info("Retrieving event with id : "+id);
+            mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
+            Event event = eventService.getEventById(Long.parseLong(id));
+            AnnotationIntrospector introspector
+                    = new JaxbAnnotationIntrospector();
+            mapper.setAnnotationIntrospector(introspector);
+            return mapper.writeValueAsString(event);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+        }
         return "";
     }
 }

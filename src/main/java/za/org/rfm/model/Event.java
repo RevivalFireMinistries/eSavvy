@@ -39,17 +39,20 @@ public class Event extends ChurchManagerEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     private List<EventLog> eventLogList;
+    @JsonIgnore
     private Timestamp eventDate;
-    private String eventType;
-    private int attendance;
-    private String comment;
-    private double tithes;
-    private double offerings;
-    private int guests,totalRegistered;
-    private Timestamp timeStart,timeEnd;
-    private int converts;
-    private boolean followUp;
-    private int targetAttendance;
+    private String eventDateString;
+    public String eventType;
+    public int attendance;
+    public String comment;
+    public transient String assemblyId;
+    public double tithes;
+    public double offerings;
+    public int guests,totalRegistered = 100;
+    public Timestamp timeStart,timeEnd;
+    public int converts;
+    public boolean followUp;
+    public int targetAttendance;
     private transient double totalIncome,percentageOfAttendance,percentageOfAbsent;
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)

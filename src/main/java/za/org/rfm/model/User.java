@@ -42,6 +42,7 @@ public final class User extends ChurchManagerEntity {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<AuditTrail> auditTrailList;
+    private transient String assemblyId,assemblyName;
 
     public User(String username){
         this.username = username;

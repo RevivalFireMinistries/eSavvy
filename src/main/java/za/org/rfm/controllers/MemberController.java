@@ -6,16 +6,24 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import za.org.rfm.model.Account;
+import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Event;
 import za.org.rfm.model.Member;
+import za.org.rfm.service.AssemblyService;
+import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +38,10 @@ public class MemberController {
     private static final Logger logger = Logger.getLogger(MemberController.class);
     @Autowired
     MemberService memberService;
+    @Autowired
+    EventService eventService;
+    @Autowired
+    AssemblyService assemblyService;
 
     public MemberService getMemberService() {
         return memberService;
@@ -87,14 +99,19 @@ public class MemberController {
                if(!StringUtils.isEmpty(member.getFirstName())) {
                     if(!StringUtils.isEmpty(member.getLastName())){
                         if(!StringUtils.isEmpty(member.getPhone())){
-                            member.setDateCreated(new Date());
-                            member.setStatus(Constants.STATUS_ACTIVE);
-                            Account account = new Account();
-                            account.setMember(member);
-                            member.setAccount(account);
-                            Utils.capitaliseMember(member);
-                            memberService.saveMember(member);
-                            logger.info("Member added successfully into db");
+                            Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(member.getAssemblyId()));
+                            if(assembly != null){
+                                member.setAssembly(assembly);
+                                member.setDateCreated(new Date());
+                                member.setStatus(Constants.STATUS_ACTIVE);
+                                Account account = new Account();
+                                account.setMember(member);
+                                member.setAccount(account);
+                                Utils.capitaliseMember(member);
+                                memberService.saveMember(member);
+                                logger.info("Member added successfully into db");
+                            }
+
                         }
                         return "message:Error - Phone number is  empty";
                     }
@@ -113,13 +130,65 @@ public class MemberController {
          return "";
     }
 
-    /*@RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
-    public String deleteCustomer(@PathVariable String id) {
-        Customer customer = customerService.getCustomerById(Long.parseLong(id));
-        if(customer == null)
-            return "Customer with id "+id+" cannot be found in db";
-        customerService.deleteCustomer(customer);
-        logger.info("Customer deleted ");
-        return "Customer "+customer.getName()+" deleted succesfully from db";
-    }*/
+    @RequestMapping(value = "event/{id}", method = RequestMethod.GET)
+    public
+    String getEvent(@PathVariable String id) {
+        try {
+            logger.info("Retrieving event with id : "+id);
+            mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
+            Event event = eventService.getEventById(Long.parseLong(id));
+            AnnotationIntrospector introspector
+                    = new JaxbAnnotationIntrospector();
+            mapper.setAnnotationIntrospector(introspector);
+            return mapper.writeValueAsString(event);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+        }
+        return "";
+    }
+    @RequestMapping(value = "event/add", method = RequestMethod.POST)
+    public String createEvent(@RequestBody JSONObject json) {
+        String msg = "";
+        try {
+            logger.info("Now creating the event object...."+json);
+            Event event = mapper.readValue(json.toString(),Event.class);
+            if(event != null){
+                if(!StringUtils.isEmpty(event.getEventType())) {
+                    if(event.getEventDate() == null){
+                        event.setEventDate(new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
+                        logger.warn("No event date set...using last sunday");
+                    }else{
+                        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+                        DateTime dt = formatter.parseDateTime(event.getEventDateString());
+                        event.setEventDate(new Timestamp(dt.getMillis()));
+                    }
+                    if(StringUtils.isEmpty(event.getAssemblyId())){
+                        msg = "message: Event is missing assembly id";
+                        logger.error(msg);
+                    }else{
+                        Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(event.getAssemblyId()));
+                        if(assembly != null){
+                            event.setAssembly(assembly);
+                            eventService.saveEvent(event);
+                            logger.info("Event saved successfully");
+                        }else{
+                            logger.error("Error - assembly not found : "+event.getAssemblyId());
+                        }
+
+                    }
+
+                }
+                return "message:success -Content-type: application/json; ";
+            }
+
+        } catch (IOException e) {
+            logger.error("Encountered an error : "+e.getMessage());
+            e.printStackTrace();
+            return "Encountered during processing ";
+        }
+
+        return "";
+    }
 }
