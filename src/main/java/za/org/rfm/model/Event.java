@@ -7,6 +7,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import za.org.rfm.model.json.J_Event;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
@@ -59,6 +63,15 @@ public class Event extends ChurchManagerEntity {
     @OneToMany
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
     private List<EventFollowUp> eventFollowUpList;
+
+    public Event(J_Event j_event){
+        this.eventType = j_event.getEventType();
+        this.eventDate = Utils.getTimeStampFromString("yyyy-MM-dd",j_event.getEventDateString());
+        this.tithes = Double.parseDouble(j_event.getTithes());
+        this.offerings = Double.parseDouble(j_event.getOfferings());
+        this.attendance = j_event.getAttendance();
+        this.comment = j_event.getComment();
+    }
 
    public String getEventDateFormatted(){
        return Utils.dateFormatter(getEventDate());

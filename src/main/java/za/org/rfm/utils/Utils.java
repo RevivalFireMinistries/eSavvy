@@ -1,8 +1,11 @@
 package za.org.rfm.utils;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import za.org.rfm.beans.Tithe;
 import za.org.rfm.model.*;
 
@@ -13,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -143,6 +147,13 @@ public class Utils {
         }
         return sortByValue(map);
     }
+
+    public static Timestamp getTimeStampFromString(String format,String date){
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(format);
+        DateTime dt = formatter.parseDateTime(date);
+        return new Timestamp(dt.getMillis());
+    }
+
     public static Map<Long,String> getVarsAsMap(List<SystemVar> vars){
         Map<Long,String> map = new HashMap<Long, String>();
         for(SystemVar var : vars){

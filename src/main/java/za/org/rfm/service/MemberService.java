@@ -9,6 +9,7 @@ import za.org.rfm.dao.MemberDAO;
 import za.org.rfm.model.*;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
+import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 
 import java.util.Date;
@@ -77,5 +78,16 @@ public class MemberService {
     }
     public java.util.List<za.org.rfm.model.Member> getALLMembers() {
         return memberDAO.getALLMembers();
+    }
+
+    @Transactional(readOnly = false)
+    public void addToEveryone(Member member) {
+        //Add him to the general group - for everyone
+        MemberGroup memberGroup = new MemberGroup();
+        memberGroup.setStatus(Constants.STATUS_ACTIVE);
+        memberGroup.setDateCreated(new Date());
+        memberGroup.setGroupName(Group.EVERYONE.name());//default group
+        memberGroup.setMember(member);
+        saveMemberGroup(memberGroup);
     }
 }

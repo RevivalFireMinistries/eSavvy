@@ -16,6 +16,8 @@ import za.org.rfm.model.Account;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.Member;
+import za.org.rfm.model.json.J_Event;
+import za.org.rfm.model.json.J_Member;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
@@ -94,13 +96,14 @@ public class MemberController {
     public String createMember(@RequestBody JSONObject json) {
         try {
             logger.info("Now creating the member object...."+json);
-            Member member = mapper.readValue(json.toString(),Member.class);
-            if(member != null){
-               if(!StringUtils.isEmpty(member.getFirstName())) {
-                    if(!StringUtils.isEmpty(member.getLastName())){
-                        if(!StringUtils.isEmpty(member.getPhone())){
-                            Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(member.getAssemblyId()));
+            J_Member j_member = mapper.readValue(json.toString(),J_Member.class);
+            if(j_member != null){
+               if(!StringUtils.isEmpty(j_member.getFirstName())) {
+                    if(!StringUtils.isEmpty(j_member.getLastName())){
+                        if(!StringUtils.isEmpty(j_member.getPhone())){
+                            Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(j_member.getAssemblyId()));
                             if(assembly != null){
+                                Member member = new Member(j_member);
                                 member.setAssembly(assembly);
                                 member.setDateCreated(new Date());
                                 member.setStatus(Constants.STATUS_ACTIVE);
@@ -109,6 +112,7 @@ public class MemberController {
                                 member.setAccount(account);
                                 Utils.capitaliseMember(member);
                                 memberService.saveMember(member);
+                                memberService.addToEveryone(member);
                                 logger.info("Member added successfully into db");
                             }
 
@@ -153,28 +157,25 @@ public class MemberController {
         String msg = "";
         try {
             logger.info("Now creating the event object...."+json);
-            Event event = mapper.readValue(json.toString(),Event.class);
-            if(event != null){
+            J_Event j_event = mapper.readValue(json.toString(),J_Event.class);
+            if(j_event != null){
+                Event event = new Event(j_event);
                 if(!StringUtils.isEmpty(event.getEventType())) {
                     if(event.getEventDate() == null){
                         event.setEventDate(new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
                         logger.warn("No event date set...using last sunday");
-                    }else{
-                        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-                        DateTime dt = formatter.parseDateTime(event.getEventDateString());
-                        event.setEventDate(new Timestamp(dt.getMillis()));
                     }
-                    if(StringUtils.isEmpty(event.getAssemblyId())){
+                    if(StringUtils.isEmpty(j_event.getAssemblyId())){
                         msg = "message: Event is missing assembly id";
                         logger.error(msg);
                     }else{
-                        Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(event.getAssemblyId()));
+                        Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(j_event.getAssemblyId()));
                         if(assembly != null){
                             event.setAssembly(assembly);
                             eventService.saveEvent(event);
                             logger.info("Event saved successfully");
                         }else{
-                            logger.error("Error - assembly not found : "+event.getAssemblyId());
+                            logger.error("Error - assembly not found : "+j_event.getAssemblyId());
                         }
 
                     }

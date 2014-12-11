@@ -12,6 +12,7 @@ import za.org.rfm.model.User;
 import za.org.rfm.service.UserService;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 /**
  * Created by Russel on 2014-11-14.
@@ -39,6 +40,8 @@ public class UserController {
                     dbUser.setAssemblyId(""+dbUser.getAssembly().getAssemblyid());
                     dbUser.setAssemblyName(dbUser.getAssembly().getName());
                     logger.info("Login status : "+dbUser.getFullname());
+                    dbUser.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
+                    userService.saveUser(dbUser);
                 }
             }
 

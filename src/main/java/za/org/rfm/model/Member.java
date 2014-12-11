@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import za.org.rfm.model.json.J_Member;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
@@ -63,6 +64,15 @@ public class Member extends ChurchManagerEntity{
     public Member(String firstName, String lastName){
            this.firstName = firstName;
            this.lastName = lastName;
+    }
+
+    public  Member(J_Member j_member){
+        this.firstName = j_member.getFirstName();
+        this.lastName = j_member.getLastName();
+        this.gender = j_member.getGender();
+        this.email = j_member.getEmail();
+        this.phone = j_member.getPhone();
+        this.homeAddress = j_member.getHomeAddress();
     }
     public String getFullName(){
         return this.getFirstName()+" "+this.getLastName();
