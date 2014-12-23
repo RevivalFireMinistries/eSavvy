@@ -8,6 +8,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,6 +80,17 @@ public class Assembly extends ChurchManagerEntity implements Comparable<Assembly
         }
         }
         return null;
+    }
+    public List<User> getUsersWithRole(za.org.rfm.utils.Role role){
+        List<User> userList = new ArrayList<User>();
+        for(User user : getUsers()){
+            for(UserRole userRole: user.getUserRoles()){
+                if(userRole.getRole().getName().equalsIgnoreCase(role.name())){
+                    userList.add(user);
+                }
+            }
+        }
+        return userList;
     }
     public int compareTo(Assembly anotherAssembly){
       if(attendanceCompare){

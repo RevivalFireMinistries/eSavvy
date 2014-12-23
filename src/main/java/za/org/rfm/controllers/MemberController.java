@@ -19,6 +19,7 @@ import za.org.rfm.model.Member;
 import za.org.rfm.model.json.J_Event;
 import za.org.rfm.model.json.J_Member;
 import za.org.rfm.service.AssemblyService;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.utils.Constants;
@@ -44,6 +45,8 @@ public class MemberController {
     EventService eventService;
     @Autowired
     AssemblyService assemblyService;
+    @Autowired
+    EmailService emailService;
 
     public MemberService getMemberService() {
         return memberService;
@@ -159,7 +162,7 @@ public class MemberController {
             logger.info("Now creating the event object...."+json);
             J_Event j_event = mapper.readValue(json.toString(),J_Event.class);
             if(j_event != null){
-                Event event = new Event(j_event);
+                final Event event = new Event(j_event);
                 if(!StringUtils.isEmpty(event.getEventType())) {
                     if(event.getEventDate() == null){
                         event.setEventDate(new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
@@ -174,6 +177,14 @@ public class MemberController {
                             event.setAssembly(assembly);
                             eventService.saveEvent(event);
                             logger.info("Event saved successfully");
+                            //Now send an email to pastoral! - but spawn a new thread to separate execution
+                            Thread emailThread = new Thread(){
+                                @Override
+                                public void run() {
+                                    emailService.eventReport(event);
+                                }
+                            };
+                            emailThread.start();
                         }else{
                             logger.error("Error - assembly not found : "+j_event.getAssemblyId());
                         }

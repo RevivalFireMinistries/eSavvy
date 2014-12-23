@@ -136,54 +136,62 @@ public class EmailService {
         try {
             //first get pastor's email
             event.getAssembly().setUsers(assemblyService.getAssemblyUsers(event.getAssembly().getAssemblyid()));
-            User pastor = event.getAssembly().getUserWithRole(Role.Pastor);
-             if(pastor != null && pastor.getEmail()!= null){
-                 logger.info("Found the pastor for "+event.getAssembly().getName()+" : "+pastor.getFullname()+" email : "+pastor.getEmail());
-                //Now validate email first
-                EmailFormatValidator emailFormatValidator = new EmailFormatValidator();
-                if(emailFormatValidator.validate(pastor.getEmail())){
-                    logger.debug("Email address validation...OK...process");
-                    //now we can proceeed
-                    String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
-                    String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
-                    Map<String,String> items = new LinkedHashMap<String, String>();
-                    items.put("Assembly",event.getAssembly().getName());
-                    items.put("Date",event.getEventDateFormatted());
-                    items.put("Type",event.getEventType());
-                    items.put("Attendance",event.getAttendance()+"");
-                    items.put("Tithes",event.getTitheFormatted());
-                    items.put("Offering",event.getOfferingFormatted());
-                    items.put("Total Income",event.getTotalIncomeFormatted());
-                    items.put("Comments",event.getComment());
-                    String reportIntro = getResource("email.report.assembly.service.introduction",event.getEventType());
-                     List<String> messages = new ArrayList<String>();
-                    messages.add(reportIntro);
-                    final Context ctx = new Context(Locale.ENGLISH);
-                    ctx.setVariable("name", pastor.getFullname());
-                    ctx.setVariable("messages",messages);
-                    ctx.setVariable("items", items);
-                    ctx.setVariable("assembly", event.getAssembly().getName());
-                    ctx.setVariable("eSavvyLink", eSavvyLink);
-                    ctx.setVariable("churchName",churchName);
+            List<User> userList = event.getAssembly().getUsersWithRole(Role.Pastor);
+            if(userList.isEmpty()){
+                logger.error("No pastors set for this assembly...can't send email "+event.getAssembly().getName());
+                return;
+            }
+
+            for(User pastor : userList){
+                if(pastor.getEmail()!= null){
+                    logger.info("Found the pastor for "+event.getAssembly().getName()+" : "+pastor.getFullname()+" email : "+pastor.getEmail());
+                    //Now validate email first
+                    EmailFormatValidator emailFormatValidator = new EmailFormatValidator();
+                    if(emailFormatValidator.validate(pastor.getEmail())){
+                        logger.debug("Email address validation...OK...process");
+                        //now we can proceeed
+                        String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                        String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+                        Map<String,String> items = new LinkedHashMap<String, String>();
+                        items.put("Assembly",event.getAssembly().getName());
+                        items.put("Date",event.getEventDateFormatted());
+                        items.put("Type",event.getEventType());
+                        items.put("Attendance",event.getAttendance()+"");
+                        items.put("Tithes",event.getTitheFormatted());
+                        items.put("Offering",event.getOfferingFormatted());
+                        items.put("Total Income",event.getTotalIncomeFormatted());
+                        items.put("Comments",event.getComment());
+                        String reportIntro = getResource("email.report.assembly.service.introduction",event.getEventType());
+                        List<String> messages = new ArrayList<String>();
+                        messages.add(reportIntro);
+                        final Context ctx = new Context(Locale.ENGLISH);
+                        ctx.setVariable("name", pastor.getFullname());
+                        ctx.setVariable("messages",messages);
+                        ctx.setVariable("items", items);
+                        ctx.setVariable("assembly", event.getAssembly().getName());
+                        ctx.setVariable("eSavvyLink", eSavvyLink);
+                        ctx.setVariable("churchName",churchName);
 
 
-                    final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-                    final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
-                    message.setSubject(getResource("email.subject.assembly.report",event.getAssembly().getName(),event.getEventType(),event.getEventDateFormatted()));
-                    message.setFrom(getResource("email.system.from"));
-                    message.setTo(pastor.getEmail());
+                        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                        message.setSubject(getResource("email.subject.assembly.report",event.getAssembly().getName(),event.getEventType(),event.getEventDateFormatted()));
+                        message.setFrom(getResource("email.system.from"));
+                        message.setTo(pastor.getEmail());
 
-                    // Create the HTML body using Thymeleaf
-                    final String htmlContent = this.templateEngine.process("../email/bean-report", ctx);
-                    message.setText(htmlContent, true); // true = isHtml
+                        // Create the HTML body using Thymeleaf
+                        final String htmlContent = this.templateEngine.process("../email/bean-report", ctx);
+                        message.setText(htmlContent, true); // true = isHtml
 
-                    logger.debug("Email setup complete...now send!");
-                    // Send mail
-                    this.mailSender.send(mimeMessage);
-                    logger.debug("Email sent!");
+                        logger.debug("Email setup complete...now send!");
+                        // Send mail
+                        this.mailSender.send(mimeMessage);
+                        logger.debug("Email sent!");
+                    }
                 }
-            } else {
-                logger.error("Email address validation failed or insufficient user info...abort!");
+            }
+             else {
+                logger.error("Email address validation failed or insufficient user info for event "+event.getId());
             }
 
         } catch (MessagingException e) {
