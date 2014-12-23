@@ -190,9 +190,7 @@ public class EmailService {
                     }
                 }
             }
-             else {
-                logger.error("Email address validation failed or insufficient user info for event "+event.getId());
-            }
+
 
         } catch (MessagingException e) {
             e.printStackTrace();
