@@ -16,6 +16,7 @@ import za.org.rfm.pdf.EventPDF;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.utils.DateRange;
+import za.org.rfm.utils.Role;
 import za.org.rfm.utils.Utils;
 import za.org.rfm.utils.WebUtil;
 
@@ -69,7 +70,14 @@ public class ViewReportsBean {
     }
     public void search() {
          if(getEventtype() != null && !getEventtype().equalsIgnoreCase("")){
-             List<Event> eventsRes = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), getEventtype(), dateRange);
+             List<Event> eventsRes = null;
+             if(WebUtil.getCurrentUserRoles().contains(Role.Apostle)) {
+                eventsRes  = eventService.getEventsByTypeAndDateRange(getEventtype(), dateRange);
+             }else{
+                 eventsRes = eventService.getEventsByAssemblyAndTypeAndDateRange(WebUtil.getUserAssemblyId(), getEventtype(), dateRange);
+             }
+
+
             setEvents(eventsRes);
              Utils.addFacesMessage(eventsRes.size()+" results found ",FacesMessage.SEVERITY_INFO);
          }
