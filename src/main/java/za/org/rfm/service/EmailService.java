@@ -134,20 +134,20 @@ public class EmailService {
 
     public void eventReport(Event event){
         try {
-            //first get pastor's email
+
             event.getAssembly().setUsers(assemblyService.getAssemblyUsers(event.getAssembly().getAssemblyid()));
-            List<User> userList = event.getAssembly().getUsersWithRole(Role.Pastor);
+            List<User> userList = event.getAssembly().getUsers(); //send an email to every user under this assembly
             if(userList.isEmpty()){
-                logger.error("No pastors set for this assembly...can't send email "+event.getAssembly().getName());
+                logger.error("No users set for this assembly...can't send email "+event.getAssembly().getName());
                 return;
             }
 
-            for(User pastor : userList){
-                if(pastor.getEmail()!= null){
-                    logger.info("Found the pastor for "+event.getAssembly().getName()+" : "+pastor.getFullname()+" email : "+pastor.getEmail());
+            for(User user : userList){
+                if(user.getEmail()!= null){
+                    logger.info("Found the user for "+event.getAssembly().getName()+" : "+user.getFullname()+" email : "+user.getEmail());
                     //Now validate email first
                     EmailFormatValidator emailFormatValidator = new EmailFormatValidator();
-                    if(emailFormatValidator.validate(pastor.getEmail())){
+                    if(emailFormatValidator.validate(user.getEmail())){
                         logger.debug("Email address validation...OK...process");
                         //now we can proceeed
                         String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
@@ -165,7 +165,7 @@ public class EmailService {
                         List<String> messages = new ArrayList<String>();
                         messages.add(reportIntro);
                         final Context ctx = new Context(Locale.ENGLISH);
-                        ctx.setVariable("name", pastor.getFullname());
+                        ctx.setVariable("name", user.getFullname());
                         ctx.setVariable("messages",messages);
                         ctx.setVariable("items", items);
                         ctx.setVariable("assembly", event.getAssembly().getName());
@@ -177,7 +177,7 @@ public class EmailService {
                         final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
                         message.setSubject(getResource("email.subject.assembly.report",event.getAssembly().getName(),event.getEventType(),event.getEventDateFormatted()));
                         message.setFrom(getResource("email.system.from"));
-                        message.setTo(pastor.getEmail());
+                        message.setTo(user.getEmail());
 
                         // Create the HTML body using Thymeleaf
                         final String htmlContent = this.templateEngine.process("../email/bean-report", ctx);
@@ -224,7 +224,7 @@ public class EmailService {
                 if(StringUtils.isEmpty(apostolicEmail)){ //try looking for this in a user with apostolic role
                     User apostle = userService.getApostle();
                     if(apostle == null){
-                        logger.error("Fialed to send apostolic email --- Please set up a user with Apostolic ROLE!");
+                        logger.error("Failed to send apostolic email --- Please set up a user with Apostolic ROLE!");
                         return;
                     }
                     apostolicEmail = apostle.getEmail();
@@ -236,7 +236,12 @@ public class EmailService {
                 ctx.setVariable("churchName",churchName);
                 ctx.setVariable("events",events);
                 ctx.setVariable("totals",totals);
-                ctx.setVariable("header",getResource("email.subject.apostolic.report",frequency,dateRange));
+                if(Constants.REPORT_FREQUENCY_WEEKLY.equalsIgnoreCase(frequency)){
+                    ctx.setVariable("header",getResource("email.subject.apostolic.report",frequency));
+                }else{
+                    ctx.setVariable("header",getResource("email.subject.apostolic.report",frequency,dateRange));
+                }
+
 
 
                 final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
