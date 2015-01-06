@@ -51,7 +51,7 @@ public class JobRepository {
                     .newTrigger()
                     .withIdentity("everyTuesdayMidnight")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 0 0 ? * WED *"))
+                            CronScheduleBuilder.cronSchedule("0 20 0 ? * WED *"))
                     .build();
             Trigger everyFiveMinutes = TriggerBuilder
                     .newTrigger()

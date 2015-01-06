@@ -31,28 +31,31 @@
                           widgetVar="eventsTable"     selection="#{viewReportsBean.selectedEvent}" selectionMode="single" filteredValue="#{viewReportsBean.filteredEvents}" id="eventsTable100" >
                 <p:ajax event="rowSelect"
                         update=":eventsform:display :eventsform:msgs" oncomplete="PF('eventDialog').show()" />
-                <p:column headerText="Event Type" sortBy="eventType" filterBy="#{event.eventType}">
+                <p:column headerText="Event Type" sortBy="#{event.eventType}" filterBy="#{event.eventType}">
                 <h:outputText value="#{event.eventType}" />
             </p:column>
-            <p:column headerText="Date" sortBy="eventDate" filterBy="#{event.eventDate}">
+            <p:column headerText="Date" sortBy="#{event.eventDateFormatted}" filterBy="#{event.eventDate}">
                 <h:outputText value="#{event.eventDateFormatted}" />
             </p:column>
-            <p:column headerText="Attendance" sortBy="attendance" filterBy="#{event.attendance}">
+            <p:column headerText="Attendance" sortBy="#{event.attendance}" filterBy="#{event.attendance}">
                 <h:outputText value="#{event.attendance}"  />
                 </p:column>
-                <p:column headerText="Total Income" sortBy="totalIncomeFormatted" filterBy="#{event.eventDate}">
+                <p:column headerText="Total Income" sortBy="#{event.totalIncomeFormatted}" filterBy="#{event.eventDate}">
                     <h:outputText value="#{event.totalIncomeFormatted}" />
                 </p:column>
-                <p:column headerText="Comment" sortBy="comment" filterBy="#{event.eventDate}">
+                <p:column headerText="Comment" sortBy="#{event.comment}" filterBy="#{event.comment}">
                     <h:outputText value="#{event.comment}" />
                 </p:column>
-                <p:column headerText="View Full Report" >
+                <p:column headerText="Assembly" sortBy="#{event.assembly.name}">
+                    <h:outputText value="#{event.assembly.name}" />
+                </p:column>
+               <!-- <p:column headerText="View Full Report" >
 
                     <p:commandLink id="ajax555"   actionListener="#{viewReportsBean.addRegister(event)}" style="margin-right:20px;">
                         <h:outputText value="[Follow UP Report]" />
                     </p:commandLink>
 
-            </p:column>
+            </p:column>-->
             </p:dataTable>
                 <p:dialog id="dialog" header="Event Detail" widgetVar="eventDialog" resizable="false"
                           showEffect="fade" hideEffect="explode" minHeight="500" minWidth="400">

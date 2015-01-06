@@ -8,9 +8,9 @@
     <ui:define name="content">
     <h:form id="myform" prependId="false">
 
-        <p:dataTable  style="width:850px;" var="member" value="#{viewMembersBean.members}" rowKey="#{member.id}" paginator="true" rows="10"
+        <p:dataTable  style="width:850px;" var="member" value="#{viewMembersBean.members}" rowKey="#{member.id}" paginator="true" rows="20"
                       widgetVar="membersTable"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                      rowsPerPageTemplate="5,10,15,30,50"   selection="#{viewMembersBean.selectedMember}" selectionMode="single" filteredValue="#{viewMembersBean.filteredMembers}" id="membersTable100">
+                      rowsPerPageTemplate="5,10,15,30,50,100,150,500"    selection="#{viewMembersBean.selectedMember}" selectionMode="single" filteredValue="#{viewMembersBean.filteredMembers}" id="membersTable100">
 
             <p:ajax event="rowSelect"  listener="#{viewMembersBean.onRowSelect}" />
 
@@ -20,7 +20,7 @@
             <f:facet name="header">
                 <p:outputPanel>
                     <h:outputText value="Search all fields:" />
-                    <p:inputText id="globalFilter" onkeyup="membersTable.filter()" style="width:150px" />
+                    <p:inputText id="globalFilter" onkeyup="PF('membersTable').filter()" style="width:150px" />
                 </p:outputPanel>
             </f:facet>
             <p:column headerText="First Name" sortBy="#{member.firstName}" filterBy="#{member.firstName}" id="firstname">
@@ -52,6 +52,17 @@
                 In total there are #{fn:length(viewMembersBean.members)} Members.
             </f:facet>
         </p:dataTable>
+        <h3>Export Page Data Only</h3>
+        <h:commandLink>
+            <p:graphicImage name="/images/excel.jpg" />
+            <p:dataExporter type="xls" target="j_idt27:membersTable" fileName="members" pageOnly="true"/>
+        </h:commandLink>
+
+        <h:commandLink>
+            <p:graphicImage name="/images/pdf.jpg" />
+            <p:dataExporter type="pdf" target="membersTable" fileName="members" pageOnly="true" />
+        </h:commandLink>
+
 
         <p:dialog header="Member Detail" widgetVar="memberDialog" resizable="false"
                   width="200" showEffect="explode" hideEffect="explode">
