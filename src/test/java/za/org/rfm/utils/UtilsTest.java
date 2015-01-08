@@ -16,10 +16,10 @@ import java.util.Date;
 public class UtilsTest {
     @Test
     public void testCalcLastSunday() throws Exception {
-        String startDate = "07/22/2014";
+        String startDate = "01/08/2015";
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         Date testDate = df.parse(startDate);
-        Assert.assertEquals(df.parse("07/20/2014"),Utils.calcLastSunday(testDate));
+        Assert.assertEquals(df.parse("01/04/2015"),Utils.calcLastSunday(testDate));
     }
     @Test
     public void testCalcLastMonthDateRange() {

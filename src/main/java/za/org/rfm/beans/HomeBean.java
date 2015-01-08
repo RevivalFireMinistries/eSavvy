@@ -41,6 +41,7 @@ public class HomeBean {
         private double percentageOfAttendance;
         private boolean isApostolic = false;
         private List<Assembly> assemblyList;
+    private String lastSunday = Utils.dateFormatter(Utils.calcLastSunday(new Date()));
 
     public List<Assembly> getAssemblyList() {
         return assemblyList;
@@ -60,6 +61,14 @@ public class HomeBean {
 
     public String getApostolic() {
         return Utils.moneyFormatter(apostolic,getAssembly().getLocaleObject());
+    }
+
+    public String getLastSunday() {
+        return lastSunday;
+    }
+
+    public void setLastSunday(String lastSunday) {
+        this.lastSunday = lastSunday;
     }
 
     public void setApostolic(List<Event> events) {

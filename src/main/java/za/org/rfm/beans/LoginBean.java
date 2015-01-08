@@ -177,7 +177,7 @@ public class LoginBean implements Serializable {
                     setChurchName(var.getValue());
                 }
                 else{
-                    setChurchName("eSavvy");
+                    setChurchName("ChurchManager");
                     logger.error("Error : variable church name not set!");
                 }
                 if(!StringUtils.isEmpty(fromUrl)){
