@@ -23,7 +23,7 @@ public class AuditTrailService {
     AuditTrailDAO auditTrailDAO;
 
     @Transactional(readOnly = false)
-    public void saveTrail(AuditTrail auditTrail){
+    public void saveTrail(AuditTrail auditTrail) {
         auditTrailDAO.saveTrail(auditTrail);
     }
 }

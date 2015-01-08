@@ -24,11 +24,11 @@ public class BulletinService {
     BulletinDAO bulletinDAO;
 
     @Transactional(readOnly = false)
-    public void saveBulletin(Bulletin bulletin){
+    public void saveBulletin(Bulletin bulletin) {
         bulletinDAO.saveBulletin(bulletin);
     }
 
-    public List<Bulletin> getActiveBulletins(Date endDate,String status){
-        return bulletinDAO.getActiveBulletins(endDate,status);
+    public List<Bulletin> getActiveBulletins(Date endDate, String status) {
+        return bulletinDAO.getActiveBulletins(endDate, status);
     }
 }

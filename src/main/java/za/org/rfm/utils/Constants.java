@@ -12,6 +12,7 @@ public class Constants {
     public static final String COUNTRY_LIST_FILE = "countries.properties";
     public static final String STATUS_ACTIVE = "Active";
     public static final String STATUS_IN_ACTIVE = "InActive";
+    public static final String STATUS_NEEDS_FOLLOW_UP = "Needs Follow UP";
     public static final String STATUS_DELETED = "Deleted";
     public static final String STATUS_SENT = "Sent";
     public static final String STATUS_FAILED = "Failed";
@@ -69,7 +70,6 @@ public class Constants {
     public static final String ACTION_NO_ACTION_REQUIRED = "No Action Required";
 
     public static final String[]followUpActions = {ACTION_NO_ACTION_REQUIRED,ACTION_REFER_TO_PASTOR,ACTION_SEND_MOTIVATIONAL_SMS};
-    public static final  String SYSTEM_DEFAULT_EMAIL = "esavvy@rfm.org.za" ;
     public static final  String CHURCH_NAME = "church-name";
     public static final  String APOSTOLIC_EMAIL = "Apostolic Email";
     public static final  String ESAVVY_LINK = "esavvy-link";

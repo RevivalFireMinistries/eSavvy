@@ -12,6 +12,7 @@ import za.org.rfm.model.Member;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,6 +90,22 @@ public class EventDAO {
         query.setString("eventtype",eventtype);
         query.setDate("from",dateRange.getStartDate());
         query.setDate("to",dateRange.getEndDate());
+        List<Event> eventList = (List<Event>)query.list();
+        return eventList;
+    }
+
+    public List<Event> getEventsByAssemblyAndTypeAndDate(long assemblyid, String eventtype, Timestamp date) {
+        String hql = "";
+        if(Constants.STATUS_ALL.equalsIgnoreCase(eventtype)){
+            hql =  "from Event where assembly = :assemblyid and eventdate = :date";
+        }else{
+            hql = "from Event where assembly = :assemblyid and eventtype = :eventtype and eventdate = :date ";
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setLong("assemblyid",assemblyid);
+        if(!Constants.STATUS_ALL.equalsIgnoreCase(eventtype))
+            query.setString("eventtype",eventtype);
+        query.setDate("date",date);
         List<Event> eventList = (List<Event>)query.list();
         return eventList;
     }

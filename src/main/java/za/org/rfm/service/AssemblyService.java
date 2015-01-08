@@ -22,22 +22,23 @@ public class AssemblyService {
     @Autowired
     AssemblyDAO assemblyDAO;
 
-    public List<Assembly> getAssemblyList(String status){
-        logger.debug("Getting assemblies by status : "+status);
+    public List<Assembly> getAssemblyList(String status) {
+        logger.debug("Getting assemblies by status : " + status);
         List<Assembly> assemblyList = assemblyDAO.getAssemblyList(status);
-        logger.debug("Assemblies retrieved : "+assemblyList.size());
+        logger.debug("Assemblies retrieved : " + assemblyList.size());
         return assemblyList;
     }
 
-    public Assembly getAssemblyById(long l)
-    {
+    public Assembly getAssemblyById(long l) {
         return assemblyDAO.getAssemblyById(l);
     }
+
     @Transactional(readOnly = false)
-    public void saveAssembly(Assembly assembly){
+    public void saveAssembly(Assembly assembly) {
         assemblyDAO.saveMember(assembly);
     }
-    public List<User> getAssemblyUsers(Long id){
+
+    public List<User> getAssemblyUsers(Long id) {
         return assemblyDAO.getAssemblyUsers(id);
     }
 }

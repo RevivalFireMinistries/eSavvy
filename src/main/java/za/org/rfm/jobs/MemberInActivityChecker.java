@@ -56,14 +56,14 @@ public class MemberInActivityChecker implements Job{
             rejuvenatedMembers = new ArrayList<Member>();
             assembly.setMembers(memberService.getMembersByAssembly(assembly.getAssemblyid()));
             for(Member member : assembly.getMembers()){
-                if(memberService.isInActive(member) && member.getStatus().equalsIgnoreCase(Constants.STATUS_ACTIVE)){
+                if(memberService.isInActive(member)){
                     logger.debug("got a backslider!!! : "+member.getFullName());
                     //change his status
-                    member.setStatus(Constants.STATUS_IN_ACTIVE); //TODO: Consider sending a motivational sms
+                    member.setStatus(Constants.STATUS_NEEDS_FOLLOW_UP); //TODO: Consider sending a motivational sms
                     memberService.saveMember(member);
                     backSlidenMembers.add(member);
                 }
-                else if(!memberService.isInActive(member) && member.getStatus().equalsIgnoreCase(Constants.STATUS_IN_ACTIVE)){
+                else if(!memberService.isInActive(member) && member.getStatus().equalsIgnoreCase(Constants.STATUS_NEEDS_FOLLOW_UP)){
                     logger.debug("got a member who used to be inactive but now active : "+member.getFullName());
                     //change his status
                     member.setStatus(Constants.STATUS_ACTIVE);  //TODO: Consider welcoming them back to church

@@ -7,10 +7,7 @@ import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SMSService;
 import za.org.rfm.service.SystemVarService;
-import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.Group;
-import za.org.rfm.utils.Utils;
-import za.org.rfm.utils.WebUtil;
+import za.org.rfm.utils.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -280,7 +277,14 @@ public class SendSMS {
 
     public void init() {
        setAssembly(assemblyService.getAssemblyById(WebUtil.getUserAssemblyId()));
-        setAssemblyList(assemblyService.getAssemblyList(Constants.STATUS_ACTIVE));
+        if(WebUtil.getCurrentUserRoles().contains(za.org.rfm.utils.Role.Apostle)) {
+            setAssemblyList(assemblyService.getAssemblyList(Constants.STATUS_ACTIVE));
+        }else{
+            List<Assembly> assemblies = new ArrayList<Assembly>();
+            assemblies.add(getAssembly());
+            setAssemblyList(assemblies);
+        }
+
         setGroupList(Utils.getGroupsAsList());
         memberList = new ArrayList<Member>();
         systemVars = Utils.getVarsAsMap(systemVarService.getSystemVarByName("sms-template"));

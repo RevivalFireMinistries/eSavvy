@@ -20,7 +20,7 @@ import java.util.List;
 @Service("UserService")
 @Transactional(readOnly = true)
 public class UserService {
-     Logger logger = Logger.getLogger(UserService.class);
+    Logger logger = Logger.getLogger(UserService.class);
     @Autowired
     UserDAO userDAO;
     //TODO: need to look into using JpaRepository in future
@@ -44,57 +44,68 @@ public class UserService {
     }
 
     @Transactional
-    public User getUser(String username){
-        logger.debug("Finding user : "+username+" ... ");
+    public User getUser(String username) {
+        logger.debug("Finding user : " + username + " ... ");
         return userDAO.getUser(username);
 
     }
-    public List<Role> getRoles(){
+
+    public List<Role> getRoles() {
         return userDAO.getRoles();
     }
-    public  boolean login(String username,String password){
+
+    public boolean login(String username, String password) {
         boolean success = false;
         User user = getUser(username);
-        if(user != null && password.equalsIgnoreCase(user.getPassword())){
+        if (user != null && password.equalsIgnoreCase(user.getPassword())) {
             success = true;
         }
-     return success;
+        return success;
     }
+
     public List<User> getUsersByAssembly(long assemblyId) {
         return getUserDAO().getUsersByAssembly(assemblyId);
     }
+
     @Transactional(readOnly = false)
     public void saveUser(User user) {
         getUserDAO().saveUser(user);
     }
-    public boolean checkUserNameExists(User user){
+
+    public boolean checkUserNameExists(User user) {
         return getUserDAO().checkUserNameExists(user);
     }
-    public Role getRoleById(Long id){
+
+    public Role getRoleById(Long id) {
         return userDAO.getRoleById(id);
     }
-    public UserRole getUserRoleById(Long id){
+
+    public UserRole getUserRoleById(Long id) {
         return userDAO.getUserRoleById(id);
     }
+
     @Transactional(readOnly = false)
-    public void deleteUserRole(UserRole userRole){
+    public void deleteUserRole(UserRole userRole) {
         userDAO.deleteUserRole(userRole);
     }
+
     @Transactional(readOnly = false)
     public void saveOrUpdateUserRole(UserRole userRole1) {
         userDAO.saveOrUpdateUserRole(userRole1);
     }
+
     @Transactional(readOnly = false)
     public void saveRole(Role role1) {
         userDAO.saveRole(role1);
     }
-    public List<User> getUsersByRole(za.org.rfm.utils.Role role){
+
+    public List<User> getUsersByRole(za.org.rfm.utils.Role role) {
         return userDAO.getUsersByRole(role);
     }
 
-    public User getApostle(){
+    public User getApostle() {
         List<User> users = getUsersByRole(za.org.rfm.utils.Role.Apostle);
-        if(!users.isEmpty()){
+        if (!users.isEmpty()) {
             return users.get(0);   //FIXME: make sure only one apostle exists in the system
         }
         return null;

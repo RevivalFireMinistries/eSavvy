@@ -10,6 +10,7 @@ import za.org.rfm.model.EventLog;
 import za.org.rfm.model.Member;
 import za.org.rfm.utils.DateRange;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -25,49 +26,62 @@ public class EventService {
     EventDAO eventDAO;
 
     @Transactional(readOnly = false)
-    public void saveEvent(Event event){
+    public void saveEvent(Event event) {
         eventDAO.saveEvent(event);
     }
 
     public List<Event> getEventsByAssembly(long assemblyid) {
         return eventDAO.getEventsByAssembly(assemblyid);
     }
+
     public List<Event> getEventsByAssemblyAndTypeAndDateRange(long assemblyid, String type, DateRange dateRange) {
         return eventDAO.getEventsByAssemblyAndTypeAndDateRange(assemblyid, type, dateRange);
     }
-    public List<Event> getEventsByTypeAndDateRange(String type,DateRange dateRange){
-        return eventDAO.getEventsByTypeAndDateRange(type,dateRange);
+
+    public List<Event> getEventsByTypeAndDateRange(String type, DateRange dateRange) {
+        return eventDAO.getEventsByTypeAndDateRange(type, dateRange);
     }
-    public List<Event> getEventsByDateAndType(String type, Date date){
-        return  eventDAO.getEventsByDateAndType(type,date);
+
+    public List<Event> getEventsByAssemblyAndTypeAndDate(long assemblyid, String type, Timestamp date) {
+        return eventDAO.getEventsByAssemblyAndTypeAndDate(assemblyid, type, date);
     }
+
+    public List<Event> getEventsByDateAndType(String type, Date date) {
+        return eventDAO.getEventsByDateAndType(type, date);
+    }
+
     public Event getEventById(long eventid) {
         return eventDAO.getEventById(eventid);
     }
+
     @Transactional(readOnly = false)
     public void saveEventLog(EventLog eventLog) {
-         eventDAO.saveEventLog(eventLog);
+        eventDAO.saveEventLog(eventLog);
     }
+
     @Transactional(readOnly = false)
     public void saveAssemblyFollowUp(EventFollowUp eventFollowUp) {
         eventDAO.saveAssemblyFollowUp(eventFollowUp);
-     }
-    public List<Event> getEventsByAssemblyAndType(String type,long assemblyid,int limit){
-        return  eventDAO.getEventsByAssemblyAndType(type,assemblyid,limit);
     }
-    public void generateFollowUpReport(Event event){
-      //first get each member's attribute
+
+    public List<Event> getEventsByAssemblyAndType(String type, long assemblyid, int limit) {
+        return eventDAO.getEventsByAssemblyAndType(type, assemblyid, limit);
     }
+
+    public void generateFollowUpReport(Event event) {
+        //first get each member's attribute
+    }
+
     public List<EventFollowUp> getEventFollowUpList(Event event) {
         return eventDAO.getEventFollowUpList(event);
     }
 
     public List<EventLog> getEventLogsByEventId(Long eventId) {
-        return  eventDAO.getEventLogsByEventId(eventId);
+        return eventDAO.getEventLogsByEventId(eventId);
     }
 
-    public List<EventLog> getEventLogsByMemberandDateRange(Member member,DateRange dateRange){
-        return eventDAO.getEventLogsByMemberandDateRange(member,dateRange);
+    public List<EventLog> getEventLogsByMemberandDateRange(Member member, DateRange dateRange) {
+        return eventDAO.getEventLogsByMemberandDateRange(member, dateRange);
     }
 
 }

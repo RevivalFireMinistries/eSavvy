@@ -22,10 +22,12 @@ public class ScheduleService {
 
     @Autowired
     ScheduleDAO scheduleDAO;
+
     @Transactional(readOnly = false)
-    public void saveEvent(RFMScheduleEvent event){
+    public void saveEvent(RFMScheduleEvent event) {
         scheduleDAO.saveEvent(event);
     }
+
     public List<RFMScheduleEvent> getEventsByAssembly(String assemblyid) {
         return scheduleDAO.getEventsByAssembly(assemblyid);
     }

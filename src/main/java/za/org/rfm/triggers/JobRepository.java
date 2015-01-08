@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import za.org.rfm.jobs.ApostolicMonthlyReport;
 import za.org.rfm.jobs.ApostolicWeeklyReport;
 import za.org.rfm.jobs.MemberInActivityChecker;
+import za.org.rfm.jobs.ReportReminder;
 
 import javax.annotation.PostConstruct;
 
@@ -22,6 +23,9 @@ public class JobRepository {
         try {
           JobDetail memberInActivityChecker = JobBuilder.newJob(MemberInActivityChecker.class)
                     .withIdentity("memberInActivityChecker")
+                    .build();
+            JobDetail reportReminder = JobBuilder.newJob(ReportReminder.class)
+                    .withIdentity("reportReminder")
                     .build();
             JobKey jobKeyA = new JobKey("ApostolicWeeklyReport", "apostolic");
             JobDetail apostolicWeekly = JobBuilder.newJob(ApostolicWeeklyReport.class)
@@ -51,13 +55,13 @@ public class JobRepository {
                     .newTrigger()
                     .withIdentity("everyTuesdayMidnight")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 20 0 ? * WED *"))
+                            CronScheduleBuilder.cronSchedule("0 0 0 ? * WED *"))
                     .build();
-            Trigger everyFiveMinutes = TriggerBuilder
+            Trigger everyMondayMidnight = TriggerBuilder
                     .newTrigger()
-                    .withIdentity("everyFiveMinutes")
+                    .withIdentity("everyMondayMidnight")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *"))
+                            CronScheduleBuilder.cronSchedule("0 59 23 ? * MON *"))
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
@@ -68,6 +72,7 @@ public class JobRepository {
             sch.scheduleJob(memberInActivityChecker, everyDayMidnight);
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
+            sch.scheduleJob(reportReminder,everyMondayMidnight);
         } catch (Exception e) {
             e.printStackTrace();
         }

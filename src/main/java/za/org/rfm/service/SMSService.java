@@ -24,8 +24,9 @@ public class SMSService {
     public void setSmsDAO(SMSDAO smsDAO) {
         this.smsDAO = smsDAO;
     }
+
     @Transactional(readOnly = false)
-    public void saveSMSLog(SMSLog smsLog){
+    public void saveSMSLog(SMSLog smsLog) {
         getSmsDAO().saveSMSLog(smsLog);
     }
 }

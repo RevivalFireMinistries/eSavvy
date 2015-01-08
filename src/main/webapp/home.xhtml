@@ -8,6 +8,64 @@
 
         <h3>Welcome <span style="font-family: Helvetica; font-style: italic">#{loginBean.user.fullname}</span></h3>
         <p:tabView dynamic="true" cache="true">
+            <p:tab title="Perfomance DashBoard">
+
+                <h:form id="myform">
+                    <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestAttendance}" sortOrder="descending">
+                        <f:facet name="header">
+                            Assembly Perfomance - Latest Attendance Stats
+                        </f:facet>
+                        <p:column headerText="#">
+                            #{rowIndex+1}
+                        </p:column>
+                        <p:column headerText="Assembly" >
+                            <h:outputText value="#{as.name}" />
+                        </p:column>
+
+                        <p:column headerText="Attendance" sortBy="#{as.latestAttendance}">
+                            <h:outputText value="#{as.latestAttendance}" />
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestTithe}" sortOrder="descending">
+                        <f:facet name="header">
+                            Assembly Perfomance - Latest Tithe
+                        </f:facet>
+                        <p:column headerText="#">
+                            #{rowIndex+1}
+                        </p:column>
+                        <p:column headerText="Assembly" >
+                            <h:outputText value="#{as.name}" />
+                        </p:column>
+
+                        <p:column headerText="Tithe" sortBy="#{as.latestTithe}">
+                            <h:outputText value="#{as.latestTithe}" />
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestOffering}" sortOrder="descending">
+                        <f:facet name="header">
+                            Assembly Perfomance - Latest Offering
+                        </f:facet>
+                        <p:column headerText="#">
+                            #{rowIndex+1}
+                        </p:column>
+                        <p:column headerText="Assembly" >
+                            <h:outputText value="#{as.name}" />
+                        </p:column>
+
+                        <p:column headerText="Offering" sortBy="#{as.latestOffering}">
+                            <h:outputText value="#{as.latestOffering}" />
+                        </p:column>
+
+                    </p:dataTable>
+                </h:form>
+
+
+
+
+            </p:tab>
+
             <p:tab title="Bulletin">
                 <h:panelGrid columns="2" cellpadding="10">
                     <h:form>
@@ -41,63 +99,6 @@
                 </h:panelGrid>
             </p:tab>
 
-            <p:tab title="Perfomance DashBoard">
-
-                        <h:form id="myform">
-                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestAttendance}" sortOrder="descending">
-                                <f:facet name="header">
-                                    Assembly Perfomance - Latest Attendance Stats
-                                </f:facet>
-                                <p:column headerText="#">
-                                    #{rowIndex+1}
-                                </p:column>
-                                <p:column headerText="Assembly" >
-                                    <h:outputText value="#{as.name}" />
-                                </p:column>
-
-                                <p:column headerText="Attendance" sortBy="#{as.latestAttendance}">
-                                    <h:outputText value="#{as.latestAttendance}" />
-                                </p:column>
-
-                            </p:dataTable>
-                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestTithe}" sortOrder="descending">
-                                <f:facet name="header">
-                                    Assembly Perfomance - Latest Tithe
-                                </f:facet>
-                                <p:column headerText="#">
-                                    #{rowIndex+1}
-                                </p:column>
-                                <p:column headerText="Assembly" >
-                                    <h:outputText value="#{as.name}" />
-                                </p:column>
-
-                                <p:column headerText="Tithe" sortBy="#{as.latestTithe}">
-                                    <h:outputText value="#{as.latestTithe}" />
-                                </p:column>
-
-                            </p:dataTable>
-                            <p:dataTable var="as" value="#{homeBean.assemblyList}" rowIndexVar="rowIndex" style="margin-bottom:40px" sortBy="#{as.latestOffering}" sortOrder="descending">
-                                <f:facet name="header">
-                                    Assembly Perfomance - Latest Offering
-                                </f:facet>
-                                <p:column headerText="#">
-                                    #{rowIndex+1}
-                                </p:column>
-                                <p:column headerText="Assembly" >
-                                    <h:outputText value="#{as.name}" />
-                                </p:column>
-
-                                <p:column headerText="Offering" sortBy="#{as.latestOffering}">
-                                    <h:outputText value="#{as.latestOffering}" />
-                                </p:column>
-
-                            </p:dataTable>
-                        </h:form>
-
-
-
-
-            </p:tab>
 
             <p:tab title="Calendar">
                 <h:form>

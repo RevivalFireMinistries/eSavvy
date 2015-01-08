@@ -28,19 +28,24 @@ public class SystemVarService {
     public void setSystemVarDAO(SystemVarDAO systemVarDAO) {
         this.systemVarDAO = systemVarDAO;
     }
+
     @Transactional(readOnly = false)
-    public void saveSystemVar(SystemVar vars){
+    public void saveSystemVar(SystemVar vars) {
         systemVarDAO.saveSystemVar(vars);
     }
+
     public List<SystemVar> getSystemVarByName(String name) {
         return systemVarDAO.getSystemVarByName(name);
     }
+
     public SystemVar getSystemVarByNameUnique(String name) {
         return systemVarDAO.getSystemVarByNameUnique(name);
     }
+
     public List<SystemVar> getAllVars() {
         return systemVarDAO.getAllVars();
     }
+
     public SystemVar getSystemVarById(Long id) {
         return systemVarDAO.getSystemVarById(id);
     }

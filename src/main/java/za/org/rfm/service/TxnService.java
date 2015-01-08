@@ -32,23 +32,23 @@ public class TxnService {
     }
 
     @Transactional(readOnly = false)
-    public void saveTxn(Transaction txn){
-       getTxnDAO().saveTxn(txn);
-        System.out.println("txn saved..."+txn.getTransactionid());
+    public void saveTxn(Transaction txn) {
+        getTxnDAO().saveTxn(txn);
+        System.out.println("txn saved..." + txn.getTransactionid());
     }
 
-    public List<Transaction> getTithesByMemberAndDateRange(Member member, DateRange dateRange){
-        return getTxnDAO().getTithesByMemberAndDateRange(member,dateRange);
+    public List<Transaction> getTithesByMemberAndDateRange(Member member, DateRange dateRange) {
+        return getTxnDAO().getTithesByMemberAndDateRange(member, dateRange);
     }
 
-    public void processTithe(Tithe tithe){
+    public void processTithe(Tithe tithe) {
         System.out.println("---now processing tithe txn...");
         //txn to db first
         saveTxn(new Transaction(tithe));
         //Now create and send an sms
-        String sms = "RFM: Hi "+tithe.getMember().getFirstName()+", Your tithe payment of "+ Utils.moneyFormatter(tithe.getAmount(),tithe.getMember().getAssembly().getLocaleObject())+" made on "+ Utils.dateFormatter(tithe.getTxnDate())+" has been received.Thank you & Stay Blessed!For more info visit www.rfm.org.za.";
-        System.out.println("...sending sms..."+sms);
-        tithe.getMember().sendSMS(sms,true);
+        String sms = "RFM: Hi " + tithe.getMember().getFirstName() + ", Your tithe payment of " + Utils.moneyFormatter(tithe.getAmount(), tithe.getMember().getAssembly().getLocaleObject()) + " made on " + Utils.dateFormatter(tithe.getTxnDate()) + " has been received.Thank you & Stay Blessed!For more info visit www.rfm.org.za.";
+        System.out.println("...sending sms..." + sms);
+        tithe.getMember().sendSMS(sms, true);
 
     }
 
