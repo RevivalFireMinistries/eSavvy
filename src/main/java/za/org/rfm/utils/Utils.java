@@ -61,15 +61,15 @@ public class Utils {
         return moneyString;
     }
     public static void capitaliseUser(User user){
-        user.setFirstName(capitaliseFirstLetter(user.getFirstName()));
-        user.setLastName(capitaliseFirstLetter(user.getLastName()));
+        user.setFirstName(convertToCamelCase(user.getFirstName()));
+        user.setLastName(convertToCamelCase(user.getLastName()));
     }
     public static void capitaliseMember(Member member){
-        member.setFirstName(capitaliseFirstLetter(member.getFirstName()));
-        member.setLastName(capitaliseFirstLetter(member.getLastName()));
+        member.setFirstName(convertToCamelCase(member.getFirstName()));
+        member.setLastName(convertToCamelCase(member.getLastName()));
     }
-    public static String capitaliseFirstLetter(String original){
-        return original.length() == 0 ? original : original.substring(0, 1).toUpperCase() + original.substring(1);
+    public static String convertToCamelCase(String original){
+        return original.length() == 0 ? original : original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
     }
     public static String dateFormatter(Date date){
         SimpleDateFormat ft =

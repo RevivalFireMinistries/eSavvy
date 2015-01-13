@@ -56,10 +56,8 @@ public class ReportReminder implements Job {
                 //please send a reminder
                 assembly.setUsers(assemblyService.getAssemblyUsers(assembly.getAssemblyid()));
                 for(User user : assembly.getUsers()){
-                    logger.debug("send email to "+user.getEmail());
-                    if(user.getEmail().equalsIgnoreCase("russel@rfm.org.za")){
-                        emailService.sendNotification(user,resourceBundle.getString("email.subject.report.reminder"),resourceBundle.getString("email.body.report.reminder"));
-                    }
+                    logger.info("send email to "+user.getEmail());
+                    emailService.sendNotification(user,resourceBundle.getString("email.subject.report.reminder"),resourceBundle.getString("email.body.report.reminder"));
                 }
 
             }
