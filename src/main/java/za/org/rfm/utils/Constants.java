@@ -47,10 +47,10 @@ public class Constants {
     public static final String MEMBER_TYPE_GUEST = "Guest";
     public static final String MEMBER_TYPE_FULL_TIME = "Full Time";
 
-    public static final String SERVICE_TYPE_SUNDAY = "Sunday Service";
+    public static final String SERVICE_TYPE_SUNDAY = "Sunday";
     public static final String REPORT_TEMPLATE_FINANCE = "Finance";
     public static final String REPORT_TEMPLATE_SERVICE = "Service";
-    public static final String SERVICE_TYPE_MIDWEEK = "Midweek Service";
+    public static final String SERVICE_TYPE_MIDWEEK = "Midweek";
     public static final String ASSEMBLY_RANKING_SORT_CRITERIA_ATTENDANCE = "Attendance";
     public static final String ASSEMBLY_RANKING_SORT_CRITERIA_TITHE = "Tithe";
     public static final String ASSEMBLY_RANKING_SORT_CRITERIA_OFFERING = "Offering";

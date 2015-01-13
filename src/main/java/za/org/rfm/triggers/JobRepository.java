@@ -55,14 +55,12 @@ public class JobRepository {
                     .newTrigger()
                     .withIdentity("everyTuesdayMidnight")
                     .withSchedule(
-                            //CronScheduleBuilder.cronSchedule("0 0 0 ? * WED *"))
-                            CronScheduleBuilder.cronSchedule("0 0 9 ? * TUE *"))  //TODO:need to revert to midnight
-                                    .build();
+                            CronScheduleBuilder.cronSchedule("0 0 0 ? * WED *"))
+                    .build();
             Trigger everyMondayMidnight = TriggerBuilder
                     .newTrigger()
                     .withIdentity("everyMondayMidnight")
-                    .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 59 23 ? * MON *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * MON *"))
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
