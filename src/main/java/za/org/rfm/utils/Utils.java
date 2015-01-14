@@ -6,9 +6,13 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import za.org.rfm.beans.Tithe;
 import za.org.rfm.model.*;
+import za.org.rfm.service.SystemVarService;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.BufferedReader;
@@ -26,7 +30,16 @@ import java.util.*;
  * Date: 2013/12/14
  * Time: 12:14 AM
  */
+@Component
 public class Utils {
+
+    private static SystemVarService systemVarService;
+    @Autowired
+    private SystemVarService tmpSystemVarService;
+    @PostConstruct
+    public void init() {
+        systemVarService  = tmpSystemVarService;
+    }
 
     public static Logger logger = Logger.getLogger(Utils.class);
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle("locale.messages_en_ZA", Locale.getDefault());
@@ -195,11 +208,27 @@ public class Utils {
         LocalDate lastSunday = calcNextDay(LocalDate.fromDateFields(date), DateTimeConstants.SUNDAY);
         return lastSunday.toDate();
     }
-    public static boolean sendSMS(String phone, String message,boolean test){
-        if(test)
+    public static String getWinSMSVariable(String var){
+        SystemVar value = systemVarService.getSystemVarByNameUnique(var);
+        if(value != null){
+            return value.getValue();
+        }
+        return null;
+    }
+    public static boolean sendSMS(String phone, String message,boolean enabled){
+        if(!enabled){
+            logger.info("exit since sms is not enabled");
             return true;
+        }
+
         try {
-            String urlstring = "http://www.winsms.co.za/api/batchmessage.asp?user="+ Constants.WINSMS_USERNAME+"&password="+ Constants.WINSMS_PASSWORD+"&message=" +
+            String winsmsUserName = getWinSMSVariable(Constants.WINSMS_USERNAME);
+            String winsmsPassword = getWinSMSVariable(Constants.WINSMS_PASSWORD);
+            if(winsmsUserName == null || winsmsPassword == null){
+                logger.error("Failed to get winsms credentials...sms sending failed!");
+                return false;
+            }
+            String urlstring = "http://www.winsms.co.za/api/batchmessage.asp?User="+winsmsUserName+"&Password="+winsmsPassword+"&message=" +
                     message+"&Numbers="+phone+";";
             URL url = new URL(urlstring);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
@@ -211,17 +240,23 @@ public class Utils {
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     wincon.getInputStream()));
             String inputLine;
-            int x = 0;
+
+            Thread.sleep(4000);
             while ((inputLine = in.readLine()) != null) {
                 logger.info("Response : "+inputLine);
-                x++;
+                if("FAIL".toLowerCase().contains(inputLine.toLowerCase())){
+                    return false;
+                }
             }
             in.close();
             logger.info("Done!");
-            //now check for failure
+           /* //now check for failure
+            if(inputLine == null){
+                Thread.sleep(4000); //pause again
+            }
             if("FAIL".toLowerCase().contains(inputLine.toLowerCase())){
                 return false;
-            }
+            }*/
             return true;
         } catch (Exception e) {
             e.printStackTrace();

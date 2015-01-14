@@ -324,50 +324,54 @@ public class EmailService {
 
         try {
             assembly.setUsers(assemblyService.getAssemblyUsers(assembly.getAssemblyid()));
-            User pastor = assembly.getUserWithRole(Role.Pastor);
-            if (pastor != null && pastor.getEmail() != null) {
+            List<User> users = assembly.getUsers();
+            for(User user : users){
 
-                if (members != null && !members.isEmpty()) {
-                    //we have something to report on - @ least
-                    String subjectLine = "";
-                    if (Constants.MEMBERS_INACTIVE.equalsIgnoreCase(inActivityStatus)) {
-                        subjectLine = getResource("email.subject.activity.report.backslide", assembly.getName(), Utils.dateFormatter(new Date()));
+               if (user != null && user.getEmail() != null) {
+
+                    if (members != null && !members.isEmpty()) {
+                        //we have something to report on - @ least
+                        String subjectLine = "";
+                        if (Constants.MEMBERS_INACTIVE.equalsIgnoreCase(inActivityStatus)) {
+                            subjectLine = getResource("email.subject.activity.report.backslide", assembly.getName(), Utils.dateFormatter(new Date()));
+                        } else {
+                            subjectLine = getResource("email.subject.activity.report.rejuvenated", assembly.getName(), Utils.dateFormatter(new Date()));
+                        }
+                        String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                        String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+
+                        final Context ctx = new Context(Locale.ENGLISH);
+
+                        ctx.setVariable("eSavvyLink", eSavvyLink);
+                        ctx.setVariable("churchName", churchName);
+                        ctx.setVariable("name", user.getFullname());
+                        ctx.setVariable("people", members);
+                        ctx.setVariable("header", subjectLine);
+
+
+                        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                        ctx.setVariable("header", subjectLine);
+                        message.setFrom(getResource("email.system.from"));
+                        message.setTo(user.getEmail());
+                        message.setSubject(subjectLine);
+                        // Create the HTML body using Thymeleaf
+                        final String htmlContent = this.templateEngine.process("../email/activity-report", ctx);
+                        message.setText(htmlContent, true); // true = isHtml
+
+                        logger.debug("Email setup complete...now send!");
+                        // Send mail
+                        this.mailSender.send(mimeMessage);
+                        logger.debug("Email sent!");
+
                     } else {
-                        subjectLine = getResource("email.subject.activity.report.rejuvenated", assembly.getName(), Utils.dateFormatter(new Date()));
+                        logger.error("No events found for the specified criteria...abort!");
                     }
-                    String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
-                    String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
-
-                    final Context ctx = new Context(Locale.ENGLISH);
-
-                    ctx.setVariable("eSavvyLink", eSavvyLink);
-                    ctx.setVariable("churchName", churchName);
-                    ctx.setVariable("name", pastor.getFullname());
-                    ctx.setVariable("people", members);
-                    ctx.setVariable("header", subjectLine);
-
-
-                    final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-                    final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
-                    ctx.setVariable("header", subjectLine);
-                    message.setFrom(getResource("email.system.from"));
-                    message.setTo(pastor.getEmail());
-                    message.setSubject(subjectLine);
-                    // Create the HTML body using Thymeleaf
-                    final String htmlContent = this.templateEngine.process("../email/activity-report", ctx);
-                    message.setText(htmlContent, true); // true = isHtml
-
-                    logger.debug("Email setup complete...now send!");
-                    // Send mail
-                    this.mailSender.send(mimeMessage);
-                    logger.debug("Email sent!");
-
                 } else {
-                    logger.error("No events found for the specified criteria...abort!");
+                    logger.error("No Pastor found for this assembly or email is invalid...abort!");
                 }
-            } else {
-                logger.error("No Pastor found for this assembly or email is invalid...abort!");
             }
+
         } catch (MessagingException e) {
             e.printStackTrace();
             logger.error("Email sending error: " + e.getMessage());

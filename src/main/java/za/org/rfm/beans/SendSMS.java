@@ -307,8 +307,13 @@ public class SendSMS {
         setProgress(0);
         int size = getSelectedMembers().size();
         int divisor = 100/size;
+        SystemVar val = systemVarService.getSystemVarByNameUnique(Constants.SMS_ENABLED);
+        Boolean sendSMS = false;
+        if(val != null){
+            sendSMS = Boolean.valueOf(val.getValue());
+        }
         for(Member member: getSelectedMembers()){
-          smsService.saveSMSLog(member.sendSMS(getSms(),false));
+          smsService.saveSMSLog(member.sendSMS(getSms(),sendSMS));
             this.progress = this.progress + divisor;
         }
         logger.debug("SMS sending completed!");

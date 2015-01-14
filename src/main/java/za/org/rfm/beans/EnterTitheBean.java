@@ -179,9 +179,16 @@ public class EnterTitheBean {
     }
     public void submitAll(){
         int size = titheList.size();
-        for(Tithe tithe: titheList){
-            txnService.processTithe(tithe);
-            //create txn object and save to db
+        for(final Tithe tithe: titheList){
+            //FIXME: spawn a thread for each txn to avoid making the user to wait
+            Thread titheThread = new Thread(){
+                @Override
+                public void run() {
+                    //create txn object and save to db
+                    txnService.processTithe(tithe);
+                }
+            };
+            titheThread.start();
 
         }
         titheList.clear();

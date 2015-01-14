@@ -15,7 +15,7 @@ public class Constants {
     public static final String STATUS_NEEDS_FOLLOW_UP = "Needs Follow UP";
     public static final String STATUS_DELETED = "Deleted";
     public static final String STATUS_SENT = "Sent";
-    public static final String STATUS_FAILED = "Failed";
+    public static final String STATUS_FAILED = "Failed to Send";
     public static final String STATUS_ALL = "ALL";
     public static final String FOLLOW_UP_STATUS_COMING = "Coming";
     public static final String FOLLOW_UP_STATUS_AT_WORK = "Busy at Work";
@@ -57,8 +57,8 @@ public class Constants {
 
 
 
-    public static final String WINSMS_USERNAME = "churchmanager";
-    public static final String WINSMS_PASSWORD = "password85";
+    public static final String WINSMS_USERNAME = "WINSMS USERNAME";
+    public static final String WINSMS_PASSWORD = "WINSMS PASSWORD";
 
     //roles
     public static final String USER_ROLE_PASTOR = "Pastor";
@@ -76,6 +76,7 @@ public class Constants {
     public static final String NUMBER_OF_WEEKS_TO_RENDER_INACTIVE = "NUMBER OF WEEKS TO RENDER INACTIVE";
     public static final  String MEMBERS_INACTIVE = "No Longer Active";
     public static final  String MEMBERS_ACTIVE_AGAIN = "Active AGAIN";
+    public static final  String SMS_ENABLED = "SMS Enabled";
     public static String[]roles = {USER_ROLE_ADMINISTRATOR,USER_ROLE_PASTOR,USER_ROLE_SUPER_ADMIN};
     public static String[]followUpStates = {FOLLOW_UP_STATUS_BUSY,FOLLOW_UP_STATUS_NO_RESPONSE,FOLLOW_UP_STATUS_AT_WORK,FOLLOW_UP_STATUS_COMING,FOLLOW_UP_STATUS_FACING_CHALLENGES,FOLLOW_UP_STATUS_NOT_FEELING_WELL,FOLLOW_UP_STATUS_PHONE_UNREACHABLE,FOLLOW_UP_STATUS_TRANSPORT_PROBLEM};
 
