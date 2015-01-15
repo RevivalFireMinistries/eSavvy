@@ -17,6 +17,7 @@ import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class ApostolicWeeklyReport implements Job {
 
        List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
         for(Assembly a : assemblyList){
-             List<Event> events = eventService.getEventsByAssemblyAndTypeAndDateRange(a.getAssemblyid(),Constants.SERVICE_TYPE_SUNDAY,new DateRange(Utils.calcLastSunday(new Date()),Utils.calcLastSunday(new Date())));
+             List<Event> events = eventService.getEventsByAssemblyAndTypeAndDate(a.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
             if(events != null && !events.isEmpty()){
                 Event event = events.get(0);
                 a.setLatestAttendance(event.getAttendance());

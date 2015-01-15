@@ -1,6 +1,7 @@
 package za.org.rfm.dao;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -37,9 +38,11 @@ public class MemberDAO {
 
 
     public List<Member> getMembersByAssembly(long assemblyid) {
-        Query query = sessionFactory.getCurrentSession().createQuery("from Member where assembly =:assemblyid and status !=:status");
-        query.setLong("assemblyid",assemblyid);
-        query.setString("status",Constants.STATUS_DELETED);
+        //Query query = sessionFactory.getCurrentSession().createQuery("from Member where assembly =:assemblyid and status !=:status");
+        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery("SELECT * from rfm_member where assembly = :assemblyId");
+        query.addEntity(Member.class);
+        query.setParameter("assemblyId", assemblyid);
+        //query.setString("status",Constants.STATUS_DELETED);
         List<Member> memberList = (List<Member>)query.list();
         return memberList;
     }
