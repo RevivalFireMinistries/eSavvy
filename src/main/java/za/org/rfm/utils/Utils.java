@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,6 +54,14 @@ public class Utils {
         List<String> genders = Arrays.asList(Constants.GENDER_MALE,
                 Constants.GENDER_FEMALE);
         return genders;
+    }
+
+    public static double getTxnTotal(List<Transaction> transactionList){
+        double total = 0.0;
+        for(Transaction transaction : transactionList){
+            total =+ transaction.getAmount();
+        }
+        return total;
     }
     public static void setAssemblyRankingSortCriteria(List<Assembly> assemblyList,String criteria){
         for(Assembly assembly : assemblyList){
@@ -295,6 +304,38 @@ public class Utils {
         FacesMessage msg =  null;
         if(severity != null){
           msg =  new FacesMessage(severity,message,null);
+        }else{
+            msg =  new FacesMessage(message);
+        }
+
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
+    }
+    public static String[] getMonthsOfTheYear(){
+        String[] months = new DateFormatSymbols().getMonths();
+        return months;
+    }
+
+  public static DateRange getMonthDateRange(int month){
+      DateRange dateRange = new DateRange();
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(Calendar.MONTH,month);
+      calendar.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+      calendar.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().getActualMinimum(Calendar.HOUR_OF_DAY));
+      dateRange.setStartDate(calendar.getTime());
+
+      calendar.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
+      dateRange.setEndDate(calendar.getTime());
+
+      return dateRange;
+
+    }
+
+    public static void addFacesMessage( String summary,String message,FacesMessage.Severity severity){
+        FacesMessage msg =  null;
+        if(severity != null){
+            msg =  new FacesMessage(severity,summary,message);
         }else{
             msg =  new FacesMessage(message);
         }

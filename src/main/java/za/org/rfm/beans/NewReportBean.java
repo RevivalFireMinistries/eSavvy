@@ -146,10 +146,10 @@ public class NewReportBean {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please mark the followUp!",null));
                 return event.getOldStep();
             }
-            if(getSelectedMembers().size() != this.getEvent().getAttendance()){
+            if(getSelectedMembers().size() != this.getEvent().getAttendance()+ this.getEvent().getGuests()){
                 logger.debug("The attendance figures do not correspond to total in ticked in the register!");
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Total entered in attendance "+getEvent().getAttendance()+" doesn't correspond to total captured in registered "+getSelectedMembers().size(),null));
-                return event.getOldStep();
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"Total entered in attendance "+getEvent().getAttendance()+" doesn't correspond to total captured in registered "+getSelectedMembers().size(),null));
+                return event.getNewStep();
             }
         }
         if(skip) {
@@ -176,9 +176,12 @@ public class NewReportBean {
             }
             logger.debug(eventLogs.size()+" Event Log objs created...");
             getEvent().setEventLogList(eventLogs);
-            eventService.saveEvent(getEvent());
+            //Now prepare follow up report
+            createFollowUpReport();
 
+            eventService.saveEvent(getEvent());
             //Now send an email to pastoral! - but spawn a new thread to separate execution
+            updateMemberLastServiceAttended();
             Thread emailThread = new Thread(){
                 @Override
                 public void run() {
@@ -198,6 +201,13 @@ public class NewReportBean {
         }
     }
 
+    private void updateMemberLastServiceAttended() {
+        for(Member member : getSelectedMembers()){
+            member.setDateLastAtChurch(getEventDate());
+            memberService.saveMember(member);
+        }
+    }
+
     public MemberService getMemberService() {
         return memberService;
     }
@@ -206,6 +216,37 @@ public class NewReportBean {
         this.memberService = memberService;
     }
 
+    public void createFollowUpReport(){
+        List<EventFollowUp> eventFollowUpList;
+        //load absent members for this event
+        List<Member> allMembers = memberService.getMembersByAssembly(event.getAssembly().getAssemblyid());
+        List<Member> presentMembers = getSelectedMembers();
+        if(allMembers.removeAll(presentMembers) && !event.isFollowUp()){
+            //it means they are some absent members
+            EventFollowUp eventFollowUp;
+            eventFollowUpList = new ArrayList<EventFollowUp>();
+            for(Member member : allMembers){
+                eventFollowUp = new EventFollowUp();
+                eventFollowUp.setMember(member);
+                eventFollowUp.setEvent(event);
+                eventFollowUpList.add(eventFollowUp);
+            }
+            event.setEventFollowUpList(eventFollowUpList);
+        }else{
+            return;
+        }
+        logger.debug("New follow up report has been created");
 
+    }
+
+    private List<Member> getMembersFromEventLogs(Event event){
+        List<Member> presentMembers = new ArrayList<Member>();
+        List<EventLog> eventLogs = eventService.getEventLogsByEventId(event.getId());
+        logger.debug("Found "+eventLogs.size()+" event logs for this event "+event.getId());
+        for(EventLog eventLog: eventLogs){
+            presentMembers.add(eventLog.getMember());
+        }
+        return presentMembers;
+    }
 
 }

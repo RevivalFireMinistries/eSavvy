@@ -102,11 +102,11 @@
                 </p:column>
                 <p:column filterBy="#{fup.member.status}">
                     <f:facet name="header">
-                        <h:outputText value="Date Last Seen"/>
+                        <h:outputText value="Date Last At Church"/>
                     </f:facet>
                     <p:cellEditor>
                         <f:facet name="output">
-                            <h:outputText value="#{member.status}"/>
+                            <h:outputText value="#{fup.member.dateLastAtChurch}"/>
                         </f:facet>
                         <f:facet name="input">
                             <p:inputText value="#{fup.member.status}" style="width:96%"/>
@@ -139,7 +139,7 @@
                         </f:facet>
                         <f:facet name="input">
                             <p:selectOneMenu id="actions" value="#{fup.action}"  editable="true">
-                                <f:selectItem itemLabel="Select One" itemValue="" />
+                              <!--  <f:selectItem itemLabel="Select One" itemValue="" />-->
                                 <f:selectItems value="#{followUpBean.followUpActions}" />
                             </p:selectOneMenu>
 
@@ -150,8 +150,8 @@
                     <p:toolbar rendered="#{!followUpBean.event.followUp}">
                         <p:toolbarGroup align="center" style="width: 350px" >
 
-                            <p:commandButton type="button" value="Cancel Report" icon="ui-icon-menuItem" onclick="history.back()"/>
-                            <p:separator />
+                         <!--   <p:commandButton type="button" value="Cancel Report" icon="ui-icon-menuItem" onclick="history.back()"/>
+                            <p:separator />-->
                             <p:commandButton value="Save Report" actionListener="#{followUpBean.saveReport}"  onclick="return confirm('Are you sure you want to save this follow up report?')" />
                             <p:separator />
                             <p:commandButton value="Reset Follow Up Report" actionListener="#{followUpBean.createFollowUpReport(followUpBean.event)}"  onclick="return confirm('Are you sure you want to RESET the follow up report?')" />

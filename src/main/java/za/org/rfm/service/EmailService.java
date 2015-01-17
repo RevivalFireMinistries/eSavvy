@@ -274,8 +274,18 @@ public class EmailService {
 
         try {
             event.getAssembly().setUsers(assemblyService.getAssemblyUsers(event.getAssembly().getAssemblyid()));
-            User pastor = event.getAssembly().getUserWithRole(Role.Pastor);
-            if (pastor != null && pastor.getEmail() != null) {
+            List<User> userList = event.getAssembly().getUsers(); //send an email to every user under this assembly
+            if (userList.isEmpty()) {
+                logger.error("No users set for this assembly...can't send email " + event.getAssembly().getName());
+                return;
+            }
+
+            for (User user : userList) {
+
+                if(user.getEmail() == null || user.getEmail().isEmpty()){
+                    logger.error("Invalid/non existent email address for user : "+user.getFullname());
+                    continue;
+                }
 
                 if (eventFollowUpList != null && !eventFollowUpList.isEmpty()) {
                     //we have something to report on - @ least
@@ -287,7 +297,7 @@ public class EmailService {
 
                     ctx.setVariable("eSavvyLink", eSavvyLink);
                     ctx.setVariable("churchName", churchName);
-                    ctx.setVariable("name", pastor.getFullname());
+                    ctx.setVariable("name", user.getFullname());
                     ctx.setVariable("people", eventFollowUpList);
                     ctx.setVariable("header", getResource("email.subject.follow.up.report", event.getAssembly().getName(), date));
 
@@ -297,7 +307,7 @@ public class EmailService {
                     ctx.setVariable("header", getResource("email.subject.follow.up.report", event.getAssembly().getName(), date));
                     message.setSubject(getResource("email.subject.follow.up.report", event.getAssembly().getName(), date));
                     message.setFrom(getResource("email.system.from"));
-                    message.setTo(pastor.getEmail());
+                    message.setTo(user.getEmail());
 
                     // Create the HTML body using Thymeleaf
                     final String htmlContent = this.templateEngine.process("../email/follow-up-report", ctx);
@@ -311,8 +321,6 @@ public class EmailService {
                 } else {
                     logger.error("No events found for the specified criteria...abort!");
                 }
-            } else {
-                logger.error("No Pastor found for this assembly or email is invalid...abort!");
             }
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -372,6 +380,53 @@ public class EmailService {
                 }
             }
 
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            logger.error("Email sending error: " + e.getMessage());
+        }
+    }
+    public void pastoralFollowUpReport(List<EventFollowUp> eventFollowUpList,Event event) {
+
+        try {           User pastor = event.getAssembly().getUserWithRole(Role.Pastor);
+
+              if (pastor != null && pastor.getEmail() != null) {
+
+                    if (eventFollowUpList != null && !eventFollowUpList.isEmpty()) {
+                        //we have something to report on - @ least
+                        String subjectLine = "Members referred to you for your attention";
+                        String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                        String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+
+                        final Context ctx = new Context(Locale.ENGLISH);
+
+                        ctx.setVariable("eSavvyLink", eSavvyLink);
+                        ctx.setVariable("churchName", churchName);
+                        ctx.setVariable("name", pastor.getFullname());
+                        ctx.setVariable("people", eventFollowUpList);
+                        ctx.setVariable("header", subjectLine);
+
+
+                        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                        ctx.setVariable("header", subjectLine);
+                        message.setFrom(getResource("email.system.from"));
+                        message.setTo(pastor.getEmail());
+                        message.setSubject(subjectLine);
+                        // Create the HTML body using Thymeleaf
+                        final String htmlContent = this.templateEngine.process("../email/pastor-follow-up-report", ctx);
+                        message.setText(htmlContent, true); // true = isHtml
+
+                        logger.debug("Email setup complete...now send!");
+                        // Send mail
+                        this.mailSender.send(mimeMessage);
+                        logger.debug("Email sent!");
+
+                    } else {
+                        logger.error("No events found for the specified criteria...abort!");
+                    }
+                } else {
+                    logger.error("No Pastor found for this assembly or email is invalid...abort!");
+                }
         } catch (MessagingException e) {
             e.printStackTrace();
             logger.error("Email sending error: " + e.getMessage());

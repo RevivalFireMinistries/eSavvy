@@ -5,10 +5,17 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import za.org.rfm.dto.MemberMonthlyTitheTotals;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Member;
+import za.org.rfm.model.Transaction;
 import za.org.rfm.model.User;
+import za.org.rfm.service.MemberService;
+import za.org.rfm.service.TxnService;
 import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +28,10 @@ public class AssemblyDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private TxnService txnService;
 
     public SessionFactory getSessionFactory() {
         return sessionFactory;
@@ -61,4 +72,22 @@ public class AssemblyDAO {
         query.setLong("id",id);
         return (List<User>)query.list();
     }
+
+    public List<MemberMonthlyTitheTotals> getMemberMonthlyTitheTotals(Long assemblyId) {
+        List<MemberMonthlyTitheTotals> memberMonthlyTitheTotalsList = new ArrayList<MemberMonthlyTitheTotals>();
+        List<Member> memberList = memberService.getMembersByAssembly(assemblyId);
+        MemberMonthlyTitheTotals mmt;
+        for(Member member : memberList){
+            mmt = new MemberMonthlyTitheTotals();
+            mmt.setMember(member);
+            for(int i=0;i<12;i++){
+                List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(member, Utils.getMonthDateRange(i));
+                mmt.getTotals()[i] = Utils.getTxnTotal(transactions);
+            }
+           memberMonthlyTitheTotalsList.add(mmt);
+        }
+
+        return memberMonthlyTitheTotalsList;
+    }
 }
+

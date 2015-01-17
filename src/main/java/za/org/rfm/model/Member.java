@@ -35,7 +35,7 @@ public class Member extends ChurchManagerEntity{
     @Column(name = "id", unique = true, nullable = false)
     public Long id;
     /*@XmlElement(name = "firstName", required = true, nillable = false)*/
-    public String firstName;
+    public String firstName,otherName;
     /*@XmlElement(name = "lastName", required = true, nillable = false)*/
     public String lastName,gender,phone,email,homeAddress,status,type;
     public Date dateCreated;
@@ -54,6 +54,7 @@ public class Member extends ChurchManagerEntity{
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "member")
     private Set<MemberGroup> memberGroupList;
     private transient String assemblyId;
+    private Date dateLastAtChurch;
 
     public transient List<Transaction> transactionList = new ArrayList<Transaction>();
 

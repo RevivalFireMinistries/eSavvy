@@ -62,13 +62,18 @@ public class JobRepository {
                     .withIdentity("everyMondayMidnight")
                     .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * MON *"))
                     .build();
+            Trigger everyFridayMidnight = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyFridayMidnight")
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * FRI *"))
+                    .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
             Scheduler sch = schFactory.getScheduler();
             sch.start();
 
             // Tell quartz to schedule the job using the trigger
-            sch.scheduleJob(memberInActivityChecker, everyDayMidnight);
+            sch.scheduleJob(memberInActivityChecker, everyFridayMidnight);
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);

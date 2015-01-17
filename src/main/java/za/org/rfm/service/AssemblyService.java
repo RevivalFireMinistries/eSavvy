@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.AssemblyDAO;
+import za.org.rfm.dto.MemberMonthlyTitheTotals;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.User;
 
@@ -40,5 +41,9 @@ public class AssemblyService {
 
     public List<User> getAssemblyUsers(Long id) {
         return assemblyDAO.getAssemblyUsers(id);
+    }
+
+    public List<MemberMonthlyTitheTotals> getMemberMonthlyTitheTotals(Long assemblyId){
+        return assemblyDAO.getMemberMonthlyTitheTotals(assemblyId);
     }
 }

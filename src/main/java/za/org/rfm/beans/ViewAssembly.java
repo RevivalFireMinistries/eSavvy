@@ -2,9 +2,12 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.SelectEvent;
+import za.org.rfm.dto.MemberMonthlyTitheTotals;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Transaction;
 import za.org.rfm.model.User;
 import za.org.rfm.service.AssemblyService;
+import za.org.rfm.service.TxnService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Utils;
 
@@ -30,6 +33,39 @@ public class ViewAssembly {
     List<User> userList;
     User selectedUser;
     List<User> filteredUsers;
+    List<MemberMonthlyTitheTotals> memberMonthlyTitheTotalsList;
+    MemberMonthlyTitheTotals selectedMemberMonthlyTitheTotals;
+    @ManagedProperty(value = "#{TxnService}")
+    TxnService txnService;
+
+    public TxnService getTxnService() {
+        return txnService;
+    }
+
+    public void onMemberTitheViewRowSelect(SelectEvent event){
+        List<Transaction> transactionList = txnService.getTithesByMemberAndDateRange(selectedMemberMonthlyTitheTotals.getMember(),null);
+        selectedMemberMonthlyTitheTotals.getMember().setTransactionList(transactionList);
+    }
+
+    public void setTxnService(TxnService txnService) {
+        this.txnService = txnService;
+    }
+
+    public MemberMonthlyTitheTotals getSelectedMemberMonthlyTitheTotals() {
+        return selectedMemberMonthlyTitheTotals;
+    }
+
+    public void setSelectedMemberMonthlyTitheTotals(MemberMonthlyTitheTotals selectedMemberMonthlyTitheTotals) {
+        this.selectedMemberMonthlyTitheTotals = selectedMemberMonthlyTitheTotals;
+    }
+
+    public List<MemberMonthlyTitheTotals> getMemberMonthlyTitheTotalsList() {
+        return memberMonthlyTitheTotalsList;
+    }
+
+    public void setMemberMonthlyTitheTotalsList(List<MemberMonthlyTitheTotals> memberMonthlyTitheTotalsList) {
+        this.memberMonthlyTitheTotalsList = memberMonthlyTitheTotalsList;
+    }
 
     public List<User> getFilteredUsers() {
         return filteredUsers;
@@ -97,6 +133,7 @@ public class ViewAssembly {
             System.out.println("user list..."+userList.size());
             logger.info("Assembly Loaded : " + assemblyService.getAssemblyById(Long.parseLong(assemblyId)).getName());
             setAssembly(assemblyService.getAssemblyById(Long.parseLong(assemblyId)));
+            memberMonthlyTitheTotalsList= assemblyService.getMemberMonthlyTitheTotals(Long.parseLong(assemblyId));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -26,8 +26,7 @@
                             </p:selectOneMenu>
                             <h:outputText value="Event  Date: " />
                             <p:calendar maxdate="#{newReportBean.maxDate}" required="true" value="#{newReportBean.eventDate}" id="date" showOn="button" />
-                            <h:outputText value="Skip to last: " />
-                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+
                         </h:panelGrid>
                     </p:panel>
                 </p:tab>
@@ -50,8 +49,7 @@
                                 <f:validateRequired />
                             </p:inputText>
 
-                            <h:outputText value="Skip to last: " />
-                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+
                         </h:panelGrid>
                     </p:panel>
                 </p:tab>
@@ -61,15 +59,18 @@
                         <h:messages errorClass="error"/>
 
                         <h:panelGrid columns="2" columnClasses="label, value">
-                            <h:outputText value="Attendance: " />
+                            <h:outputText value="Full Time Members in Attendance: " />
                             <p:inputText value="#{newReportBean.event.attendance}" required="true">
+                                <f:validateRequired />
+                            </p:inputText>
+                            <h:outputText value="Guests in Attendance: " />
+                            <p:inputText value="#{newReportBean.event.guests}" >
                                 <f:validateRequired />
                             </p:inputText>
 
                             <h:outputText value="Leader's comment: " />
                             <p:inputTextarea rows="6" cols="33" value="#{newReportBean.event.comment}" required="true"/>
-                            <h:outputText value="Skip to last: " />
-                            <h:selectBooleanCheckbox value="#{newReportBean.skip}" />
+
                         </h:panelGrid>
                     </p:panel>
                 </p:tab>

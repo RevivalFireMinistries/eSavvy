@@ -4,10 +4,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.MemberGroup;
-import za.org.rfm.model.SMSLog;
-import za.org.rfm.model.Transaction;
+import za.org.rfm.model.*;
+import za.org.rfm.service.EventService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.SMSService;
 import za.org.rfm.service.TxnService;
@@ -22,6 +20,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,10 +41,20 @@ public class ViewMemberBean {
     SMSService smsService;
     @ManagedProperty(value = "#{TxnService}")
     TxnService txnService;
+    @ManagedProperty(value = "#{EventService}")
+    EventService eventService;
     private DateRange dateRange;
     public boolean tithesEmpty;
     List<Group> target;
     List<MemberGroup> memberGroupList;
+
+    public EventService getEventService() {
+        return eventService;
+    }
+
+    public void setEventService(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     public List<MemberGroup> getMemberGroupList() {
         return memberGroupList;
@@ -127,6 +136,15 @@ public class ViewMemberBean {
     String fullName;
     Tithe tithe;
     List<Tithe> titheList = new ArrayList<Tithe>();
+    List<EventLog> attendanceList = new ArrayList<EventLog>();
+
+    public List<EventLog> getAttendanceList() {
+        return attendanceList;
+    }
+
+    public void setAttendanceList(List<EventLog> attendanceList) {
+        this.attendanceList = attendanceList;
+    }
 
     public List<Tithe> getTitheList() {
 
@@ -194,7 +212,13 @@ public class ViewMemberBean {
 
     public void saveMember(){
        memberService.saveMember(this.member);
-        Utils.addFacesMessage("Changes have been saved",FacesMessage.SEVERITY_INFO);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes have been saved", null));
+        logger.debug("Changes saved successfully");
+    }
+    public void saveMember(ActionEvent actionEvent){
+       memberService.saveMember(this.member);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes have been saved", null));
+        logger.debug("Changes saved successfully");
     }
 
     @PostConstruct
@@ -227,7 +251,7 @@ public class ViewMemberBean {
         logger.debug("Groups initialised - source :"+source.size()+" target : "+target.size());
         groups = new DualListModel<Group>(source, target);
     }
-    public void search() {
+    public void searchTxns() {
 
         List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(this.member, this.getDateRange());
         titheList.clear();
@@ -237,7 +261,11 @@ public class ViewMemberBean {
         Utils.addFacesMessage(transactions.size()+" results found ",FacesMessage.SEVERITY_INFO);
         setTithesEmpty(titheList.isEmpty());
     }
-    public void sendSMS(){
+
+    public void searchAttendanceRecords(){
+        attendanceList = eventService.getEventLogsByMemberandDateRange(getMember(),getDateRange());
+    }
+    public void sendSMS(ActionEvent event){
         SMSLog smsLog = getMember().sendSMS(getSms(), false);
         smsService.saveSMSLog(smsLog);
         Utils.addFacesMessage("SMS Status "+smsLog.getStatus(), FacesMessage.SEVERITY_INFO);
@@ -304,12 +332,12 @@ public class ViewMemberBean {
         return finalList;
     }
 
-    public void enterTithe(){
+    public void enterTithe(ActionEvent event){
         logger.debug("---now processing tithe---");
         getTithe().setMember(getMember());
         logger.debug("Tithe "+tithe.getMember().getFullName()+" amt "+tithe.getAmount()+" date "+tithe.getTxnDate());
         txnService.processTithe(getTithe());
-        Utils.addFacesMessage("Tithe entered succesfully",FacesMessage.SEVERITY_INFO);
+        Utils.addFacesMessage("Success","Tithe entered successfully",FacesMessage.SEVERITY_INFO);
     }
     private void initializeDateRange() {
 

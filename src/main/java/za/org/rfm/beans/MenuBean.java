@@ -133,14 +133,14 @@ public class MenuBean {
         //services mgt
         DefaultSubMenu services = null;
         if (Utils.isAuthorised(currentUser,Role.Administrator)) {
-            DefaultMenuItem newreport = new DefaultMenuItem("New Report");
+            DefaultMenuItem newreport = new DefaultMenuItem("New Service Report");
             newreport.setUrl("/services/newReport.faces");
             newreport.setIcon("ui-icon-home");
             services = new DefaultSubMenu("Services");
             services.addElement(newreport);
         }
         if (Utils.isAuthorised(currentUser,Role.Pastor)) {
-            DefaultMenuItem viewreports = new DefaultMenuItem("View Reports");
+            DefaultMenuItem viewreports = new DefaultMenuItem("View Service Reports");
             viewreports.setUrl("/services/viewReports.faces");
             viewreports.setIcon("ui-icon-home");
             if(services == null)

@@ -49,13 +49,13 @@
                 <p:column headerText="Assembly" sortBy="#{event.assembly.name}">
                     <h:outputText value="#{event.assembly.name}" />
                 </p:column>
-               <!-- <p:column headerText="View Full Report" >
+                <p:column headerText="View Full Report" >
 
                     <p:commandLink id="ajax555"   actionListener="#{viewReportsBean.addRegister(event)}" style="margin-right:20px;">
-                        <h:outputText value="[Follow UP Report]" />
+                        <h:outputText value="[Full Report]" />
                     </p:commandLink>
 
-            </p:column>-->
+            </p:column>
             </p:dataTable>
                 <p:dialog id="dialog" header="Event Detail" widgetVar="eventDialog" resizable="false"
                           showEffect="fade" hideEffect="explode" minHeight="500" minWidth="400">
@@ -106,10 +106,8 @@
                             </p:commandButton>
                             <p:commandButton type="button" value="Export as PDF" action="#{viewReportsBean.createPDF}" icon="ui-icon-document" />
 
-                            <p:commandButton type="button" value="Open" icon="ui-icon-folder-open"/>
 
-                            <p:commandButton type="button" title="Save" icon="ui-icon-disk"/>
-                            <p:commandButton type="button" title="Delete" icon="ui-icon-trash"/>
+
 
                         </p:toolbarGroup>
                     </p:toolbar>

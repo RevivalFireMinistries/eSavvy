@@ -59,7 +59,7 @@
 
 
                                    <h:messages errorClass="error" style="color:red; font-weight: bolder"/>
-                                   <p:dataTable id="members" var="member" value="#{smsBean.memberDataModel}" paginator="true"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                   <p:dataTable id="members" var="member" rows="10" value="#{smsBean.memberDataModel}" paginator="true"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                                 rowsPerPageTemplate="5,10,15,20"  selection="#{smsBean.selectedMembers}" >
 
                                        <f:facet name="header">
@@ -67,7 +67,7 @@
 
                                        </f:facet>
 
-                                       <p:column selectionMode="multiple" style="width:2%" />
+                                       <p:column selectionMode="multiple" style="width:10%" />
 
                                        <p:column headerText="Member's Name" style="width:25%">
                                            #{member.fullName}

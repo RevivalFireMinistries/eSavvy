@@ -40,10 +40,13 @@ public class TxnDAO {
         Account account = member.getAccount();
         if(account != null){
         Query query;
-        if(dateRange.getStartDate() == null && dateRange.getEndDate() == null){
-            query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account ");
+        if(dateRange == null){
+            query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account order by txndate desc");
+        }
+        else if(dateRange.getStartDate() == null && dateRange.getEndDate() == null){
+            query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account order by txndate desc");
         } else {
-         query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account and txndate between :startDate and :endDate");
+         query   = sessionFactory.getCurrentSession().createQuery("from Transaction where account = :account and txndate between :startDate and :endDate order by txndate desc");
             query.setDate("startDate",dateRange.getStartDate());
             query.setDate("endDate",dateRange.getEndDate());
         }

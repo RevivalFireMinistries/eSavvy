@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -35,5 +36,13 @@ public class UtilsTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testGetMonthDateRange(){
+        DateRange dateRange = Utils.getMonthDateRange(3);
+
+        System.out.println("start : "+dateRange.getStartDate());
+        System.out.println("end : "+dateRange.getEndDate());
     }
 }

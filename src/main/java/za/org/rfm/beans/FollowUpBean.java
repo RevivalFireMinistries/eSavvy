@@ -40,7 +40,7 @@ public class FollowUpBean extends SuperBean{
     List<EventFollowUp> eventFollowUpList;
     Event event;
     List<Member> smsList = new ArrayList<Member>();
-    List<Member> referredToPastor = new ArrayList<Member>();
+    List<EventFollowUp> referredToPastor = new ArrayList<EventFollowUp>();
 
     public EmailService getEmailService() {
         return emailService;
@@ -127,10 +127,8 @@ public class FollowUpBean extends SuperBean{
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String eventid = facesContext.getExternalContext().getRequestParameterMap().get("eventid");
         setEvent(eventService.getEventById(Long.parseLong(eventid)));
-        if(event.isFollowUp()){
-            //follow up was done already
-            setEventFollowUpList(eventService.getEventFollowUpList(event));
-        }
+        setEventFollowUpList(eventService.getEventFollowUpList(event));
+
     }
     public void handleChange(){
           logger.debug("Now refreshing actions...");
@@ -178,19 +176,22 @@ public class FollowUpBean extends SuperBean{
             if (Constants.ACTION_SEND_MOTIVATIONAL_SMS.equalsIgnoreCase(action)) {
                 smsList.add(eventFollowUp.getMember());
             } else if (Constants.ACTION_REFER_TO_PASTOR.equalsIgnoreCase(action)) {
-                referredToPastor.add(eventFollowUp.getMember());
+                referredToPastor.add(eventFollowUp);
             } else {
             }
-        }     //now send Pastor Report on what happened to the pastor and a list pple that need his attention
+        }
 
         Thread email = new Thread(){
             @Override
             public void run() {
                 emailService.followUpReport(getEventFollowUpList(),new Date(),getEvent());
+                emailService.pastoralFollowUpReport(referredToPastor,event);
             }
         };   email.start();
+
         logger.debug("Found "+smsList.size()+" members for sending smses");
         logger.debug("Found "+referredToPastor.size()+" members referred to the pastor");
+
         List<SystemVar> systemVars = systemVarService.getSystemVarByName(Constants.MOTIVATIONAL_SMS);
 //        Utils.sendBulkSMS(smsList,systemVars.get(0).getValue()); //TODO:sort the sms sending here!
 
