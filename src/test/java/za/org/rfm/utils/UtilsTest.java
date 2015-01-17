@@ -41,7 +41,9 @@ public class UtilsTest {
     @Test
     public void testGetMonthDateRange(){
         DateRange dateRange = Utils.getMonthDateRange(3);
+        Calendar cal = Calendar.getInstance();
 
+        System.out.println(cal.get(Calendar.MONTH));
         System.out.println("start : "+dateRange.getStartDate());
         System.out.println("end : "+dateRange.getEndDate());
     }

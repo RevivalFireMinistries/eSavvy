@@ -16,6 +16,7 @@ import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -77,10 +78,12 @@ public class AssemblyDAO {
         List<MemberMonthlyTitheTotals> memberMonthlyTitheTotalsList = new ArrayList<MemberMonthlyTitheTotals>();
         List<Member> memberList = memberService.getMembersByAssembly(assemblyId);
         MemberMonthlyTitheTotals mmt;
+        Calendar cal = Calendar.getInstance();
+        int currentMonth = cal.get(Calendar.MONTH);
         for(Member member : memberList){
             mmt = new MemberMonthlyTitheTotals();
             mmt.setMember(member);
-            for(int i=0;i<12;i++){
+            for(int i=0;i<currentMonth+1;i++){
                 List<Transaction> transactions = txnService.getTithesByMemberAndDateRange(member, Utils.getMonthDateRange(i));
                 mmt.getTotals()[i] = Utils.getTxnTotal(transactions);
             }
