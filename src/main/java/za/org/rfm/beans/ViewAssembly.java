@@ -9,6 +9,7 @@ import za.org.rfm.model.User;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.TxnService;
 import za.org.rfm.service.UserService;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,6 +39,42 @@ public class ViewAssembly {
     MemberMonthlyTitheTotals selectedMemberMonthlyTitheTotals;
     @ManagedProperty(value = "#{TxnService}")
     TxnService txnService;
+    public double[] totalTithe = new double[12];
+    public double[] totalOffering = new double[12];
+    public double[] totalIncome = new double[12];
+    public double[] totalApostolic= new double[12];
+
+    public double[] getTotalTithe() {
+        return totalTithe;
+    }
+
+    public void setTotalTithe(double[] totalTithe) {
+        this.totalTithe = totalTithe;
+    }
+
+    public double[] getTotalOffering() {
+        return totalOffering;
+    }
+
+    public void setTotalOffering(double[] totalOffering) {
+        this.totalOffering = totalOffering;
+    }
+
+    public double[] getTotalIncome() {
+        return totalIncome;
+    }
+
+    public void setTotalIncome(double[] totalIncome) {
+        this.totalIncome = totalIncome;
+    }
+
+    public double[] getTotalApostolic() {
+        return totalApostolic;
+    }
+
+    public void setTotalApostolic(double[] totalApostolic) {
+        this.totalApostolic = totalApostolic;
+    }
 
     public TxnService getTxnService() {
         return txnService;
@@ -134,6 +172,7 @@ public class ViewAssembly {
             logger.info("Assembly Loaded : " + assemblyService.getAssemblyById(Long.parseLong(assemblyId)).getName());
             setAssembly(assemblyService.getAssemblyById(Long.parseLong(assemblyId)));
             memberMonthlyTitheTotalsList= assemblyService.getMemberMonthlyTitheTotals(Long.parseLong(assemblyId));
+            computeTotals();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -165,6 +204,24 @@ public class ViewAssembly {
             e.printStackTrace();
             Utils.addFacesMessage("Error opening user view :" + e.getMessage(), FacesMessage.SEVERITY_ERROR);
         }
+    }
+
+    public void onCellClicked(ActionEvent event){
+        logger.info("cell clicked!!!");
+    }
+
+    private void computeTotals(){
+
+        for(int i=0;i<12;i++){
+            for(MemberMonthlyTitheTotals mmt : getMemberMonthlyTitheTotalsList()){
+                 totalTithe[i] +=mmt.totals[i];
+            }
+
+            totalOffering[i] = assemblyService.getMonthlyOffering(assembly.getAssemblyid(),i);
+            totalIncome[i] = totalTithe[i] + totalOffering[i];
+            totalApostolic[i] = totalIncome[i]* Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
+        }
+
     }
 
 }

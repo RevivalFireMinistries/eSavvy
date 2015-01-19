@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.AssemblyDAO;
 import za.org.rfm.dto.MemberMonthlyTitheTotals;
 import za.org.rfm.model.Assembly;
+import za.org.rfm.model.Event;
 import za.org.rfm.model.User;
+import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Utils;
 
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class AssemblyService {
     Logger logger = Logger.getLogger(AssemblyService.class);
     @Autowired
     AssemblyDAO assemblyDAO;
+    @Autowired
+    EventService eventService;
 
     public List<Assembly> getAssemblyList(String status) {
         logger.debug("Getting assemblies by status : " + status);
@@ -45,5 +50,16 @@ public class AssemblyService {
 
     public List<MemberMonthlyTitheTotals> getMemberMonthlyTitheTotals(Long assemblyId){
         return assemblyDAO.getMemberMonthlyTitheTotals(assemblyId);
+    }
+
+    public double getMonthlyOffering(long id, int month){
+        double total = 0.0;
+        List<Event> eventList = eventService.getEventsByAssemblyAndTypeAndDateRange(id, Constants.SERVICE_TYPE_SUNDAY, Utils.getMonthDateRange(month));
+
+        for(Event event : eventList){
+              total += event.getOfferings();
+        }
+
+        return total;
     }
 }

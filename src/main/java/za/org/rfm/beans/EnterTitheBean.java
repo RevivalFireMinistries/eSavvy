@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import za.org.rfm.model.Member;
+import za.org.rfm.service.EmailService;
 import za.org.rfm.service.MemberService;
 import za.org.rfm.service.TxnService;
 import za.org.rfm.utils.Utils;
@@ -33,6 +34,8 @@ public class EnterTitheBean {
     MemberService memberService;
     @ManagedProperty(value="#{TxnService}")
     TxnService txnService;
+    @ManagedProperty(value="#{EmailService}")
+    EmailService emailService;
     String phone;
 
     public String getPhone() {
@@ -49,6 +52,14 @@ public class EnterTitheBean {
 
     public void setTxnService(TxnService txnService) {
         this.txnService = txnService;
+    }
+
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
     }
 
     private List<Member> memberList;
@@ -191,6 +202,13 @@ public class EnterTitheBean {
             titheThread.start();
 
         }
+        Thread emailThread = new Thread(){
+            @Override
+            public void run() {
+                 emailService.titheReport(titheList,WebUtil.getCurrentUser(),getDate());
+            }
+        };
+        emailThread.start();
         titheList.clear();
         Utils.addFacesMessage(size+" Tithe transactions have been processed successfully",FacesMessage.SEVERITY_INFO);
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import za.org.rfm.beans.Tithe;
 import za.org.rfm.model.*;
 import za.org.rfm.utils.*;
 import za.org.rfm.utils.Role;
@@ -327,6 +328,65 @@ public class EmailService {
             logger.error("Email sending error: " + e.getMessage());
         }
     }
+
+    public void titheReport(List<Tithe> tithes,User myUser,Date date) {
+
+        try {
+            myUser.getAssembly().setUsers(assemblyService.getAssemblyUsers(myUser.getAssembly().getAssemblyid()));
+            List<User> userList = myUser.getAssembly().getUsers(); //send an email to every user under this assembly
+            if (userList.isEmpty()) {
+                logger.error("No users set for this assembly...can't send email " + myUser.getAssembly().getName());
+                return;
+            }
+
+            for (User user : userList) {
+
+                if(user.getEmail() == null || user.getEmail().isEmpty()){
+                    logger.error("Invalid/non existent email address for user : "+user.getFullname());
+                    continue;
+                }
+
+                if (tithes != null && !tithes.isEmpty()) {
+                    //we have something to report on - @ least
+
+                    String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                    String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+
+                    final Context ctx = new Context(Locale.ENGLISH);
+
+                    ctx.setVariable("eSavvyLink", eSavvyLink);
+                    ctx.setVariable("churchName", churchName);
+                    ctx.setVariable("name", user.getFullname());
+                    ctx.setVariable("tithes", tithes);
+                    ctx.setVariable("header", "Tithe report for : "+date);
+
+
+                    final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                    final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                    ctx.setVariable("header", "Tithe report for : "+date);
+                    message.setSubject("Tithe report for : "+date);
+                    message.setFrom(getResource("email.system.from"));
+                    message.setTo(user.getEmail());
+
+                    // Create the HTML body using Thymeleaf
+                    final String htmlContent = this.templateEngine.process("../email/tithe-report", ctx);
+                    message.setText(htmlContent, true); // true = isHtml
+
+                    logger.debug("Email setup complete...now send!");
+                    // Send mail
+                    this.mailSender.send(mimeMessage);
+                    logger.debug("Email sent!");
+
+                } else {
+                    logger.error("No events found for the specified criteria...abort!");
+                }
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            logger.error("Email sending error: " + e.getMessage());
+        }
+    }
+
 
     public void memberActivityReport(List<Member> members, Assembly assembly, String inActivityStatus) {
 

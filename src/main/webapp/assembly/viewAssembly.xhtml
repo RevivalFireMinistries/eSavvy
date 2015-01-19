@@ -107,7 +107,7 @@
 
 
                 <p:dataTable id="members" var="member" value="#{viewAssemblyBean.memberMonthlyTitheTotalsList}"  rows="20"
-                             paginator="true" rowKey="#{member.member.id}" selection="#{viewAssemblyBean.selectedMemberMonthlyTitheTotals}" selectionMode="single"
+                             paginator="true" scrollable="true"  rowKey="#{member.member.id}" selection="#{viewAssemblyBean.selectedMemberMonthlyTitheTotals}" selectionMode="single"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,20,50,80,100,200,500">
                     <f:facet name="header">
@@ -117,63 +117,128 @@
                         <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
                         <p:columnToggler datasource="members" trigger="toggler" />
                     </f:facet>
-                    <p:column headerText="Member's Name">
+                    <p:column style="text-align:left" headerText="Member's Name">
                         <h:outputText value="#{member.member.fullName}" />
                     </p:column>
-                    <p:column headerText="January">
-                        <h:outputText value="#{member.january}" />
+                    <p:column style="text-align:center" headerText="January">
+                        <p:commandLink id="ajax" update="" actionListener="#{viewAssemblyBean.onCellClicked}">
+                            <h:outputText value="#{member.january}" />
+                        </p:commandLink>
+
                     </p:column>
 
-                    <p:column headerText="February">
+                    <p:column style="text-align:center"  headerText="February">
                         <h:outputText value="#{member.february}" />
                     </p:column>
 
-                    <p:column headerText="March">
+                    <p:column style="text-align:center"  headerText="March">
                         <h:outputText value="#{member.march}" />
                     </p:column>
 
-                    <p:column headerText="April">
+                    <p:column style="text-align:center"  headerText="April">
                         <h:outputText value="#{member.april}" />
                     </p:column>
 
-                    <p:column headerText="May">
+                    <p:column style="text-align:center"  headerText="May">
                         <h:outputText value="#{member.may}" />
                     </p:column>
 
-                    <p:column headerText="June">
+                    <p:column style="text-align:center"  headerText="June">
                         <h:outputText value="#{member.june}" />
                     </p:column>
 
-                    <p:column headerText="July">
+                    <p:column style="text-align:center"  headerText="July">
                         <h:outputText value="#{member.july}" />
                     </p:column>
 
-                    <p:column headerText="August">
+                    <p:column style="text-align:center"  headerText="August">
                         <h:outputText value="#{member.august}" />
                     </p:column>
 
-                    <p:column headerText="September">
+                    <p:column style="text-align:center"  headerText="September">
                         <h:outputText value="#{member.september}" />
                     </p:column>
 
-                    <p:column headerText="October">
+                    <p:column style="text-align:center"  headerText="October">
                         <h:outputText value="#{member.october}" />
                     </p:column>
 
-                    <p:column headerText="November">
+                    <p:column style="text-align:center" headerText="November">
                         <h:outputText value="#{member.november}" />
                     </p:column>
                     
-                    <p:column headerText="December">
+                    <p:column style="text-align:center"  headerText="December">
                         <h:outputText value="#{member.december}" />
                     </p:column>
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column  style="text-align:right" footerText="Total Tithe:" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[0]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[1]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[2]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[3]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[4]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[5]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[6]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[7]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[8]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[9]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[10]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalTithe[11]}" />
 
+                        </p:row>
+                        <p:row>
+                            <p:column  style="text-align:right" footerText="Total Offering:" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[0]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[1]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[2]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[3]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[4]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[5]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[6]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[7]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[8]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[9]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[10]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalOffering[11]}" />
+                        </p:row>
+                        <p:row>
+                            <p:column  style="text-align:right" footerText="Total Income:" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[0]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[1]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[2]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[3]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[4]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[5]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[6]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[7]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[8]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[9]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[10]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalIncome[11]}" />
+                        </p:row>
+                        <p:row>
+                            <p:column  style="text-align:right" footerText="Apostolic:" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[0]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[1]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[2]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[3]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[4]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[5]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[6]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[7]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[8]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[9]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[10]}" />
+                            <p:column footerText="#{viewAssemblyBean.totalApostolic[11]}" />
+                        </p:row>
+                    </p:columnGroup>
                 </p:dataTable>
                 <p:commandButton value="Print Report" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
                     <p:printer target="members"  />
                 </p:commandButton>
                 <p:dialog id="dialog"  style="width: 50%" header="Member Tithe Detail" widgetVar="memberDialog" resizable="false"
-                          showEffect="fade" hideEffect="explode" minHeight="500" minWidth="400">
+                          showEffect="fade" hideEffect="explode"  >
                     <p:dataTable  style="width:100%;" var="tithe" value="#{viewAssemblyBean.selectedMemberMonthlyTitheTotals.member.transactionList}"  paginator="true" rows="20"
                                   widgetVar="titheTable"      id="titheTable100">
 
