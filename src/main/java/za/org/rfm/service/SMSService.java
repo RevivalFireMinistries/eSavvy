@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.SMSDAO;
 import za.org.rfm.model.SMSLog;
+import za.org.rfm.utils.DateRange;
+
+import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -28,5 +31,9 @@ public class SMSService {
     @Transactional(readOnly = false)
     public void saveSMSLog(SMSLog smsLog) {
         getSmsDAO().saveSMSLog(smsLog);
+    }
+
+    public void getSMSLogByAssemblyAndDate(long assemblyId, DateRange dateRange){
+        //getSmsDAO().getSMSLogByAssemblyAndDate(assemblyId,dateRange);
     }
 }

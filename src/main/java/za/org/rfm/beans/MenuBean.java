@@ -157,6 +157,10 @@ public class MenuBean {
         item3.setUrl("/sms/sendSMS.faces");
         item3.setIcon("ui-icon-home");
         smsSubmenu.addElement(item3);
+        item3 = new DefaultMenuItem("View SMS Log");
+        item3.setUrl("/sms/viewSMSLog.faces");
+        item3.setIcon("ui-icon-home");
+        smsSubmenu.addElement(item3);
         model.addElement(smsSubmenu);
         ////////////////////////////////////////////////////
         }
