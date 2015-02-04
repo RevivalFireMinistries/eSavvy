@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import za.org.rfm.beans.Tithe;
+import za.org.rfm.dto.EventTotals;
 import za.org.rfm.model.*;
 import za.org.rfm.utils.*;
 import za.org.rfm.utils.Role;
@@ -199,8 +200,69 @@ public class EmailService {
             logger.error("Email sending error: " + e.getMessage());
         }
     }
+    public void apostolicSundayMonthlyReport() {
+        try {
+            DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
+            List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
+            Map<Assembly,List<Event>> assemblyListMap = new HashMap<Assembly, List<Event>>();
+            List<EventTotals> eventTotalsList = new ArrayList<EventTotals>();
 
-    public void apostolicReport(String frequency) {
+            for(Assembly assembly : assemblyList){
+                List<Event> eventList = eventService.getEventsByAssemblyAndTypeAndDateRange(assembly.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, dateRange);
+                assemblyListMap.put(assembly,eventList);
+            }
+
+            //now calculate the totals
+            EventTotals eventTotals;
+            for(Map.Entry<Assembly,List<Event>> entry : assemblyListMap.entrySet()){
+                Assembly assembly = entry.getKey();
+                eventTotals = new EventTotals(assembly,entry.getValue());
+                eventTotalsList.add(eventTotals);
+            }
+
+            //Now calculate total of totals
+            EventTotals totalOfTotals = new EventTotals(eventTotalsList);
+
+            //Now prepare the email
+            GlobarEmailVars globarEmailVars = new GlobarEmailVars().invoke();
+            String apostolicEmail = globarEmailVars.getApostolicEmail();
+            String eSavvyLink = globarEmailVars.geteSavvyLink();
+            String churchName = globarEmailVars.getChurchName();
+
+            CheckIfApostleNotNull checkIfApostleNotNull = new CheckIfApostleNotNull(apostolicEmail).invoke();
+            if (checkIfApostleNotNull.is()) return;
+            apostolicEmail = checkIfApostleNotNull.getApostolicEmail();
+
+            final Context ctx = new Context(Locale.ENGLISH);
+
+            ctx.setVariable("eSavvyLink", eSavvyLink);
+            ctx.setVariable("churchName", churchName);
+            ctx.setVariable("assemblyEventTotals", eventTotalsList);
+            ctx.setVariable("totalOfTotals", totalOfTotals);
+            ctx.setVariable("header", getResource("email.subject.apostolic.report", Constants.REPORT_FREQUENCY_MONTHLY, dateRange));
+
+            final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+            message.setSubject(getResource("email.subject.apostolic.report", Constants.REPORT_FREQUENCY_MONTHLY, dateRange));
+            message.setFrom(getResource("email.system.from"));
+            message.setTo(apostolicEmail);
+
+            // Create the HTML body using Thymeleaf
+            final String htmlContent = this.templateEngine.process("../email/apostolic-monthly-report", ctx);
+            message.setText(htmlContent, true); // true = isHtml
+
+            logger.debug("Email setup complete...now send!");
+            // Send mail
+            this.mailSender.send(mimeMessage);
+            logger.debug("Email sent!");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void apostolicSundayWeeklyReport(String frequency) {
         DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
         try {
             List<Event> events = null;
@@ -220,18 +282,14 @@ public class EmailService {
                     totals.setOfferings(totals.getOfferings() + event.getOfferings());
                     totals.setTithes(totals.getTithes() + event.getTithes());
                 }
-                String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
-                String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
-                String apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
+                GlobarEmailVars globarEmailVars = new GlobarEmailVars().invoke();
+                String apostolicEmail = globarEmailVars.getApostolicEmail();
+                String eSavvyLink = globarEmailVars.geteSavvyLink();
+                String churchName = globarEmailVars.getChurchName();
                 logger.info("Got the apostolic email : " + apostolicEmail);
-                if (StringUtils.isEmpty(apostolicEmail)) { //try looking for this in a user with apostolic role
-                    User apostle = userService.getApostle();
-                    if (apostle == null) {
-                        logger.error("Failed to send apostolic email --- Please set up a user with Apostolic ROLE!");
-                        return;
-                    }
-                    apostolicEmail = apostle.getEmail();
-                }
+                CheckIfApostleNotNull checkIfApostleNotNull = new CheckIfApostleNotNull(apostolicEmail).invoke();
+                if (checkIfApostleNotNull.is()) return;
+                apostolicEmail = checkIfApostleNotNull.getApostolicEmail();
 
                 final Context ctx = new Context(Locale.ENGLISH);
 
@@ -497,4 +555,59 @@ public class EmailService {
         return (new NonStaticMessageFormat(resourceBundle.getString(key), args).getMsg());
     }
 
+    private class GlobarEmailVars {
+        private String eSavvyLink;
+        private String churchName;
+        private String apostolicEmail;
+
+        public String geteSavvyLink() {
+            return eSavvyLink;
+        }
+
+        public String getChurchName() {
+            return churchName;
+        }
+
+        public String getApostolicEmail() {
+            return apostolicEmail;
+        }
+
+        public GlobarEmailVars invoke() {
+            eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+            churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+            apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
+            return this;
+        }
+    }
+
+    private class CheckIfApostleNotNull {
+        private boolean myResult;
+        private String apostolicEmail;
+
+        public CheckIfApostleNotNull(String apostolicEmail) {
+            this.apostolicEmail = apostolicEmail;
+        }
+
+        boolean is() {
+            return myResult;
+        }
+
+        public String getApostolicEmail() {
+            return apostolicEmail;
+        }
+
+        public CheckIfApostleNotNull invoke() {
+            if (StringUtils.isEmpty(apostolicEmail)) { //try looking for this in a user with apostolic role
+                User apostle = userService.getApostle();
+                if (apostle == null) {
+                    logger.error("Failed to send apostolic email --- Please set up a user with Apostolic ROLE!");
+                    myResult = true;
+                    return this;
+                }
+                apostolicEmail = apostle.getEmail();
+            }
+            myResult = false;
+            return this;
+        }
+    }
 }

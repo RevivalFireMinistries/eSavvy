@@ -127,8 +127,6 @@ public List<Event> getEventsByTypeAndDateRange(String eventtype, DateRange dateR
     }
 
 
-
-
     public Event getEventById(long eventid) {
         Query query = sessionFactory.getCurrentSession().createQuery("from Event where id =:eventid");
         query.setLong("eventid",eventid);

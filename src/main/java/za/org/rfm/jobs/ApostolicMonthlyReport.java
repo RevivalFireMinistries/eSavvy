@@ -5,18 +5,13 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Event;
+import org.springframework.stereotype.Component;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.DateRange;
-import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +20,7 @@ import java.util.List;
  * Time: 2:50 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class ApostolicMonthlyReport implements Job{
     private static Logger logger = Logger.getLogger(ApostolicWeeklyReport.class);
 
@@ -48,7 +44,7 @@ public class ApostolicMonthlyReport implements Job{
         logger.info("Now running job : generate sunday service monthly report");
         //execute the job here
 
-        emailService.apostolicReport(Constants.REPORT_FREQUENCY_MONTHLY);
+        emailService.apostolicSundayMonthlyReport();
 
     }
 }

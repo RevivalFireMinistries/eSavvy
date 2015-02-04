@@ -401,6 +401,18 @@ public class Utils {
        return false;
     }
 
+    public static double calculateAverage(List <Integer> integerList) {
+        if (integerList == null || integerList.isEmpty()) {
+            return 0;
+        }
+
+        double sum = 0;
+        for (Integer mark : integerList) {
+            sum += mark;
+        }
+
+        return sum / integerList.size();
+    }
    public static List<String> getGroupsAsStringList(){
        List<String> list = new ArrayList<String>();
        for(Group group : Group.values()){

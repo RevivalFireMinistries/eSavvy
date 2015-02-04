@@ -82,8 +82,7 @@ public class MemberController {
             logger.info("REST Call to get members for assembly with id :"+assemblyId);
             mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
             List<Member> members = memberService.getMembersByAssembly(Long.parseLong(assemblyId));
-            AnnotationIntrospector introspector
-                    = new JaxbAnnotationIntrospector();
+            AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
             mapper.setAnnotationIntrospector(introspector);
             logger.info("Returning a list of members : "+members.size());
             return mapper.writeValueAsString(members);

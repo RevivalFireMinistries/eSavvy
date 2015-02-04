@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import za.org.rfm.model.json.J_Member;
 import za.org.rfm.utils.Constants;
+import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
 
 import javax.persistence.*;
@@ -119,5 +120,15 @@ public class Member extends ChurchManagerEntity{
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    public boolean belongsToGroup(Group group){
+
+        for(MemberGroup memberGroup : getMemberGroupList()){
+            if(memberGroup.getGroupName().equalsIgnoreCase(group.name())){
+                return true;
+            }
+        }
+        return false;
     }
 }

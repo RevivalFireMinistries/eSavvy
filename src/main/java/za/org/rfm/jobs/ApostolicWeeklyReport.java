@@ -13,7 +13,6 @@ import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
 import za.org.rfm.utils.Constants;
-import za.org.rfm.utils.DateRange;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
@@ -53,7 +52,7 @@ public class ApostolicWeeklyReport implements Job {
        logger.info("Now running job : generate sunday service weekly report");
       //execute the job here
 
-      emailService.apostolicReport(Constants.REPORT_FREQUENCY_WEEKLY);
+      emailService.apostolicSundayWeeklyReport(Constants.REPORT_FREQUENCY_WEEKLY);
       //now update assembly latest event info
 
        List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);

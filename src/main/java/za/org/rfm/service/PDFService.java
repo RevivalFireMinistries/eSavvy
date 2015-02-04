@@ -194,21 +194,20 @@ public class PDFService {
         List<Member> general = new ArrayList<Member>();
 
         for (Member member : memberList) {     //need to split into groups
-            //Pastors
-            for (MemberGroup memberGroup : member.getMemberGroupList()) {
-                if (Group.ELDERS.equals(Group.valueOf(memberGroup.getGroupName()))) {
-                    elders.add(member);
-                    break;
-                } else if (Group.DEACONS.equals(Group.valueOf(memberGroup.getGroupName()))) {
-                    deacons.add(member);
-                    break;
-                } else if (Group.MUSIC.equals(Group.valueOf(memberGroup.getGroupName()))) {
-                    music.add(member);
-                    break;
-                } else {
-                    general.add(member);
-                    break;
-                }
+          if(member.belongsToGroup(Group.ELDERS)){
+              elders.add(member);
+              continue;
+          }if(member.belongsToGroup(Group.DEACONS)){
+                deacons.add(member);
+                continue;
+            }
+            if(member.belongsToGroup(Group.MUSIC)){
+                music.add(member);
+                continue;
+            }
+            if(member.belongsToGroup(Group.EVERYONE)){
+                general.add(member);
+                continue;
             }
         }
         addToTable(table, elders, Group.ELDERS);
