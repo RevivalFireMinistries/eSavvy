@@ -570,12 +570,7 @@ public class EmailService {
 
                     if (members != null && !members.isEmpty()) {
                         //we have something to report on - @ least
-                        String subjectLine = "";
-                        if (Constants.MEMBERS_INACTIVE.equalsIgnoreCase(inActivityStatus)) {
-                            subjectLine = getResource("email.subject.activity.report.backslide", assembly.getName(), Utils.dateFormatter(new Date()));
-                        } else {
-                            subjectLine = getResource("email.subject.activity.report.rejuvenated", assembly.getName(), Utils.dateFormatter(new Date()));
-                        }
+                        String subjectLine = getResource("email.subject.activity.report.nonetithers", assembly.getName(), Utils.dateFormatter(new Date()));
                         String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
                         String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
 

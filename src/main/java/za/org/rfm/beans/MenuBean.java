@@ -139,7 +139,7 @@ public class MenuBean {
             services = new DefaultSubMenu("Services");
             services.addElement(newreport);
         }
-        if (Utils.isAuthorised(currentUser,Role.Pastor)) {
+        if (Utils.isAuthorised(currentUser,Role.Pastor) || Utils.isAuthorised(currentUser,Role.Administrator)) {
             DefaultMenuItem viewreports = new DefaultMenuItem("View Service Reports");
             viewreports.setUrl("/services/viewReports.faces");
             viewreports.setIcon("ui-icon-home");

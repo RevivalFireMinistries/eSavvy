@@ -59,12 +59,8 @@
                         <h:messages errorClass="error"/>
 
                         <h:panelGrid columns="2" columnClasses="label, value">
-                            <h:outputText value="Full Time Members in Attendance: " />
+                            <h:outputText value="Members in Attendance: " />
                             <p:inputText value="#{newReportBean.event.attendance}" required="true">
-                                <f:validateRequired />
-                            </p:inputText>
-                            <h:outputText value="Guests in Attendance: " />
-                            <p:inputText value="#{newReportBean.event.guests}" >
                                 <f:validateRequired />
                             </p:inputText>
 

@@ -44,45 +44,27 @@ public class MemberInActivityChecker implements Job{
         emailService = tmpEmailService;
     }
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        List<Member> backSlidenMembers;
-        List<Member> rejuvenatedMembers;
+        List<Member> nonTithersList;
 
         //check inactivity for each member in the entire system
         //TODO:Might need to be for a particular assembly s this can prove to be a large task the bigger the church
         logger.info("Now executing inactivity checker job...");
         List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
         for(Assembly assembly : assemblyList){
-            backSlidenMembers = new ArrayList<Member>();
-            rejuvenatedMembers = new ArrayList<Member>();
+            nonTithersList = new ArrayList<Member>();
             assembly.setMembers(memberService.getMembersByAssembly(assembly.getAssemblyid()));
             for(Member member : assembly.getMembers()){
-                if(memberService.isInActive(member)){
-                    logger.debug("got a backslider!!! : "+member.getFullName());
+                if(memberService.isNotTithing(member)){
+                    logger.debug("got a non-tither!!! : "+member.getFullName());
                     //change his status
-                    member.setStatus(Constants.STATUS_NEEDS_FOLLOW_UP); //TODO: Consider sending a motivational sms
+                    member.setStatus(Constants.STATUS_NEEDS_FOLLOW_UP);
                     memberService.saveMember(member);
-                    backSlidenMembers.add(member);
-                }
-                else if(!memberService.isInActive(member) && member.getStatus().equalsIgnoreCase(Constants.STATUS_NEEDS_FOLLOW_UP)){
-                    logger.debug("got a member who used to be inactive but now active : "+member.getFullName());
-                    //change his status
-                    member.setStatus(Constants.STATUS_ACTIVE);  //TODO: Consider welcoming them back to church
-                    memberService.saveMember(member);
-                    rejuvenatedMembers.add(member);
-                }
-                else if(memberService.isInActive(member) && member.getStatus().equalsIgnoreCase(Constants.STATUS_IN_ACTIVE)){
-                    //They have not come to church for a long time now //TODO: Pastor needs to do something here!!
-                } else{
-                    //This member has been consistent for a long time - give that man a bells!!!
-                    //TODO: might consider sending a Thank you for being committed sms
-
+                    nonTithersList.add(member);
                 }
             }
             //now send emails to the pastors
-            if(!backSlidenMembers.isEmpty())
-                emailService.memberActivityReport(backSlidenMembers,assembly,Constants.MEMBERS_INACTIVE);
-            if(!rejuvenatedMembers.isEmpty())
-            emailService.memberActivityReport(rejuvenatedMembers,assembly,Constants.MEMBERS_ACTIVE_AGAIN);
+            if(!nonTithersList.isEmpty())
+                emailService.memberActivityReport(nonTithersList,assembly,Constants.MEMBERS_INACTIVE);
 
         }
     }
