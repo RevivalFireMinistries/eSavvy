@@ -4,13 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.org.rfm.dao.EventDAO;
+import za.org.rfm.dto.AssemblyMonthlyAttendanceTotals;
 import za.org.rfm.model.EventFollowUp;
 import za.org.rfm.model.Event;
 import za.org.rfm.model.EventLog;
 import za.org.rfm.model.Member;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.DateRange;
+import za.org.rfm.utils.Utils;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +86,16 @@ public class EventService {
 
     public List<EventLog> getEventLogsByMemberandDateRange(Member member, DateRange dateRange) {
         return eventDAO.getEventLogsByMemberandDateRange(member, dateRange);
+    }
+
+    public List<AssemblyMonthlyAttendanceTotals> getAssemblyMonthlyAttendance(long id){
+        List<AssemblyMonthlyAttendanceTotals> aMTlist = new ArrayList<AssemblyMonthlyAttendanceTotals>();
+        for(int i=1; i<=12;i++){
+            DateRange dateRange = Utils.getMonthDateRange(i-1);
+            List<Event> eventList = eventDAO.getEventsByAssemblyAndTypeAndDateRange(id, Constants.SERVICE_TYPE_SUNDAY,dateRange);
+            aMTlist.add(new AssemblyMonthlyAttendanceTotals(eventList,i));
+        }
+        return aMTlist;
     }
 
 }

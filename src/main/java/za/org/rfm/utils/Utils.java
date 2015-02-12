@@ -316,6 +316,9 @@ public class Utils {
         String[] months = new DateFormatSymbols().getMonths();
         return months;
     }
+    public static String getMonthName(int month) {
+        return new DateFormatSymbols().getMonths()[month-1];
+    }
 
   public static DateRange getMonthDateRange(int month){
       DateRange dateRange = new DateRange();
@@ -326,8 +329,12 @@ public class Utils {
       calendar.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().getActualMinimum(Calendar.HOUR_OF_DAY));
       dateRange.setStartDate(calendar.getTime());
 
-      calendar.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
-      dateRange.setEndDate(calendar.getTime());
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.MONTH,month);
+      cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+
+      Date lastDayOfMonth = cal.getTime();
+      dateRange.setEndDate(lastDayOfMonth);
 
       return dateRange;
 

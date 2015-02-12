@@ -2,11 +2,13 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.SelectEvent;
+import za.org.rfm.dto.AssemblyMonthlyAttendanceTotals;
 import za.org.rfm.dto.MemberMonthlyTitheTotals;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Transaction;
 import za.org.rfm.model.User;
 import za.org.rfm.service.AssemblyService;
+import za.org.rfm.service.EventService;
 import za.org.rfm.service.TxnService;
 import za.org.rfm.service.UserService;
 import za.org.rfm.utils.Constants;
@@ -37,6 +39,7 @@ public class ViewAssembly {
     List<User> filteredUsers;
     List<MemberMonthlyTitheTotals> memberMonthlyTitheTotalsList;
     MemberMonthlyTitheTotals selectedMemberMonthlyTitheTotals;
+    List<AssemblyMonthlyAttendanceTotals> assemblyMonthlyAttendanceTotalsList;
     @ManagedProperty(value = "#{TxnService}")
     TxnService txnService;
     public double[] totalTithe = new double[12];
@@ -78,6 +81,14 @@ public class ViewAssembly {
 
     public TxnService getTxnService() {
         return txnService;
+    }
+
+    public List<AssemblyMonthlyAttendanceTotals> getAssemblyMonthlyAttendanceTotalsList() {
+        return assemblyMonthlyAttendanceTotalsList;
+    }
+
+    public void setAssemblyMonthlyAttendanceTotalsList(List<AssemblyMonthlyAttendanceTotals> assemblyMonthlyAttendanceTotalsList) {
+        this.assemblyMonthlyAttendanceTotalsList = assemblyMonthlyAttendanceTotalsList;
     }
 
     public void onMemberTitheViewRowSelect(SelectEvent event){
@@ -133,6 +144,16 @@ public class ViewAssembly {
     AssemblyService assemblyService;
     @ManagedProperty(value="#{UserService}")
     UserService userService;
+    @ManagedProperty(value="#{EventService}")
+    EventService eventService;
+
+    public EventService getEventService() {
+        return eventService;
+    }
+
+    public void setEventService(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     public UserService getUserService() {
         return userService;
@@ -162,16 +183,16 @@ public class ViewAssembly {
     public void init() {
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            String assemblyId = facesContext.getExternalContext().getRequestParameterMap().get("assemblyid");
-            if(assemblyId == null){
+            String id = facesContext.getExternalContext().getRequestParameterMap().get("assemblyid");
+            if(id == null){
                 facesContext.getExternalContext().responseSendError(401,"Invalid assembly id specified");
             }
+            long assemblyId = Long.parseLong(id);
             //load this assembly's users as well
-            userList = userService.getUsersByAssembly(Long.parseLong(assemblyId));
-            System.out.println("user list..."+userList.size());
-            logger.info("Assembly Loaded : " + assemblyService.getAssemblyById(Long.parseLong(assemblyId)).getName());
-            setAssembly(assemblyService.getAssemblyById(Long.parseLong(assemblyId)));
-            memberMonthlyTitheTotalsList= assemblyService.getMemberMonthlyTitheTotals(Long.parseLong(assemblyId));
+            userList = userService.getUsersByAssembly(assemblyId);
+            setAssembly(assemblyService.getAssemblyById(assemblyId));
+            memberMonthlyTitheTotalsList= assemblyService.getMemberMonthlyTitheTotals(assemblyId);
+            assemblyMonthlyAttendanceTotalsList= eventService.getAssemblyMonthlyAttendance(assemblyId);
             computeTotals();
         } catch (IOException e) {
             e.printStackTrace();
@@ -208,7 +229,7 @@ public class ViewAssembly {
 
     public void onCellClicked(ActionEvent event){
         logger.info("cell clicked!!!");
-    }
+    }//TODO:Need to add a popup for viewing more on tithe txns
 
     private void computeTotals(){
 

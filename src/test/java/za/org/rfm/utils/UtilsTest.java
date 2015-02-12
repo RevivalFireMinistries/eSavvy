@@ -2,6 +2,7 @@ package za.org.rfm.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.test.context.TestExecutionListeners;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -40,11 +41,17 @@ public class UtilsTest {
 
     @Test
     public void testGetMonthDateRange(){
-        DateRange dateRange = Utils.getMonthDateRange(3);
+        DateRange dateRange = Utils.getMonthDateRange(0);
         Calendar cal = Calendar.getInstance();
 
         System.out.println(cal.get(Calendar.MONTH));
         System.out.println("start : "+dateRange.getStartDate());
         System.out.println("end : "+dateRange.getEndDate());
+    }
+
+    @Test
+    public void testGetMonthName(){
+        String monthname = Utils.getMonthName(1);
+        System.out.println(monthname);
     }
 }

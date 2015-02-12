@@ -2,6 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:opt="http://primefaces.prime.com.tr/optimus"
                 template="#{request.contextPath}/template.xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="content">
@@ -102,7 +103,7 @@
                     </h:form>
                 </h:panelGrid>
             </p:tab>
-            <p:tab title="Finances">
+            <p:tab title="Finances Overview">
 
 
 
@@ -256,6 +257,48 @@
 
                 </p:dialog>
 
+            </p:tab>
+            <p:tab title="Attendance Overview">
+                <h:form>
+                    <p:dataTable id="tbl" var="amt" value="#{viewAssemblyBean.assemblyMonthlyAttendanceTotalsList}" rows="12"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            Attendance Monthly Totals
+                        </f:facet>
+                        <p:column headerText="Month">
+                            <h:outputText value="#{amt.monthName}" />
+                        </p:column>
+                        <p:column headerText="Week 1">
+                            <h:outputText value="#{amt.week1}" />
+                        </p:column>
+
+                        <p:column headerText="Week 2">
+                            <h:outputText value="#{amt.week2}" />
+                        </p:column>
+
+                        <p:column headerText="Week 3">
+                            <h:outputText value="#{amt.week3}" />
+                        </p:column>
+
+                        <p:column headerText="Week 4">
+                            <h:outputText value="#{amt.week4}" />
+                        </p:column>
+
+                        <p:column headerText="Week 5">
+                            <h:outputText value="#{amt.week5}" />
+                        </p:column>
+                        <p:column headerText="Monthly Average">
+                            <h:outputText value="#{amt.average}" />
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:commandButton value="Print Report" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
+                        <p:printer target="tbl"  />
+                    </p:commandButton>
+
+                </h:form>
             </p:tab>
         </p:tabView>
         </h:form>
