@@ -81,7 +81,6 @@ public class JobRepository {
                     .withIdentity("everyFridayMidnight")
                     .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * FRI *"))
                     .build();
-
             SchedulerFactory schFactory = new StdSchedulerFactory();
             Scheduler sch = schFactory.getScheduler();
             sch.start();
