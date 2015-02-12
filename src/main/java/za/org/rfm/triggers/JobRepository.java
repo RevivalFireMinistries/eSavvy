@@ -49,7 +49,7 @@ public class JobRepository {
                     .newTrigger()
                     .withIdentity("everyFiveMinutes")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 0/10 * 1/1 * ? *"))
+                            CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *"))
                     .build();
             Trigger everyTwoMinutes = TriggerBuilder
                     .newTrigger()
@@ -81,6 +81,7 @@ public class JobRepository {
                     .withIdentity("everyFridayMidnight")
                     .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * FRI *"))
                     .build();
+
             SchedulerFactory schFactory = new StdSchedulerFactory();
             Scheduler sch = schFactory.getScheduler();
             sch.start();
