@@ -34,7 +34,7 @@ public class EnterTitheBean {
     MemberService memberService;
     @ManagedProperty(value="#{TxnService}")
     TxnService txnService;
-    @ManagedProperty(value="#{EmailService}")
+    @ManagedProperty(value="#{mailService}")
     EmailService emailService;
     String phone;
 
@@ -202,13 +202,7 @@ public class EnterTitheBean {
             titheThread.start();
 
         }
-        Thread emailThread = new Thread(){
-            @Override
-            public void run() {
-                 emailService.titheReport(titheList,WebUtil.getCurrentUser(),getDate());
-            }
-        };
-        emailThread.start();
+        emailService.titheReport(titheList, WebUtil.getCurrentUser(), new Date());
         titheList.clear();
         Utils.addFacesMessage(size+" Tithe transactions have been processed successfully",FacesMessage.SEVERITY_INFO);
     }

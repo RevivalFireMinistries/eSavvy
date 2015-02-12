@@ -296,8 +296,9 @@ public class Utils {
 
     public static String generateID()
     {
-        long current= System.currentTimeMillis();
-        return "TXN"+current++;
+        //long current= System.currentTimeMillis();
+        UUID uuid = UUID.randomUUID();
+        return "TXN"+uuid;
     }
 
     public static void addFacesMessage( String message,FacesMessage.Severity severity){

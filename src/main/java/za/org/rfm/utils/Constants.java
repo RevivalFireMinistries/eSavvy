@@ -26,6 +26,9 @@ public class Constants {
     public static final String FOLLOW_UP_STATUS_BUSY = "Busy";
     public static final String FOLLOW_UP_STATUS_NO_RESPONSE = "No Response";
 
+
+    public static final double DEFAULT_SMS_UNIT_PRICE = 0.38;
+
     //email subject
 
 

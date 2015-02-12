@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import za.org.rfm.beans.Tithe;
+import za.org.rfm.dto.Bill;
 import za.org.rfm.dto.EventTotals;
 import za.org.rfm.model.*;
 import za.org.rfm.utils.*;
@@ -27,6 +28,7 @@ import java.util.*;
  */
 @Service("mailService")
 public class EmailService {
+    public static final Date LAST_SUNDAY = Utils.calcLastSunday(new Date());
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle("locale.messages_en_ZA", Locale.getDefault());
     Logger logger = Logger.getLogger(getClass());
     @Autowired
@@ -200,6 +202,119 @@ public class EmailService {
             logger.error("Email sending error: " + e.getMessage());
         }
     }
+    public void sendOutBillTotal(List<Bill> bills,DateRange dateRange) {
+        try {
+            //Now prepare the email
+            GlobarEmailVars globarEmailVars = new GlobarEmailVars().invoke();
+            String eSavvyLink = globarEmailVars.geteSavvyLink();
+            String churchName = globarEmailVars.getChurchName();
+
+            final Context ctx = new Context(Locale.ENGLISH);
+
+            String reportIntro = "Monthly SMS Bill Breakdown "+dateRange;
+
+            ctx.setVariable("eSavvyLink", eSavvyLink);
+            ctx.setVariable("churchName", churchName);
+            ctx.setVariable("header", reportIntro);
+
+
+            final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+            List<String> messages = new ArrayList<String>();
+            messages.add(reportIntro);
+            Map<String, String> items = new LinkedHashMap<String, String>();
+            double totalUnits =0;
+            double totalAmount =0;
+
+            for(Bill bill : bills){
+                items.put(bill.getNarration(),bill.getUnits()+" - "+Utils.moneyFormatter(bill.getTotal(),Locale.getDefault()));
+                totalAmount += bill.getTotal();
+                totalUnits += bill.getUnits();
+            }
+            items.put("Total Units ",""+totalUnits);
+            items.put("Total Amount ",Utils.moneyFormatter(totalAmount,Locale.getDefault()));
+
+
+            ctx.setVariable("items", items);
+            ctx.setVariable("messages",messages);
+
+            message.setSubject(reportIntro);
+            message.setFrom(getResource("email.system.from"));
+
+            User user = userService.getSuperUser();
+            if(user == null){
+                logger.error("Failed to get super user...exit email sending!");
+                return;
+            }
+            message.setTo(user.getEmail());
+
+            // Create the HTML body using Thymeleaf
+            final String htmlContent = this.templateEngine.process("../email/bean-report", ctx);
+            message.setText(htmlContent, true); // true = isHtml
+
+            logger.debug("Email setup complete...now send!");
+            // Send mail
+            this.mailSender.send(mimeMessage);
+
+            logger.debug("Email sent!");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendOutBill(Assembly assembly,Bill bill){
+
+        try {
+            //Now prepare the email
+            GlobarEmailVars globarEmailVars = new GlobarEmailVars().invoke();
+            String eSavvyLink = globarEmailVars.geteSavvyLink();
+            String churchName = globarEmailVars.getChurchName();
+
+            final Context ctx = new Context(Locale.ENGLISH);
+
+            ctx.setVariable("eSavvyLink", eSavvyLink);
+            ctx.setVariable("churchName", churchName);
+            ctx.setVariable("bill", bill);
+            ctx.setVariable("header", bill.getNarration());
+
+            String reportIntro = bill.getNarration();
+
+            final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+            List<String> messages = new ArrayList<String>();
+            messages.add(reportIntro);
+            Map<String, String> items = new LinkedHashMap<String, String>();
+            items.put("Narration", bill.getNarration());
+            items.put("Date Range", bill.getDateRange().toString());
+            items.put("Total units", ""+bill.getUnits());
+            items.put("Price Per Unit",Utils.moneyFormatter(bill.getPrice(),assembly.getLocaleObject()));
+            items.put("Total Cost", Utils.moneyFormatter(bill.getTotal(),assembly.getLocaleObject()));
+            ctx.setVariable("items", items);
+            ctx.setVariable("assembly",assembly.getName());
+            ctx.setVariable("messages",messages);
+
+            message.setSubject(bill.getNarration());
+            message.setFrom(getResource("email.system.from"));
+
+            List<User> userList = assemblyService.getAssemblyUsers(assembly.getAssemblyid());
+
+            for(User user : userList){
+                message.setTo(user.getEmail());
+
+                // Create the HTML body using Thymeleaf
+                final String htmlContent = this.templateEngine.process("../email/bean-report", ctx);
+                message.setText(htmlContent, true); // true = isHtml
+
+                logger.debug("Email setup complete...now send!");
+                // Send mail
+                this.mailSender.send(mimeMessage);
+            }
+
+            logger.debug("Email sent!");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
     public void apostolicSundayMonthlyReport() {
         try {
             DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
@@ -266,14 +381,10 @@ public class EmailService {
         DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
         try {
             List<Event> events = null;
-            if (Constants.REPORT_FREQUENCY_WEEKLY.equalsIgnoreCase(frequency)) {
                 //we need to get all ss events for the previous sunday
-                events = eventService.getEventsByDateAndType(Constants.SERVICE_TYPE_SUNDAY, Utils.calcLastSunday(new Date()));
+                events = eventService.getEventsByDateAndType(Constants.SERVICE_TYPE_SUNDAY, LAST_SUNDAY);
 
-            } else if (Constants.REPORT_FREQUENCY_MONTHLY.equalsIgnoreCase(frequency)) {
 
-                events = eventService.getEventsByTypeAndDateRange(Constants.SERVICE_TYPE_SUNDAY, dateRange);
-            }
             if (events != null && !events.isEmpty()) {
                 //we have something to report on - @ least
                 Event totals = new Event();
@@ -297,16 +408,13 @@ public class EmailService {
                 ctx.setVariable("churchName", churchName);
                 ctx.setVariable("events", events);
                 ctx.setVariable("totals", totals);
-                if (Constants.REPORT_FREQUENCY_WEEKLY.equalsIgnoreCase(frequency)) {
-                    ctx.setVariable("header", getResource("email.subject.apostolic.report", frequency));
-                } else {
-                    ctx.setVariable("header", getResource("email.subject.apostolic.report", frequency, dateRange));
-                }
+                ctx.setVariable("header", getResource("email.subject.apostolic.report", frequency, LAST_SUNDAY));
+
 
 
                 final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
                 final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
-                message.setSubject(getResource("email.subject.apostolic.report", frequency, dateRange));
+                message.setSubject(getResource("email.subject.apostolic.report", frequency, LAST_SUNDAY));
                 message.setFrom(getResource("email.system.from"));
                 message.setTo(apostolicEmail);
 
@@ -396,7 +504,7 @@ public class EmailService {
                 logger.error("No users set for this assembly...can't send email " + myUser.getAssembly().getName());
                 return;
             }
-
+          Assembly assembly = myUser.getAssembly();
             for (User user : userList) {
 
                 if(user.getEmail() == null || user.getEmail().isEmpty()){
@@ -406,6 +514,10 @@ public class EmailService {
 
                 if (tithes != null && !tithes.isEmpty()) {
                     //we have something to report on - @ least
+                    float total = 0;
+                    for(Tithe tithe : tithes){
+                        total += tithe.getAmount();
+                    }
 
                     String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
                     String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
@@ -416,6 +528,7 @@ public class EmailService {
                     ctx.setVariable("churchName", churchName);
                     ctx.setVariable("name", user.getFullname());
                     ctx.setVariable("tithes", tithes);
+                    ctx.setVariable("total", Utils.moneyFormatter(total,assembly.getLocaleObject()));
                     ctx.setVariable("header", "Tithe report for : "+date);
 
 
@@ -554,6 +667,8 @@ public class EmailService {
     private String getResource(String key, Object... args) {
         return (new NonStaticMessageFormat(resourceBundle.getString(key), args).getMsg());
     }
+
+
 
     private class GlobarEmailVars {
         private String eSavvyLink;

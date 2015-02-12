@@ -33,7 +33,7 @@ public class SMSService {
         getSmsDAO().saveSMSLog(smsLog);
     }
 
-    public void getSMSLogByAssemblyAndDate(long assemblyId, DateRange dateRange){
-        //getSmsDAO().getSMSLogByAssemblyAndDate(assemblyId,dateRange);
+    public List<SMSLog> getSMSLogByAssemblyAndDate(long assemblyId, DateRange dateRange){
+        return getSmsDAO().getSMSLogByAssemblyAndDate(assemblyId,dateRange);
     }
 }

@@ -3,10 +3,7 @@ package za.org.rfm.triggers;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
-import za.org.rfm.jobs.ApostolicMonthlyReport;
-import za.org.rfm.jobs.ApostolicWeeklyReport;
-import za.org.rfm.jobs.MemberInActivityChecker;
-import za.org.rfm.jobs.ReportReminder;
+import za.org.rfm.jobs.*;
 
 import javax.annotation.PostConstruct;
 
@@ -35,6 +32,10 @@ public class JobRepository {
             JobDetail apostolicMonthly = JobBuilder.newJob(ApostolicMonthlyReport.class)
                     .withIdentity(jobKeyB).build();
 
+            JobKey jobKeyC = new JobKey("SmSBillMonthlyReport", "apostolic");
+            JobDetail smsBillJob = JobBuilder.newJob(SmsBillJob.class)
+                    .withIdentity(jobKeyC).build();
+
 
 
             Trigger everyDayMidnight = TriggerBuilder
@@ -42,6 +43,19 @@ public class JobRepository {
                     .withIdentity("everyDayMidnight")
                     .withSchedule(
                             CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? *"))
+                    .build();
+
+            Trigger everyFiveMinutes = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyFiveMinutes")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0/10 * 1/1 * ? *"))
+                    .build();
+            Trigger everyTwoMinutes = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyTwoMinutes")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0/2 * 1/1 * ? *"))
                     .build();
 
             Trigger everyFirstDayOfMonth = TriggerBuilder
@@ -77,6 +91,7 @@ public class JobRepository {
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);
+            sch.scheduleJob(smsBillJob,everyFiveMinutes);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -66,7 +66,7 @@ public class Assembly extends ChurchManagerEntity implements Comparable<Assembly
        return  members.size();
    }
    public Locale getLocaleObject(){
-      return Utils.getCountryLocale(getLocale());
+      return Utils.getCountryLocale(getCountry());
    }
     public String getCountry(){
         return Utils.getCountryFriendlyName(getLocale());
@@ -103,5 +103,10 @@ public class Assembly extends ChurchManagerEntity implements Comparable<Assembly
           return (int)(this.getLatestOffering() - anotherAssembly.getLatestOffering());
       }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return name+"("+getCountry()+")";
     }
 }

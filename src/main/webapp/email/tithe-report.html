@@ -83,28 +83,7 @@
 
             background: #ededed;
             background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Phone Number</th>
-                                <th style="padding:21px 25px 22px 25px;
-            border-top:1px solid #fafafa;
-            border-bottom:1px solid #e0e0e0;
-
-            background: #ededed;
-            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Absenteesm Duration</th>
-                                <th style="padding:21px 25px 22px 25px;
-            border-top:1px solid #fafafa;
-            border-bottom:1px solid #e0e0e0;
-
-            background: #ededed;
-            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Comment/Response</th>
-                                <th style="padding:21px 25px 22px 25px;
-            border-top:1px solid #fafafa;
-            border-bottom:1px solid #e0e0e0;
-
-            background: #ededed;
-            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Action Taken</th>
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Amount</th>
                             </tr>
                             <tr th:each="tithe: *{tithes}" style="text-align: center;
             padding-left:20px;">
@@ -123,7 +102,23 @@
             background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
             background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
                             </tr><!-- Table Row -->
+                            <tr>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
 
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Total</th>
+                                <th th:text="${total}"  style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);"></th>
+
+                            </tr>
 
                             </tbody>
                             <!-- Table Body -->

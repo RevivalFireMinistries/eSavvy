@@ -110,4 +110,11 @@ public class UserService {
         }
         return null;
     }
+    public User getSuperUser() {
+        List<User> users = getUsersByRole(za.org.rfm.utils.Role.SuperAdmin);
+        if (!users.isEmpty()) {
+            return users.get(0);   //FIXME: make sure only one super user exists in the system
+        }
+        return null;
+    }
 }
