@@ -91,7 +91,7 @@ public class JobRepository {
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);
-            sch.scheduleJob(smsBillJob,everyFiveMinutes);
+            sch.scheduleJob(smsBillJob,everyFirstDayOfMonth);
         } catch (Exception e) {
             e.printStackTrace();
         }
