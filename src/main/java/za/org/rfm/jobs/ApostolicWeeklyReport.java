@@ -1,5 +1,6 @@
 package za.org.rfm.jobs;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -12,15 +13,13 @@ import za.org.rfm.model.User;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
+import za.org.rfm.service.SystemVarService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * User: Russel.Mupfumira
@@ -35,11 +34,13 @@ public class ApostolicWeeklyReport implements Job {
     private static EmailService emailService;
     private static EventService eventService;
     private static AssemblyService assemblyService;
+    private static SystemVarService systemVarService;
     @PostConstruct
     public void init() {
         eventService = tmpEventService;
         emailService = tmpEmailService;
         assemblyService = tmpAssemblyService;
+        systemVarService = tmpSystemVarService;
     }
     @Autowired
     private EventService tmpEventService;
@@ -47,15 +48,22 @@ public class ApostolicWeeklyReport implements Job {
     private EmailService tmpEmailService;
     @Autowired
     private AssemblyService tmpAssemblyService;
+    @Autowired
+    private SystemVarService tmpSystemVarService;
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
        logger.info("Now running job : generate sunday service weekly report");
       //execute the job here
+        String apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
+        if(StringUtils.isEmpty(apostolicEmail)){
+            logger.error("Apostolic Email not found please configure immediately");
+        }
 
-      emailService.apostolicSundayWeeklyReport(Constants.REPORT_FREQUENCY_WEEKLY);
+      emailService.apostolicSundayWeeklyReport();
       //now update assembly latest event info
 
        List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
+        List<Assembly> missingReports = new ArrayList<Assembly>();
         for(Assembly a : assemblyList){
              List<Event> events = eventService.getEventsByAssemblyAndTypeAndDate(a.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
             if(events != null && !events.isEmpty()){
@@ -73,9 +81,21 @@ public class ApostolicWeeklyReport implements Job {
                 for(User user : a.getUsers()){
                     emailService.sendNotification(user,resourceBundle.getString("email.subject.missing.report"),resourceBundle.getString("email.body.missing.report"));
                 }
+                missingReports.add(a);
                 logger.info("Missing report for assembly : "+a.getName()+"  - alerts have been sent!");
             }
             assemblyService.saveAssembly(a);
+        }
+        if(!missingReports.isEmpty()){
+            StringBuilder msgList = new StringBuilder();
+                    msgList.append("The following Assemblies did not submit reports :\n");
+            int count = 0;
+            for(Assembly a : missingReports){
+                count++;
+                msgList.append(count+". "+a+"\n");
+            }
+
+            emailService.sendNotification(apostolicEmail,"Missing Reports  for this week",msgList.toString());
         }
     }
 }

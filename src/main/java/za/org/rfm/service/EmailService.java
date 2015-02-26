@@ -92,6 +92,49 @@ public class EmailService {
         }
 
     }
+    public void sendNotification(String emailAddress, String subject, String... messages) {
+
+        try {
+            if (!StringUtils.isEmpty(emailAddress)) {
+                //Now validate email first
+                EmailFormatValidator emailFormatValidator = new EmailFormatValidator();
+                if (emailFormatValidator.validate(emailAddress)) {
+                    logger.debug("Email address validation...OK...process");
+                    //now we can proceeed
+                    String eSavvyLink = (systemVarService.getSystemVarByNameUnique(Constants.ESAVVY_LINK)).getValue();
+                    String churchName = (systemVarService.getSystemVarByNameUnique(Constants.CHURCH_NAME)).getValue();
+                    final Context ctx = new Context(Locale.ENGLISH);
+                    ctx.setVariable("name","");
+                    ctx.setVariable("messages", messages);
+                    ctx.setVariable("eSavvyLink", eSavvyLink);
+                    ctx.setVariable("churchName", churchName);
+
+
+                    final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+                    final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
+                    message.setSubject(subject);
+                    message.setFrom(getResource("email.system.from"));
+                    message.setTo(emailAddress);
+
+                    // Create the HTML body using Thymeleaf
+                    final String htmlContent = this.templateEngine.process("../email/notification", ctx);
+                    message.setText(htmlContent, true); // true = isHtml
+
+                    logger.debug("Email setup complete...now send!");
+                    // Send mail
+                    this.mailSender.send(mimeMessage);
+                    logger.info("Email sent!");
+                }
+            } else {
+                logger.error("Email address validation failed or insufficient user info...abort!");
+            }
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            logger.error("Email sending error: " + e.getMessage());
+        }
+
+    }
 
     public void sendNotification(User user, String subject, String... messages) {
 
@@ -377,8 +420,8 @@ public class EmailService {
 
     }
 
-    public void apostolicSundayWeeklyReport(String frequency) {
-        DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
+    public void apostolicSundayWeeklyReport() {
+
         try {
             List<Event> events = null;
                 //we need to get all ss events for the previous sunday
@@ -408,13 +451,13 @@ public class EmailService {
                 ctx.setVariable("churchName", churchName);
                 ctx.setVariable("events", events);
                 ctx.setVariable("totals", totals);
-                ctx.setVariable("header", getResource("email.subject.apostolic.report", frequency, LAST_SUNDAY));
+                ctx.setVariable("header", getResource("email.subject.apostolic.report", Constants.REPORT_FREQUENCY_WEEKLY, LAST_SUNDAY));
 
 
 
                 final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
                 final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8"); // true = multipart
-                message.setSubject(getResource("email.subject.apostolic.report", frequency, LAST_SUNDAY));
+                message.setSubject(getResource("email.subject.apostolic.report", Constants.REPORT_FREQUENCY_WEEKLY, LAST_SUNDAY));
                 message.setFrom(getResource("email.system.from"));
                 message.setTo(apostolicEmail);
 

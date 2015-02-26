@@ -6,29 +6,19 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import za.org.rfm.model.Account;
-import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Event;
-import za.org.rfm.model.Member;
+import za.org.rfm.model.*;
 import za.org.rfm.model.json.J_Event;
 import za.org.rfm.model.json.J_Member;
-import za.org.rfm.service.AssemblyService;
-import za.org.rfm.service.EmailService;
-import za.org.rfm.service.EventService;
-import za.org.rfm.service.MemberService;
+import za.org.rfm.service.*;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: Russel.Mupfumira
@@ -39,6 +29,7 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberController {
     private static final Logger logger = Logger.getLogger(MemberController.class);
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("locale.messages_en_ZA", Locale.getDefault());
     @Autowired
     MemberService memberService;
     @Autowired
@@ -47,6 +38,8 @@ public class MemberController {
     AssemblyService assemblyService;
     @Autowired
     EmailService emailService;
+    @Autowired
+    SystemVarService systemVarService;
 
     public MemberService getMemberService() {
         return memberService;
@@ -154,6 +147,54 @@ public class MemberController {
         }
         return "";
     }
+    @RequestMapping(value = "report/apostolic/weekly", method = RequestMethod.GET)
+    public String generateApostolicWeekly() {
+        String apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
+        if(org.apache.commons.lang.StringUtils.isEmpty(apostolicEmail)){
+            logger.error("Apostolic Email not found please configure immediately");
+        }
+
+        emailService.apostolicSundayWeeklyReport();
+        List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
+        List<Assembly> missingReports = new ArrayList<Assembly>();
+        for(Assembly a : assemblyList){
+            List<Event> events = eventService.getEventsByAssemblyAndTypeAndDate(a.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
+            if(events != null && !events.isEmpty()){
+                Event event = events.get(0);
+                a.setLatestAttendance(event.getAttendance());
+                a.setLatestOffering(event.getOfferings());
+                a.setLatestTithe(event.getTithes());
+            }
+            else{      //no event report so set all to zero
+                a.setLatestTithe(0);
+                a.setLatestAttendance(0);
+                a.setLatestOffering(0);
+                //now send the missing report alert!
+                a.setUsers(assemblyService.getAssemblyUsers(a.getAssemblyid()));
+                for(User user : a.getUsers()){
+                    emailService.sendNotification(user,resourceBundle.getString("email.subject.missing.report"),resourceBundle.getString("email.body.missing.report"));
+                }
+                missingReports.add(a);
+                logger.info("Missing report for assembly : "+a.getName()+"  - alerts have been sent!");
+            }
+            assemblyService.saveAssembly(a);
+        }
+        if(!missingReports.isEmpty()){
+            StringBuilder msgList = new StringBuilder();
+            String[] list = new String[missingReports.size()];
+            int count = 0;
+            for(Assembly a : missingReports){
+               list[count] = count+1+". "+a;
+                count++;
+            }
+
+            emailService.sendNotification(apostolicEmail,"ASSEMBLIES WITH MISSING REPORTS!!!",list);
+        }
+
+
+        return "Done!";
+    }
+
     @RequestMapping(value = "event/add", method = RequestMethod.POST)
     public String createEvent(@RequestBody JSONObject json) {
         String msg = "";
