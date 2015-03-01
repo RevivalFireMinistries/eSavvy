@@ -8,6 +8,7 @@ import za.org.rfm.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Russel on 2015-02-02.
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class EventTotals {
+    Assembly assembly;
     String assemblyName;
     double totalTithe,totalOffering,totalIncome,totalApostolic;
     double averageAttendance;
@@ -22,6 +24,7 @@ public class EventTotals {
     public EventTotals(Assembly assembly, List<Event> eventList) {
         List<Integer> attendanceList = new ArrayList<Integer>();
         this.assemblyName = assembly.getName();
+        this.assembly = assembly;
         for(Event event : eventList){
             totalTithe += event.getTithes();
             totalOffering += event.getOfferings();
@@ -35,11 +38,43 @@ public class EventTotals {
 
     public EventTotals(List<EventTotals> eventTotalsList) {
         for(EventTotals eventTotals : eventTotalsList){
-            this.totalTithe += eventTotals.getTotalTithe();
-            this.totalOffering += eventTotals.getTotalOffering();
-            this.totalIncome += eventTotals.getTotalIncome();
-            this.totalApostolic += eventTotals.getTotalApostolic();
-            this.setAssemblyName("Totals");
+            this.totalTithe += eventTotals.totalTithe;
+            this.totalOffering += eventTotals.totalOffering;
+            this.totalIncome += eventTotals.totalIncome;
+            this.totalApostolic += eventTotals.totalApostolic;
+            this.setAssemblyName("Totals ");
         }
     }
+
+    public String getTotalTitheFormatted(){
+        if(assembly == null){
+            return Utils.moneyFormatter(totalTithe, Locale.getDefault());
+        }
+        return Utils.moneyFormatter(totalTithe,assembly.getLocaleObject());
+    }
+
+    public String getTotalOfferingFormatted(){
+        if(assembly == null){
+            return Utils.moneyFormatter(totalOffering, Locale.getDefault());
+        }
+        return Utils.moneyFormatter(totalOffering,assembly.getLocaleObject());
+    }
+
+    public String getTotalIncomeFormatted(){
+        if(assembly == null){
+            return Utils.moneyFormatter(totalIncome, Locale.getDefault());
+        }
+        return Utils.moneyFormatter(totalIncome,assembly.getLocaleObject());
+    }
+
+    public String getTotalApostolicFormatted(){
+        if(assembly == null){
+            return Utils.moneyFormatter(totalApostolic, Locale.getDefault());
+        }
+        return Utils.moneyFormatter(totalApostolic,assembly.getLocaleObject());
+    }
+
+
+
+
 }

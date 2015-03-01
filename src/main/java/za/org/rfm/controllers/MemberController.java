@@ -147,6 +147,13 @@ public class MemberController {
         }
         return "";
     }
+    @RequestMapping(value = "report/apostolic/monthly", method = RequestMethod.GET)
+    public String generateApostolicMonthly() {
+
+        emailService.apostolicSundayMonthlyReport();
+
+        return "Done!";
+    }
     @RequestMapping(value = "report/apostolic/weekly", method = RequestMethod.GET)
     public String generateApostolicWeekly() {
         String apostolicEmail = (systemVarService.getSystemVarByNameUnique(Constants.APOSTOLIC_EMAIL)).getValue();
