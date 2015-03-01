@@ -1,0 +1,245 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>
+        Report
+    </title>
+
+</head>
+<body style="margin: 0; padding: 0; background: #bccdd9;">
+<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+    <tr>
+        <td align="center" style="margin: 0; padding: 0; background:#bccdd9 ;padding: 35px 0">
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="60%" style="font-family: Georgia, serif;" class="header">
+                <tr>
+                    <td bgcolor="#698291" height="115" align="center" width="60%">
+                        <h1 style="color: #fff; font: normal 33px Georgia, serif; margin: 0; padding: 0; line-height: 33px;">ChurchManager </h1>
+                        <p style="color: #dfa575; font: normal 11px Georgia, serif; margin: 0; padding: 0; line-height: 11px;">Intelligent Church Management</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 1px; height: 5px; line-height: 1px;" height="5">&nbsp;</td>
+                </tr>
+            </table><!-- header-->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="650" style="font-family: Georgia, serif; background: #fff;" bgcolor="#ffffff">
+                <tr>
+                    <td width="14" style="font-size: 0px;" bgcolor="#ffffff">&nbsp;</td>
+                    <td width="60%" valign="top" align="left" bgcolor="#ffffff" style="font-family: Georgia, serif; background: #fff;">
+                        <h3 style="color:#8598a3; font-weight: normal; margin: 0; padding: 0; font-style: italic; line-height: 30px; font-size: 30px;font-family: Georgia, serif; "><span th:text="${churchName}"></span> - ChurchManager Notification</h3><br/>
+                        <span>  </span><span th:text="${name}" style="color:#767676; font-weight: bolder; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Georgia, serif; ">
+                            Greeting comes here!
+                        </span> <br/><br/> <!-- Content Area -->
+                        <table>
+                            <tr>
+                                <th></th>
+                            </tr>
+                            <!-- <tr th:each="msg : ${messages}">
+                                 <td th:text="${msg}">messages<br/></td>
+                             </tr>-->
+                        </table>
+                        <table cellspacing='0' id="report" style="font-family:Arial, Helvetica, sans-serif;
+            color:#666;
+            font-size:12px;
+            text-shadow: 1px 1px 0px #fff;
+            background:#eaebec;
+            margin:20px;
+            border:#ccc 1px solid;
+
+            -moz-border-radius:3px;
+            -webkit-border-radius:3px;
+            border-radius:3px;
+
+            -moz-box-shadow: 0 1px 2px #d1d1d1;
+            -webkit-box-shadow: 0 1px 2px #d1d1d1;
+            box-shadow: 0 1px 2px #d1d1d1;"> <!-- cellspacing='0' is important, must stay -->
+
+                            <!-- Table Header -->
+                            <thead>
+                            <tr>
+                                <th colspan="2" th:text="${header}" style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);"></th>
+                            </tr>
+                            </thead>
+                            <!-- Table Header -->
+
+                            <!-- Table Body -->
+                            <tbody>
+                            <tr>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Assembly</th>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Total Tithes</th>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Total Offerings</th>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Total Income</th>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Total Apostolic</th>
+                                <th style="padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);">Average Attendance</th>
+                            </tr>
+                            <tr th:each="total: *{assemblyEventTotals}" style="text-align: center;
+            padding-left:20px;">
+                                <td th:text="${total.assemblyName}" style="padding:18px;  border-top: 1px solid #ffffff;                    border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${total.totalTitheFormatted}" style="padding:18px;  border-top: 1px solid #ffffff;                    border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${total.totalOfferingFormatted}" style="padding:18px;
+            border-top: 1px solid #ffffff;
+            border-bottom:1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            background: #fafafa;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+            background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${total.totalIncomeFormatted}" style="padding:18px;
+            border-top: 1px solid #ffffff;
+            border-bottom:1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            background: #fafafa;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+            background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${total.totalApostolicFormatted}" style="padding:18px;
+            border-top: 1px solid #ffffff;
+            border-bottom:1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            background: #fafafa;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+            background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${total.averageAttendance}" style="padding:18px;
+            border-top: 1px solid #ffffff;
+            border-bottom:1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            background: #fafafa;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+            background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                            </tr><!-- Table Row -->
+                            <!-- Table Row -->
+                            <tr >
+                                <td  style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"> TOTALS</td>
+                                <td th:text="${totalOfTotals.totalTitheFormatted}" style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${totalOfTotals.totalOfferingFormatted}" style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${totalOfTotals.totalIncomeFormatted}" style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td th:text="${totalOfTotals.totalApostolicFormatted}" style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td  style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+                                <td  style="padding:18px;  border-top: 1px solid #ffffff;
+                                border-bottom:1px solid #e0e0e0;
+                                border-left: 1px solid #e0e0e0;
+
+                                background: #fafafa;
+                                background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+                                background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);"></td>
+
+
+                            </tr>
+
+
+                            </tbody>
+                            <!-- Table Body -->
+
+                        </table>
+                        <br/>
+                        <p>Yours Sincerely<br/><br/>
+                            ChurchManager Team!</p>  <br/>
+                        <p>Log in to ChurchManager : <a th:href="@{${eSavvyLink}}" >ChurchManager Login</a></p>
+                        <p><i>For any queries please email churchmanager@rfm.org.za or contact Help Desk on +27 72 262 1278</i></p>
+
+                    </td>
+                    <td width="16" bgcolor="#ffffff" style="font-size: 0px;font-family: Georgia, serif; background: #fff;">&nbsp;</td>
+                </tr>
+            </table><!-- body -->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="60%" style="font-family: Georgia, serif; line-height: 10px;" bgcolor="#698291" class="footer">
+                <tr>
+                    <td bgcolor="#698291"  align="center" style="padding: 15px 0 10px; font-size: 11px; color:#fff; margin: 0; line-height: 1.2;font-family: Georgia, serif;" valign="top">
+                        <p style="padding: 0; font-size: 11px; color:#fff; margin: 0; font-family: Georgia, serif;">You're receiving this email because you are a registered user on the system.</p>
+                        <p style="padding: 0; font-size: 11px; color:#fff; margin: 0 0 8px 0; font-family: Georgia, serif;">Having trouble reading this? <webversion style="color: #f7a766; text-decoration: none;">View it in your browser</webversion>. </p>
+                    </td>
+                </tr>
+            </table><!-- footer-->
+        </td>
+    </tr>
+</table>
+</body>
+</html>
