@@ -95,6 +95,7 @@ public class EventDAO {
     }
 
     public List<Event> getEventsByAssemblyAndTypeAndDate(long assemblyid, String eventtype, Timestamp date) {
+        logger.info("Getting events for assembly : "+assemblyid+" for the date "+date);
         String hql = "";
         if(Constants.STATUS_ALL.equalsIgnoreCase(eventtype)){
             hql =  "from Event where assembly = :assemblyid and eventdate = :date";
