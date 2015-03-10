@@ -102,6 +102,7 @@ public class EventDAO {
         }else{
             hql = "from Event where assembly = :assemblyid and eventtype = :eventtype and eventdate = :date ";
         }
+        hql += " order by eventdate desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setLong("assemblyid",assemblyid);
         if(!Constants.STATUS_ALL.equalsIgnoreCase(eventtype))
