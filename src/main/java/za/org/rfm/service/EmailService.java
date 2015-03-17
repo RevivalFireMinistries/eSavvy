@@ -420,12 +420,9 @@ public class EmailService {
 
     }
 
-    public void apostolicSundayWeeklyReport() {
+    public void apostolicSundayWeeklyReport(List<Event> events) {
 
         try {
-            List<Event> events = null;
-                //we need to get all ss events for the previous sunday
-                events = eventService.getEventsByDateAndType(Constants.SERVICE_TYPE_SUNDAY, LAST_SUNDAY);
 
 
             if (events != null && !events.isEmpty()) {

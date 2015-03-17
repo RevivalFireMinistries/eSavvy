@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 public class J_Member {
 
-    public String firstName,lastName,gender,email,phone,homeAddress,assemblyId;
+    public String firstName,lastName,gender,email,phone,homeAddress,assemblyId,type;
 
 }

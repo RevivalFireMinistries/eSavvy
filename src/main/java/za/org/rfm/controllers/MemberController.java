@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import za.org.rfm.model.*;
@@ -78,6 +80,7 @@ public class MemberController {
             AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
             mapper.setAnnotationIntrospector(introspector);
             logger.info("Returning a list of members : "+members.size());
+            logger.info(mapper.writeValueAsString(members));
             return mapper.writeValueAsString(members);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,45 +91,40 @@ public class MemberController {
 
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String createMember(@RequestBody JSONObject json) {
+    public ResponseEntity<String> createMember(@RequestBody JSONObject json) {
+        ResponseEntity<String> responseEntity= null;
         try {
+
             logger.info("Now creating the member object...."+json);
             J_Member j_member = mapper.readValue(json.toString(),J_Member.class);
-            if(j_member != null){
-               if(!StringUtils.isEmpty(j_member.getFirstName())) {
-                    if(!StringUtils.isEmpty(j_member.getLastName())){
-                        if(!StringUtils.isEmpty(j_member.getPhone())){
-                            Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(j_member.getAssemblyId()));
-                            if(assembly != null){
-                                Member member = new Member(j_member);
-                                member.setAssembly(assembly);
-                                member.setDateCreated(new Date());
-                                member.setStatus(Constants.STATUS_ACTIVE);
-                                Account account = new Account();
-                                account.setMember(member);
-                                member.setAccount(account);
-                                Utils.capitaliseMember(member);
-                                memberService.saveMember(member);
-                                memberService.addToEveryone(member);
-                                logger.info("Member added successfully into db");
-                            }
-
-                        }
-                        return "message:Error - Phone number is  empty";
-                    }
-                   return "message:Error - Last Name is  empty";
-                }
-                return "message:Error - Member object is null";
-
-            }
+            Assembly assembly = assemblyService.getAssemblyById(Long.parseLong(j_member.getAssemblyId()));
+                if( j_member != null){
+                    Member member = new Member(j_member);
+                    member.setAssembly(assembly);
+                    member.setDateCreated(new Date());
+                    member.setStatus(Constants.STATUS_ACTIVE);
+                    Account account = new Account();
+                    account.setMember(member);
+                    member.setAccount(account);
+                    Utils.capitaliseMember(member);
+                    memberService.saveMember(member);
+                    memberService.addToEveryone(member);
+                    logger.info("message:Success - Member saved successfully");
+                    responseEntity =  new ResponseEntity<String>(HttpStatus.CREATED);
+                }else{
+                   responseEntity = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+                    logger.error("Error : member is null");
+               }
 
         } catch (IOException e) {
             logger.error("Encountered an error : "+e.getMessage());
             e.printStackTrace();
-            return "Encountered during processing ";
+            responseEntity = new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        finally {
+            return responseEntity;
         }
 
-         return "";
     }
 
     @RequestMapping(value = "event/{id}", method = RequestMethod.GET)
@@ -160,14 +158,14 @@ public class MemberController {
         if(org.apache.commons.lang.StringUtils.isEmpty(apostolicEmail)){
             logger.error("Apostolic Email not found please configure immediately");
         }
-
-        emailService.apostolicSundayWeeklyReport();
+        List<Event> finalEvents = new ArrayList<Event>();
         List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
         List<Assembly> missingReports = new ArrayList<Assembly>();
         for(Assembly a : assemblyList){
             List<Event> events = eventService.getEventsByAssemblyAndTypeAndDate(a.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
             if(events != null && !events.isEmpty()){
                 Event event = events.get(0);
+                finalEvents.add(event);
                 a.setLatestAttendance(event.getAttendance());
                 a.setLatestOffering(event.getOfferings());
                 a.setLatestTithe(event.getTithes());
@@ -198,7 +196,7 @@ public class MemberController {
             emailService.sendNotification(apostolicEmail,"ASSEMBLIES WITH MISSING REPORTS!!!",list);
         }
 
-
+        emailService.apostolicSundayWeeklyReport(finalEvents);
         return "Done!";
     }
 

@@ -59,15 +59,16 @@ public class ApostolicWeeklyReport implements Job {
             logger.error("Apostolic Email not found please configure immediately");
         }
 
-      emailService.apostolicSundayWeeklyReport();
-      //now update assembly latest event info
 
+      //now update assembly latest event info
+        List<Event> finalEvents = new ArrayList<Event>();
        List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
         List<Assembly> missingReports = new ArrayList<Assembly>();
         for(Assembly a : assemblyList){
              List<Event> events = eventService.getEventsByAssemblyAndTypeAndDate(a.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, new Timestamp(Utils.calcLastSunday(new Date()).getTime()));
             if(events != null && !events.isEmpty()){
                 Event event = events.get(0);
+                finalEvents.add(event);
                 a.setLatestAttendance(event.getAttendance());
                 a.setLatestOffering(event.getOfferings());
                 a.setLatestTithe(event.getTithes());
@@ -97,5 +98,7 @@ public class ApostolicWeeklyReport implements Job {
 
             emailService.sendNotification(apostolicEmail,"Missing Reports  for this week",msgList.toString());
         }
+
+        emailService.apostolicSundayWeeklyReport(finalEvents);
     }
 }

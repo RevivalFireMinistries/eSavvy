@@ -75,6 +75,7 @@ public class Member extends ChurchManagerEntity{
         this.email = j_member.getEmail();
         this.phone = j_member.getPhone();
         this.homeAddress = j_member.getHomeAddress();
+        this.type = j_member.getType();
     }
     public String getFullName(){
         return this.getFirstName()+" "+this.getLastName();
