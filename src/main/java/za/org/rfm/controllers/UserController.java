@@ -44,8 +44,9 @@ public class UserController {
                     userService.saveUser(dbUser);
                 }
             }
-
-            return mapper.writeValueAsString(dbUser);
+           String userJson = mapper.writeValueAsString(dbUser);
+            System.out.println(userJson);
+            return userJson;
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());

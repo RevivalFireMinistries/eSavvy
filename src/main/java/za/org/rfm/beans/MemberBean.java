@@ -2,12 +2,10 @@ package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FlowEvent;
-import za.org.rfm.model.Account;
-import za.org.rfm.model.Assembly;
-import za.org.rfm.model.Member;
-import za.org.rfm.model.MemberGroup;
+import za.org.rfm.model.*;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.MemberService;
+import za.org.rfm.service.SystemVarService;
 import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Group;
 import za.org.rfm.utils.Utils;
@@ -20,7 +18,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +35,8 @@ public class MemberBean implements Serializable{
     MemberService memberService;
     @ManagedProperty(value="#{AssemblyService}")
     AssemblyService assemblyService;
+    @ManagedProperty(value="#{SystemVarService}")
+    SystemVarService systemVarService;
     private Assembly assembly;
     private boolean skip;
     private List<Assembly> assemblyList;
@@ -59,6 +58,14 @@ public class MemberBean implements Serializable{
     public void setGroupList(List<Group> groupList) {
         groupList.remove(Group.EVERYONE);
         this.groupList = groupList;
+    }
+
+    public SystemVarService getSystemVarService() {
+        return systemVarService;
+    }
+
+    public void setSystemVarService(SystemVarService systemVarService) {
+        this.systemVarService = systemVarService;
     }
 
     public Assembly getAssembly() {
@@ -147,6 +154,20 @@ public class MemberBean implements Serializable{
             memberGroup.setGroupName(grp.name());
             memberGroup.setStatus(Constants.STATUS_ACTIVE);
             memberService.saveMemberGroup(memberGroup);
+        }
+        //send me him a welcome sms if he is a guest
+        if(member.getType().equalsIgnoreCase(Constants.MEMBER_TYPE_GUEST)){
+            SystemVar var = systemVarService.getSystemVarByNameUnique("welcome-sms");
+            if(var != null){
+                SystemVar smsVal = systemVarService.getSystemVarByNameUnique(Constants.SMS_ENABLED);
+                Boolean sendSMS = false;
+                if(smsVal != null){
+                    sendSMS = Boolean.valueOf(smsVal.getValue());
+                }
+                logger.info("Sending SMS enabled : "+sendSMS);
+                member.sendSMS(var.getValue(),sendSMS);
+            }
+
         }
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Member :"+getMember().getFullName()+" has been saved",null));
         setMember(new Member());

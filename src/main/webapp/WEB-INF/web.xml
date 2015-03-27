@@ -30,7 +30,7 @@
     </context-param>
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>aristo </param-value>
+        <param-value>hot-sneaks</param-value>
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -55,7 +55,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>login.xhtml</welcome-file>
+        <welcome-file>template_old.xhtml</welcome-file>
     </welcome-file-list>
 <listener> <listener-class>com.sun.faces.config.ConfigureListener</listener-class> </listener>
     <servlet>
