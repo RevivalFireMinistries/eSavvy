@@ -81,11 +81,11 @@ public class Member extends ChurchManagerEntity{
         return this.getFirstName()+" "+this.getLastName();
     }
 
-    public SMSLog sendSMS(String message,boolean test){
+    public SMSLog sendSMS(String message,boolean enabled){
         boolean sent = false;
         SMSLog log = null;
         if(this.getPhone() != null && (message != null && message != "")){
-             sent = Utils.sendSMS(this.getPhone(),message,test);
+             sent = Utils.sendSMS(this.getPhone(),message,enabled);
             if(sent){
              log =   logSMS(message, Constants.STATUS_SENT);
             }else{
