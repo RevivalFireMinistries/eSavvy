@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import za.org.rfm.service.AssemblyService;
 import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
-import za.org.rfm.utils.Constants;
 
 import javax.annotation.PostConstruct;
 

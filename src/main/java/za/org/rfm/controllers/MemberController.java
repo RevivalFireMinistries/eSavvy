@@ -145,10 +145,12 @@ public class MemberController {
         }
         return "";
     }
-    @RequestMapping(value = "report/apostolic/monthly", method = RequestMethod.GET)
-    public String generateApostolicMonthly() {
+    @RequestMapping(value = "report/apostolic/monthly/{id}", method = RequestMethod.GET)
+    public String generateApostolicMonthly(String month) {
 
-        emailService.apostolicSundayMonthlyReport();
+        int mnth  = Integer.parseInt(month);
+
+        emailService.apostolicSundayMonthlyReport(mnth);
 
         return "Done!";
     }

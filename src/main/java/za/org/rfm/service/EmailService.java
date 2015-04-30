@@ -358,7 +358,7 @@ public class EmailService {
             e.printStackTrace();
         }
     }
-    public void apostolicSundayMonthlyReport() {
+    public void apostolicSundayMonthlyReport(int month) {
         try {
             DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
             List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
