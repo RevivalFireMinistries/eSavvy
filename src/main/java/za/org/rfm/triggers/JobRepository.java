@@ -94,7 +94,7 @@ public class JobRepository {
             sch.start();
 
             // Tell quartz to schedule the job using the trigger
-            sch.scheduleJob(memberInActivityChecker, everyFridayMidnight);
+            sch.scheduleJob(memberInActivityChecker, everyFirstDayOfMonth2);
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);

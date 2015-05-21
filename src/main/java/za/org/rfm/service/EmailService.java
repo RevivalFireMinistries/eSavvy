@@ -621,6 +621,7 @@ public class EmailService {
                         ctx.setVariable("name", user.getFullname());
                         ctx.setVariable("people", members);
                         ctx.setVariable("header", subjectLine);
+                        ctx.setVariable("message", "The following is a list of None-Tithers for the past 4 weeks");
 
 
                         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
