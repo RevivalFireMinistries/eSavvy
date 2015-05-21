@@ -11,6 +11,7 @@ import za.org.rfm.service.EmailService;
 import za.org.rfm.service.EventService;
 
 import javax.annotation.PostConstruct;
+import java.util.Calendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,7 +44,9 @@ public class ApostolicMonthlyReport implements Job{
         logger.info("Now running job : generate sunday service monthly report");
         //execute the job here
 
-        emailService.apostolicSundayMonthlyReport();
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+
+        emailService.apostolicSundayMonthlyReport(--currentMonth);
 
     }
 }

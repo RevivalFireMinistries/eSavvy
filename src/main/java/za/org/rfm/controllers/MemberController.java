@@ -206,6 +206,7 @@ public class MemberController {
     public String createEvent(@RequestBody JSONObject json) {
         String msg = "";
         try {
+
             logger.info("Now creating the event object...."+json);
             J_Event j_event = mapper.readValue(json.toString(),J_Event.class);
             if(j_event != null){
