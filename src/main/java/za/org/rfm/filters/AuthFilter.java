@@ -37,8 +37,8 @@ public class AuthFilter implements Filter {
             HttpSession ses = req.getSession(false);
             //  allow user to proceed if url is login.xhtml or user logged in or user is accessing any page in //public folder
             String reqURI = req.getRequestURI();
-            if ( reqURI.indexOf("/login.xhtml") >= 0 || reqURI.indexOf("/resetPassword.xhtml") >= 0|| (ses != null && ses.getAttribute("username") != null)
-                    || reqURI.indexOf("/public/") >= 0 || reqURI.contains("javax.faces.resource") || reqURI.indexOf("/ws/") >= 0 ) {
+            if ( reqURI.indexOf("/login_b.xhtml") >= 0 || reqURI.indexOf("/resetPassword.xhtml") >= 0|| (ses != null && ses.getAttribute("username") != null)
+                    || reqURI.indexOf("/public/") >= 0  || reqURI.indexOf("/assets/") >= 0  || reqURI.indexOf("/vendor/") >= 0 || reqURI.contains("javax.faces.resource") || reqURI.indexOf("/ws/") >= 0 ) {
                 //System.out.println("Request allowed...."+reqURI);
                 ((HttpServletResponse) response).addHeader("Access-Control-Allow-Origin", "*");
                 ((HttpServletResponse) response).addHeader("Access-Control-Allow-Methods",
@@ -48,10 +48,9 @@ public class AuthFilter implements Filter {
                 chain.doFilter(request, response);
 
             }
-
             else {
                             // user didn't log in but asking for a page that is not allowed so take user to login page but preserve url
-                res.sendRedirect(req.getContextPath() + "/login.xhtml?from=" + URLEncoder.encode(reqURI, "UTF-8"));  // Anonymous user. Redirect to login page
+                res.sendRedirect(req.getContextPath() + "/login_b.xhtml?from=" + URLEncoder.encode(reqURI, "UTF-8"));  // Anonymous user. Redirect to login page
             }
 
         }

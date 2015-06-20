@@ -1,7 +1,6 @@
 package za.org.rfm.beans;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.SystemVar;
@@ -18,12 +17,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * User: Russel.Mupfumira
@@ -142,7 +139,7 @@ public class LoginBean implements Serializable {
     }
 
     public void loginProject() {
-
+            setMessage("");
         try {
             boolean result = getUserService().login(uname, password);
 
@@ -185,7 +182,7 @@ public class LoginBean implements Serializable {
                 } //otherwise just take them to the homepage
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Invalid login details!",null));
+                setMessage("Invalid login details");
                 logger.error("Failed login attempt : " + uname);
             }
         } catch (Exception e) {
