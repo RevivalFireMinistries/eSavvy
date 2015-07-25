@@ -4,10 +4,7 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import za.org.rfm.model.User;
 import za.org.rfm.service.UserService;
 
@@ -45,6 +42,29 @@ public class UserController {
                 }
             }
            String userJson = mapper.writeValueAsString(dbUser);
+            System.out.println(userJson);
+            return userJson;
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+    @RequestMapping(value = "user/{id}", method = RequestMethod.GET)
+    public String getUser(@PathVariable String id) {
+        User dbUser = null;
+        try {
+
+            dbUser = userService.getUser(id);
+            if(dbUser == null){
+                return null;
+            }
+            dbUser.setAssemblyId(""+dbUser.getAssembly().getAssemblyid());
+            dbUser.setAssemblyName(dbUser.getAssembly().getName());
+            logger.info("Login status : "+dbUser.getFullname());
+            userService.saveUser(dbUser);
+
+            String userJson = mapper.writeValueAsString(dbUser);
             System.out.println(userJson);
             return userJson;
         } catch (IOException e) {

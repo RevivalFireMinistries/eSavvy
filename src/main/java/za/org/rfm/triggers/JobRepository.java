@@ -67,7 +67,14 @@ public class JobRepository {
 
             Trigger everyFirstDayOfMonth2 = TriggerBuilder
                     .newTrigger()
-                    .withIdentity("everyFirstDayOfMonth1")
+                    .withIdentity("everyFirstDayOfMonth2")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 0 1 1 1/1 ? *"))
+                    .build();
+
+            Trigger everyFirstDayOfMonth3 = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyFirstDayOfMonth3")
                     .withSchedule(
                             CronScheduleBuilder.cronSchedule("0 0 1 1 1/1 ? *"))
                     .build();
@@ -98,7 +105,7 @@ public class JobRepository {
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
             sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);
-            sch.scheduleJob(smsBillJob,everyFirstDayOfMonth2);
+            sch.scheduleJob(smsBillJob,everyFirstDayOfMonth3);
         } catch (Exception e) {
             e.printStackTrace();
         }
