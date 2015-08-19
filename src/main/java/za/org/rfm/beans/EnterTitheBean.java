@@ -134,7 +134,8 @@ public class EnterTitheBean {
     public List<Member> completeMember(String query){
         List<Member> suggestions = new ArrayList<Member>();
         for(Member member: memberList){
-            if(member.getFirstName().toLowerCase().startsWith(query.toLowerCase())){
+            String fullName = member.getFullName();
+            if(fullName.toLowerCase().contains(query.toLowerCase())){
                 suggestions.add(member);
             }
         }
