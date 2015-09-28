@@ -360,7 +360,8 @@ public class EmailService {
     }
     public void apostolicSundayMonthlyReport(int month) {
         try {
-            DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
+            //DateRange dateRange = Utils.calcLastMonthDateRange(new Date());
+            DateRange dateRange = Utils.getMonthDateRange(month);
             List<Assembly> assemblyList = assemblyService.getAssemblyList(Constants.STATUS_ACTIVE);
             Map<Assembly,List<Event>> assemblyListMap = new HashMap<Assembly, List<Event>>();
             List<EventTotals> eventTotalsList = new ArrayList<EventTotals>();
