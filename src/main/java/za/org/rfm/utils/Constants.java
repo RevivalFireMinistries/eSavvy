@@ -34,7 +34,7 @@ public class Constants {
 
 
 
-    public static final double APOSTOLIC_CONTRIBUTION_PERCENTAGE = 0.35;
+    public static final double APOSTOLIC_CONTRIBUTION_PERCENTAGE = 0.30;
     public static final String REPORT_FREQUENCY_MONTHLY = "Monthly";
     public static final String REPORT_FREQUENCY_WEEKLY = "Weekly";
     public static final String REPORT_TYPE_APOSTOLIC = "Apostolic";
