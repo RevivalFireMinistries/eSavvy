@@ -30,11 +30,11 @@ public class EventTotals {
             totalTithe += event.getTithes();
             totalOffering += event.getOfferings();
             totalIncome += event.getTotalIncome();
-            totalApostolic += event.getApostolic();
             attendanceList.add(event.getAttendance());
         }
         //calc avg attendance
-       averageAttendance = Math.round(Utils.calculateAverage(attendanceList));
+       totalApostolic =  totalIncome * Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
+       averageAttendance = (int)Math.round(Utils.calculateAverage(attendanceList));
     }
 
     public EventTotals(List<EventTotals> eventTotalsList) {
