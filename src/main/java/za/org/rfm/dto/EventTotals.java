@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import za.org.rfm.model.Assembly;
 import za.org.rfm.model.Event;
+import za.org.rfm.utils.Constants;
 import za.org.rfm.utils.Utils;
 
 import java.util.ArrayList;
@@ -41,9 +42,9 @@ public class EventTotals {
             this.totalTithe += eventTotals.totalTithe;
             this.totalOffering += eventTotals.totalOffering;
             this.totalIncome += eventTotals.totalIncome;
-            this.totalApostolic += eventTotals.totalApostolic;
             this.setAssemblyName("Totals ");
         }
+        this.totalApostolic = this.totalIncome * Constants.APOSTOLIC_CONTRIBUTION_PERCENTAGE;
     }
 
     public String getTotalTitheFormatted(){
