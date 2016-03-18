@@ -203,7 +203,7 @@ public class MemberController {
     }
 
     @RequestMapping(value = "event/add", method = RequestMethod.POST)
-    public String createEvent(@RequestBody JSONObject json) {
+    public ResponseEntity<String> createEvent(@RequestBody JSONObject json) {
         String msg = "";
         try {
 
@@ -240,15 +240,15 @@ public class MemberController {
                     }
 
                 }
-                return "message:success -Content-type: application/json; ";
+                return new ResponseEntity<String>("{\"success\":true}",HttpStatus.OK);
             }
 
         } catch (IOException e) {
             logger.error("Encountered an error : "+e.getMessage());
             e.printStackTrace();
-            return "Encountered during processing ";
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return "";
+        return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
     }
 }
