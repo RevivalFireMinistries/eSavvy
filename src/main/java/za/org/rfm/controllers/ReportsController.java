@@ -7,15 +7,18 @@ import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import za.org.rfm.model.Event;
 import za.org.rfm.service.EventService;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * User: Russel.Mupfumira
@@ -33,7 +36,7 @@ public class ReportsController {
     ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String createEvent(@RequestBody JSONObject json) {
+    public ResponseEntity<String> createEvent(@RequestBody JSONObject json) {
         try {
             logger.info("Now creating the event object...."+json);
             Event event = mapper.readValue(json.toString(),Event.class);
@@ -41,17 +44,18 @@ public class ReportsController {
                 if(!StringUtils.isEmpty(event.getEventType())) {
                   eventService.saveEvent(event);
                   logger.info("Event saved successfully");
+                  return new ResponseEntity<String>("{\"success\":true}",HttpStatus.OK);
                 }
-                return "message:Error - event is null";
+                return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
             }
 
         } catch (IOException e) {
             logger.error("Encountered an error : "+e.getMessage());
             e.printStackTrace();
-            return "Encountered during processing ";
+            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
         }
 
-        return "";
+        return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
