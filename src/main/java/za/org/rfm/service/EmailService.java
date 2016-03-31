@@ -367,7 +367,7 @@ public class EmailService {
             List<EventTotals> eventTotalsList = new ArrayList<EventTotals>();
 
             for(Assembly assembly : assemblyList){
-                List<Event> eventList = eventService.getEventsByAssemblyAndTypeAndDateRange(assembly.getAssemblyid(), Constants.SERVICE_TYPE_SUNDAY, dateRange);
+                List<Event> eventList = eventService.getEventsByAssemblyAndTypeAndDateRange(assembly.getAssemblyid(), Constants.STATUS_ALL, dateRange);
                 assemblyListMap.put(assembly,eventList);
             }
 
