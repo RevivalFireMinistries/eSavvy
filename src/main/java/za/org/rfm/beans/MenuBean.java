@@ -150,7 +150,7 @@ public class MenuBean {
         }
         if(services != null)
          model.addElement(services);
-        if(Utils.isAuthorised(currentUser,Role.Administrator) || Utils.isAuthorised(currentUser,Role.Pastor)){
+    /*    if(Utils.isAuthorised(currentUser,Role.Administrator) || Utils.isAuthorised(currentUser,Role.Pastor)){
         //sms mgt
         DefaultSubMenu smsSubmenu = new DefaultSubMenu("SMS");
         DefaultMenuItem  item3 = new DefaultMenuItem("Send New");
@@ -163,7 +163,7 @@ public class MenuBean {
         smsSubmenu.addElement(item3);
         model.addElement(smsSubmenu);
         ////////////////////////////////////////////////////
-        }
+        }*/
         if(Utils.isAuthorised(currentUser, Role.Administrator) ){
         //Tithes mgt
         DefaultSubMenu secondSubmenu = new DefaultSubMenu("Tithes");
