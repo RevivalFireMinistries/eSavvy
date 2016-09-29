@@ -109,7 +109,7 @@ public class JobRepository {
             // Tell quartz to schedule the job using the trigger
             sch.scheduleJob(memberInActivityChecker, everyFirstDayOfMonth2);
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
-            sch.scheduleJob(apostolicMonthly,everyThursday);
+            sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
             sch.scheduleJob(reportReminder,everyMondayMidnight);
             sch.scheduleJob(smsBillJob,everyFirstDayOfMonth3);
         } catch (Exception e) {
