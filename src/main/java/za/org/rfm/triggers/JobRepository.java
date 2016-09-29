@@ -64,6 +64,12 @@ public class JobRepository {
                     .withSchedule(
                             CronScheduleBuilder.cronSchedule("0 0 0 1 1/1 ? *"))
                     .build();
+            Trigger everyThursday = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("everyThursday")
+                    .withSchedule(
+                            CronScheduleBuilder.cronSchedule("0 20 9 ? * THU *"))
+                    .build();
 
             Trigger everyFirstDayOfMonth2 = TriggerBuilder
                     .newTrigger()
@@ -103,7 +109,7 @@ public class JobRepository {
             // Tell quartz to schedule the job using the trigger
             sch.scheduleJob(memberInActivityChecker, everyFirstDayOfMonth2);
             sch.scheduleJob(apostolicWeekly,everyTuesdayMidnight);
-            sch.scheduleJob(apostolicMonthly,everyFirstDayOfMonth);
+            sch.scheduleJob(apostolicMonthly,everyThursday);
             sch.scheduleJob(reportReminder,everyMondayMidnight);
             sch.scheduleJob(smsBillJob,everyFirstDayOfMonth3);
         } catch (Exception e) {
