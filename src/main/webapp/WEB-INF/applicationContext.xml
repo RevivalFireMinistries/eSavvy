@@ -49,7 +49,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="25"/>
-        <property name="username" value="esavvy@rfm.org.za"/>
+        <property name="username" value="firemanager@rfm.org.za"/>
         <property name="password" value="kingdom85"/>
         <property name="javaMailProperties">
             <props>
