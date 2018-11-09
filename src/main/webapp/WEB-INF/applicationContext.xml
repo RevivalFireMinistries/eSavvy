@@ -50,7 +50,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="25"/>
         <property name="username" value="firemanager@rfm.org.za"/>
-        <property name="password" value="kingdom85"/>
+        <property name="password" value="Kingdom@204"/>
         <property name="javaMailProperties">
             <props>
                 <!-- Use SMTP transport protocol -->
